@@ -85,9 +85,9 @@ setup(
     ],
     
     # provide some links to list on the Pypi.org site.
-    #project_urls={
+    project_urls={
     #    'Documentation': 'https://example.com/documentation/',
-    #    'GitHub': 'https://github.com/foobar/foobar/',
-    #    'Changelog': 'https://github.com/foobar/foobar/blob/master/CHANGELOG.md',
-    #},
+        'GitHub': 'https://github.com/thlucas1/bosesoundtouchapi',
+        'Changelog': 'https://github.com/thlucas1/bosesoundtouchapi/blob/master/CHANGELOG.md',
+    }
 )

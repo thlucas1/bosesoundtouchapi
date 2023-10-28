@@ -173,6 +173,5 @@ artifacts/
 /test/developer_notes.txt
 /test/stu/
 /Git*.cmd
-
 # include PDOC documentation
-#!docspdoc/build/
+!docspdoc/build/

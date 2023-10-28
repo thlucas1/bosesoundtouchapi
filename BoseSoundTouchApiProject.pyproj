@@ -206,9 +206,11 @@
     <Folder Include="test\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".gitattributes" />
     <Content Include=".github\ISSUE_TEMPLATE\bug.yml" />
     <Content Include=".github\ISSUE_TEMPLATE\config.yml" />
     <Content Include=".github\ISSUE_TEMPLATE\feature_request.yml" />
+    <Content Include=".gitignore" />
     <Content Include=".vscode\launch.json" />
     <Content Include=".vscode\settings.json" />
     <Content Include="build.bat" />
@@ -293,6 +295,7 @@
     <Content Include="docs\include\samplecode\SmartInspectPython\Overview.md" />
     <Content Include="LICENSE" />
     <Content Include="README.md" />
+    <Content Include="readthedocs.yaml" />
     <Content Include="requirements.txt" />
     <Content Include="test\developer_notes.txt" />
     <Content Include="test\smartinspect.cfg" />

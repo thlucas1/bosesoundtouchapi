@@ -7,6 +7,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.1 ] - 2023/10/28
+
+  *  Added support for ReadtheDocs documentation hosting.
+
 ###### [ 1.0.0 ] - 2023/10/05
 
   *  Version 1 initial release.
