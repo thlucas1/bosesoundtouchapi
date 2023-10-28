@@ -1,0 +1,9 @@
+# pip>=22.0.4
+# setuptools>=58.1.0
+smartinspectPython>=3.0.26
+tinytag>=1.10.0
+urllib3
+websocket-client>=1.6.4
+xmltodict
+# wheel>=0.41.2
+# pdoc>=14.0.0

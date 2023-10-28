@@ -1,0 +1,58 @@
+{# We want to extend the default template instead of defining everything ourselves. #}
+{% extends "default/index.html.jinja2" %}
+
+
+{# Override the page title to use our title instead of "Module List - pdoc version". #}
+{% block title %}{{ env["BUILDENV_PACKAGENAME"] }} &dash; Module Index{% endblock %}
+
+
+{# add build environment as html comments. #}
+{% block head %}
+    <!-- build env - Package Name = "{{ env["BUILDENV_PACKAGENAME"] }}" -->
+    <!-- build env - Package Version = "{{ env["BUILDENV_PACKAGEVERSION"] }}" -->
+{% endblock %}
+
+
+{# Override the nav block to add the "Module Overview" entry for docstrings defined in "__init__.py". #}
+{# Also adds a footer to display the package version. #}
+{% block nav %}
+    <h2>Available Modules</h2>
+    <ul>
+        {% for submodule in all_modules if "._" not in submodule and (not submodule.startswith("_") or submodule == "__init__") %}
+            <li><a href="{{ submodule.replace(".","/") }}.html">
+            {% if submodule == "__init__" %}
+                <span class="modulename">Module Overview</span>
+            {% else %}
+                {{ submodule.split('.',1)[1] }}
+            {% endif %}
+            </a></li>
+        {% endfor %}
+    </ul>
+    <footer class="footertext">
+        {{ env["BUILDENV_PACKAGENAME"] | default("") }}</br>
+        Version {{ env["BUILDENV_PACKAGEVERSION"] | default("0.0.0") }}</br>
+        <a href="{{ env["BUILDENV_PDOC_BRAND_ICON_URL"] }}" target="_blank">
+          <img src="{{ env["BUILDENV_PDOC_BRAND_ICON_URL_SRC"] }}" alt="brand icon"/>
+          {{ env["BUILDENV_PDOC_BRAND_ICON_URL_TITLE"] }}
+        </a>
+        {% if footer_text %}
+            {{ footer_text }}
+        {% endif %}
+    </footer>
+{% endblock %}
+
+
+{# Override the logo block to hide the pdoc logo, as we are not using a custom logo. #}
+{% block logo %}
+    <h1 class="modulename">{{ env["BUILDENV_PACKAGENAME"] | default("") }} API Documentation</h1>
+    {% if logo %}
+        {% if logo_link %}<a href="{{ logo_link }}">{% endif %}
+        <img src="{{ logo }}" alt="project logo"/>
+        {% if logo_link %}</a>{% endif %}
+    {% else %}
+        <a style="display:none" href="https://pdoc.dev">
+            <img src="data:image/svg+xml,{% filter urlencode %}{% include "resources/pdoc-logo.svg" %}{% endfilter %}"
+                 alt="pdoc"/>
+        </a>
+    {% endif %}
+{% endblock %}

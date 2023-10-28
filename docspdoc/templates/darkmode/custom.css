@@ -1,0 +1,62 @@
+/* darkmode */
+/* You can add additional CSS rules in custom.css. */
+
+.modulename { color: #58a6ff; }
+
+/* color argument declarations to match ".pdoc-code .n" value. */
+.signature .param span { color: #ffc633; }
+
+/* color argument definitions to match the declaration. */
+.docstring #arguments ~ ul strong { color: #ffc633; }
+
+/* color argument raises (exceptions). */
+.docstring #raises ~ ul strong { color: #f62817 !important; }
+
+/* color changelog list item entries for readability. */
+#change-log ~ h6 {
+  color: #ffc633;
+}
+
+/* color all drop down panel summary titles for readability. */
+details summary {
+  color: #58a6ff;
+}
+
+/* color footer text for readability. */
+.footertext {
+  color: #58a6ff;
+}
+
+/* remove margins for code blocks. */
+.pdoc .docstring .pdoc-code {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* style the copy code button area background color. */
+div.codehilite {
+  background-color: var(--code);
+  border-bottom: 1px solid var(--accent2);
+}
+
+/* style the copy code button. */
+div.codehilite button {
+  color: var(--link);
+  background: var(--pdoc-background);
+  background-color: var(--code);
+  border: none;
+  box-sizing: border-box;
+  transition: 0.2s ease-out;
+  cursor: pointer;
+  user-select: none;
+  padding: 5px 10px;
+  font-size: 0.8em;
+  z-index: 9999;
+  margin: 2px;
+  border-radius: 0 0.15rem;
+}
+
+/* cut the bottom margin on the code area. */
+div.codehilite pre {
+  margin-bottom: 0px;
+}

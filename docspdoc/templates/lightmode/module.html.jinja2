@@ -1,0 +1,81 @@
+{# We want to extend the default template instead of defining everything ourselves. #}
+{% extends "default/module.html.jinja2" %}
+
+{# Override the page title to use our title instead of "Module List - pdoc version". #}
+{# If the modulename is not "__init__", then just use the module name (not qualified name). #}
+{% block title %}
+    {{ env["BUILDENV_PACKAGENAME"] }} &dash;
+    {% if module.modulename == "__init__" %}
+        Module Overview
+    {% else %}
+        {{ module.modulename.split('.')[1] }} API Documentation
+    {% endif %}
+{% endblock %}
+
+
+{# add build environment as html comments. #}
+{# add code copy javascript to html head area. #}
+{# note that index.html and __init__.html are placed in the directory above the package directory. #}
+{% block head %}
+    <!-- build env - Package Name = "{{ env["BUILDENV_PACKAGENAME"] }}" -->
+    <!-- build env - Package Version = "{{ env["BUILDENV_PACKAGEVERSION"] }}" -->
+    <!-- pdoc module.modulename = "{{ module.modulename }}" -->
+    <!-- pdoc module.is_package = "{{ module.is_package }}" -->
+    <!-- pdoc root_module_name  = "{{ root_module_name }}" -->
+    <!-- pdoc namespace levels  =  "{{ module.modulename.count('.') }}" -->
+    <script type="text/javascript" src="{{ "../" * module.modulename.count('.') }}codecopy.js"></script>
+{% endblock %}
+
+
+{#
+We can redefine individual blocks.
+For example, if the `--favicon` option does not do what you want, you can specify a replacement like this.
+#}
+{% block favicon %}
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,{% filter urlencode %}{% include "resources/pdoc-logo.svg" %}{% endfilter %}"/>
+{% endblock %}
+
+
+{# add package version to footer area (from envirnment variable setting). #}
+{% block nav_footer %}
+    <footer class="footertext">
+        {{ env["BUILDENV_PACKAGENAME"] | default("") }}</br>
+        Version {{ env["BUILDENV_PACKAGEVERSION"] | default("0.0.0") }}</br>
+        <a href="{{ env["BUILDENV_PDOC_BRAND_ICON_URL"] }}" target="_blank">
+          <img src="{{ "../" * module.modulename.count('.') + env["BUILDENV_PDOC_BRAND_ICON_URL_SRC"] }}" alt="brand icon"/>
+          {{ env["BUILDENV_PDOC_BRAND_ICON_URL_TITLE"] }}
+        </a>
+        {% if footer_text %}
+            {{ footer_text }}
+        {% endif %}
+    </footer>
+{% endblock %}
+
+
+{#
+The is_public macro is a bit unconventional in that its output is not rendered, but treated as a boolean:
+- Returning no text is interpreted as false.
+- Returning any other text is iterpreted as true.
+Adjust which members are documented by overriding the is_public macro.
+- do not document classes in a module that are pulled in from another module.
+#}
+{% macro is_public(doc) %}
+    {% if (doc.name == "__init__") and (doc.docstring) %}
+        {# show constructors that have a docstring or at least one extra argument #}
+        true
+    {% elif (doc.fullname) and (doc.taken_from) and (not doc.fullname.startswith(doc.taken_from[0])) %}
+        {# Don't document members that are pulled in from another module! #}
+    {% else %}
+        {{ default_is_public(doc) }}
+    {% endif %}
+{% endmacro %}
+
+
+{# if module is "__init__" then just use what's in the __init__ docstring. #}
+{% macro module_name() %}
+    {% if module.modulename == "__init__" %}
+        <h1 style="display:none;" class="modulename">__init__</h1>
+    {% else %}
+        {{ default_module_name() }}
+    {% endif %}
+{% endmacro %}

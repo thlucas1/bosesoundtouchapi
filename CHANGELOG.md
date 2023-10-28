@@ -1,0 +1,14 @@
+## Change Log
+
+All notable changes to this project are listed here.
+Detailed changes are listed in the module where the change was made.
+
+Change are listed in reverse chronological order (newest to oldest).
+
+<span class="changelog">
+
+###### [ 1.0.0 ] - 2023/10/05
+
+  *  Version 1 initial release.
+
+</span>

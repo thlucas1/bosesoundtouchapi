@@ -1,0 +1,320 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>b57aea50-a094-4619-b41e-cdade13693c6</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>test\test_SampleCode.py</StartupFile>
+    <SearchPath>.;test</SearchPath>
+    <WorkingDirectory>C:\Users\thluc\source\repos\BoseSoundTouchApiProject</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>BoseSoundTouchApi Project</Name>
+    <RootNamespace>BoseSoundTouchApi</RootNamespace>
+    <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
+    <TestFramework>unittest</TestFramework>
+    <UnitTestPattern>testVS_*.py</UnitTestPattern>
+    <UnitTestRootDirectory>C:\Users\thluc\source\repos\BoseSoundTouchApiProject\test</UnitTestRootDirectory>
+    <IsWindowsApplication>False</IsWindowsApplication>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <Environment>
+    </Environment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="bosesoundtouchapi\firmware\soundtouchfirmwareproduct.py" />
+    <Compile Include="bosesoundtouchapi\firmware\soundtouchfirmwarerelease.py" />
+    <Compile Include="bosesoundtouchapi\firmware\__init__.py" />
+    <Compile Include="bosesoundtouchapi\models\recentlist.py" />
+    <Compile Include="bosesoundtouchapi\models\recent.py" />
+    <Compile Include="bosesoundtouchapi\models\playinfo.py" />
+    <Compile Include="bosesoundtouchapi\soundtouchwarning.py" />
+    <Compile Include="bosesoundtouchapi\soundtoucherror.py" />
+    <Compile Include="bosesoundtouchapi\soundtouchkeys.py" />
+    <Compile Include="bosesoundtouchapi\soundtouchmodelrequest.py" />
+    <Compile Include="bosesoundtouchapi\soundtouchsources.py" />
+    <Compile Include="bosesoundtouchapi\models\balance.py" />
+    <Compile Include="bosesoundtouchapi\models\bass.py" />
+    <Compile Include="bosesoundtouchapi\models\basscapabilities.py" />
+    <Compile Include="bosesoundtouchapi\models\capabilities.py" />
+    <Compile Include="bosesoundtouchapi\models\clockconfig.py" />
+    <Compile Include="bosesoundtouchapi\models\clocktime.py" />
+    <Compile Include="bosesoundtouchapi\models\contentitem.py" />
+    <Compile Include="bosesoundtouchapi\models\dspmonostereoitem.py" />
+    <Compile Include="bosesoundtouchapi\models\infonetworkconfig.py" />
+    <Compile Include="bosesoundtouchapi\models\mediaserver.py" />
+    <Compile Include="bosesoundtouchapi\models\mediaserverlist.py" />
+    <Compile Include="bosesoundtouchapi\models\networkstatusinterface.py" />
+    <Compile Include="bosesoundtouchapi\models\networkinfo.py" />
+    <Compile Include="bosesoundtouchapi\models\networkinfointerface.py" />
+    <Compile Include="bosesoundtouchapi\models\networkstatus.py" />
+    <Compile Include="bosesoundtouchapi\models\powermanagement.py" />
+    <Compile Include="bosesoundtouchapi\models\preset.py" />
+    <Compile Include="bosesoundtouchapi\models\presetlist.py" />
+    <Compile Include="bosesoundtouchapi\models\simpleconfig.py" />
+    <Compile Include="bosesoundtouchapi\models\sourceitem.py" />
+    <Compile Include="bosesoundtouchapi\models\sourcelist.py" />
+    <Compile Include="bosesoundtouchapi\models\nowplayingstatus.py" />
+    <Compile Include="bosesoundtouchapi\models\systemtimeout.py" />
+    <Compile Include="bosesoundtouchapi\models\volume.py" />
+    <Compile Include="bosesoundtouchapi\models\wirelessprofile.py" />
+    <Compile Include="bosesoundtouchapi\models\zone.py" />
+    <Compile Include="bosesoundtouchapi\models\zonemember.py" />
+    <Compile Include="bosesoundtouchapi\models\__init__.py" />
+    <Compile Include="bosesoundtouchapi\uri\soundtouchnodes.py" />
+    <Compile Include="bosesoundtouchapi\uri\soundtouchuri.py" />
+    <Compile Include="bosesoundtouchapi\uri\__init__.py" />
+    <Compile Include="bosesoundtouchapi\soundtouchmessage.py" />
+    <Compile Include="bosesoundtouchapi\ws\__init__.py" />
+    <Compile Include="bosesoundtouchapi\__init__.py" />
+    <Compile Include="bosesoundtouchapi\bstappmessages.py" />
+    <Compile Include="bosesoundtouchapi\bstconst.py" />
+    <Compile Include="bosesoundtouchapi\bstutils.py" />
+    <Compile Include="bosesoundtouchapi\soundtouchclient.py" />
+    <Compile Include="bosesoundtouchapi\soundtouchdevice.py" />
+    <Compile Include="bosesoundtouchapi\soundtouchdevicecomponent.py" />
+    <Compile Include="bosesoundtouchapi\soundtouchexception.py" />
+    <Compile Include="bosesoundtouchapi\soundtouchnotifycategorys.py" />
+    <Compile Include="bosesoundtouchapi\uri\soundtouchuriscopes.py" />
+    <Compile Include="bosesoundtouchapi\uri\soundtouchuritypes.py" />
+    <Compile Include="bosesoundtouchapi\ws\soundtouchwebsocket.py" />
+    <Compile Include="bosesoundtouchapi\firmware\soundtouchfirmware.py" />
+    <Compile Include="docspdoc\buildEnv.py" />
+    <Compile Include="docs\include\samplecode\SmartInspectPython\ClassLogging.py" />
+    <Compile Include="docs\include\samplecode\SmartInspectPython\MainLogging.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\Action.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MakeRequest.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetOptions.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetRecentList.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MediaPlay.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\PlayContentItem.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\PlayUrl.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\PlayNotificationTTS.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\PowerStandby.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SelectRecent.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SelectPreset2.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SelectPreset3.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SelectPreset4.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SelectPreset5.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SelectPreset6.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SelectPreset1.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SelectContentItem.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SelectSource.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\ThumbsDown.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\ThumbsUp.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\RemoveFavorite.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\AddFavorite.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\AddZoneMembers.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\ConfigurationCache.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\CreateZone.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\CreateZoneFromDevices.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MediaPlayPause.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MediaPreviousTrack.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MediaNextTrack.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MediaRepeatOff.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MediaRepeatOne.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MediaRepeatAll.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MediaShuffleOn.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MediaShuffleOff.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MediaStop.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\Put.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetBass.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetZoneStatus.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetWirelessProfile.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetSystemTimeout.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetPowerManagement.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetNetworkStatus.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetNetworkInfo.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetName.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetLanguage.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetDspMono.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetClockTime.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetClockConfig.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetCapabilities.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetMediaServerList.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetSourceList.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetPresetList.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetBalance.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetRequestToken.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetNowPlayingStatus.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\Get.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MediaPause.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MediaResume.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SetName.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\VolumeUp.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\VolumeDown.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\Power.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\Mute.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\PowerOff.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\PowerOn.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MuteOn.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MuteOff.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\RemoveAllPresets.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\RemovePreset.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetVolume.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetBassCapabilities.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\StoreSnapshot.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\RemoveZone.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\RemoveZoneMembers.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SetVolumeLevel.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SetBassLevel.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SelectPreset.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\StorePreset.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchDevice\_ClassInit.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchWebSocket\_ClassInit.py" />
+    <Compile Include="setup.py" />
+    <Compile Include="test\testVS_SoundTouchClient.py" />
+    <Compile Include="test\test_SampleCode.py" />
+    <Compile Include="test\test_StatusNotifications.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include=".github\" />
+    <Folder Include=".github\ISSUE_TEMPLATE\" />
+    <Folder Include=".vscode\" />
+    <Folder Include="bosesoundtouchapi\" />
+    <Folder Include="bosesoundtouchapi\models\" />
+    <Folder Include="bosesoundtouchapi\firmware\" />
+    <Folder Include="bosesoundtouchapi\ws\" />
+    <Folder Include="bosesoundtouchapi\uri\" />
+    <Folder Include="docspdoc\" />
+    <Folder Include="docspdoc\build\" />
+    <Folder Include="docspdoc\build\bosesoundtouchapi\" />
+    <Folder Include="docspdoc\build\bosesoundtouchapi\firmware\" />
+    <Folder Include="docspdoc\build\bosesoundtouchapi\models\" />
+    <Folder Include="docspdoc\build\bosesoundtouchapi\uri\" />
+    <Folder Include="docspdoc\build\bosesoundtouchapi\ws\" />
+    <Folder Include="docspdoc\include\" />
+    <Folder Include="docspdoc\templates\" />
+    <Folder Include="docspdoc\templates\darkmode\" />
+    <Folder Include="docspdoc\templates\default\" />
+    <Folder Include="docspdoc\templates\lightmode\" />
+    <Folder Include="docs\" />
+    <Folder Include="docs\include\" />
+    <Folder Include="docs\include\samplecode\" />
+    <Folder Include="docs\include\samplecode\SoundTouchWebSocket\" />
+    <Folder Include="docs\include\samplecode\SoundTouchDevice\" />
+    <Folder Include="docs\include\samplecode\SoundTouchClient\" />
+    <Folder Include="docs\include\samplecode\SmartInspectPython\" />
+    <Folder Include="dist\" />
+    <Folder Include="test\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".github\ISSUE_TEMPLATE\bug.yml" />
+    <Content Include=".github\ISSUE_TEMPLATE\config.yml" />
+    <Content Include=".github\ISSUE_TEMPLATE\feature_request.yml" />
+    <Content Include=".vscode\launch.json" />
+    <Content Include=".vscode\settings.json" />
+    <Content Include="build.bat" />
+    <Content Include="builddocs.bat" />
+    <Content Include="CHANGELOG.md" />
+    <Content Include="docspdoc\build\bosesoundtouchapi.ico" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\bstappmessages.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\bstconst.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\bstutils.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\firmware\soundtouchfirmware.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\firmware\soundtouchfirmwareproduct.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\firmware\soundtouchfirmwarerelease.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\balance.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\bass.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\basscapabilities.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\capabilities.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\clockconfig.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\clocktime.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\contentitem.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\dspmonostereoitem.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\infonetworkconfig.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\mediaserver.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\mediaserverlist.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\networkinfo.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\networkinfointerface.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\networkstatus.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\networkstatusinterface.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\nowplayingstatus.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\powermanagement.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\preset.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\presetlist.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\recent.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\recentlist.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\simpleconfig.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\sourceitem.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\sourcelist.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\systemtimeout.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\volume.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\wirelessprofile.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\zone.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\models\zonemember.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\soundtouchclient.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\soundtouchdevice.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\soundtouchdevicecomponent.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\soundtoucherror.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\soundtouchexception.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\soundtouchkeys.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\soundtouchmessage.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\soundtouchmodelrequest.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\soundtouchnotifycategorys.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\soundtouchsources.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\soundtouchwarning.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\uri\soundtouchnodes.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\uri\soundtouchuri.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\uri\soundtouchuriscopes.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\uri\soundtouchuritypes.html" />
+    <Content Include="docspdoc\build\bosesoundtouchapi\ws\soundtouchwebsocket.html" />
+    <Content Include="docspdoc\build\codecopy.js" />
+    <Content Include="docspdoc\build\index.html" />
+    <Content Include="docspdoc\build\search.js" />
+    <Content Include="docspdoc\build\__init__.html" />
+    <Content Include="docspdoc\include\bosesoundtouchapi.ico" />
+    <Content Include="docspdoc\include\codecopy.js" />
+    <Content Include="docspdoc\make.bat" />
+    <Content Include="docspdoc\templates\darkmode\codecopy.js" />
+    <Content Include="docspdoc\templates\darkmode\custom.css" />
+    <Content Include="docspdoc\templates\darkmode\index.html.jinja2" />
+    <Content Include="docspdoc\templates\darkmode\module.html.jinja2" />
+    <Content Include="docspdoc\templates\darkmode\syntax-highlighting.css" />
+    <Content Include="docspdoc\templates\darkmode\theme.css" />
+    <Content Include="docspdoc\templates\default\error.html.jinja2" />
+    <Content Include="docspdoc\templates\default\frame.html.jinja2" />
+    <Content Include="docspdoc\templates\default\index.html.jinja2" />
+    <Content Include="docspdoc\templates\default\module.html.jinja2" />
+    <Content Include="docspdoc\templates\lightmode\codecopy.js" />
+    <Content Include="docspdoc\templates\lightmode\custom.css" />
+    <Content Include="docspdoc\templates\lightmode\error.html.jinja2" />
+    <Content Include="docspdoc\templates\lightmode\frame.html.jinja2" />
+    <Content Include="docspdoc\templates\lightmode\index.html.jinja2" />
+    <Content Include="docspdoc\templates\lightmode\module.html.jinja2" />
+    <Content Include="docspdoc\templates\lightmode\theme.css" />
+    <Content Include="docs\include\samplecode\SmartInspectPython\Overview.md" />
+    <Content Include="LICENSE" />
+    <Content Include="README.md" />
+    <Content Include="requirements.txt" />
+    <Content Include="test\developer_notes.txt" />
+    <Content Include="test\smartinspect.cfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="env\">
+      <Id>env</Id>
+      <Version>3.9</Version>
+      <Description>env (Python 3.9 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>

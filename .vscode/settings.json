@@ -1,0 +1,19 @@
+{
+  // DO NOT DELETE THIS FILE!  
+  // Used by Visual Studio Code on MacOS
+
+  "python.testing.unittestArgs": [
+    "-v",
+    "-s",
+    "./tests",
+    "-p",
+    "test_*.py"
+  ],
+  "python.testing.pytestEnabled": false,
+  "python.testing.unittestEnabled": false,
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/milestonexprotectrestpython",
+    "./build/lib"
+  ],
+  "terminal.integrated.env.windows": { "PYTHONPATH": "./" }
+}
