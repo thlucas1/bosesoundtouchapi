@@ -48,6 +48,7 @@ The following Python-related requirements must be met in order to utilize this A
 
 ## Documentation
 Documentation is located in the package library under the 'docs' folder; use the index.html as your starting point. 
+You can also view the latest docs on the <a href="https://bosesoundtouchapi.readthedocs.io/en/latest/__init__.html" target="_blank">readthedocs web-site</a>.
 
 ## Installation
 
