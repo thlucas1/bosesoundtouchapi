@@ -7,6 +7,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.3 ] - 2023/10/30
+
+  *  Updated SoundTouchClient `PlayUrl` method to handle metadata retrieval errors more gracefully.
+
 ###### [ 1.0.2 ] - 2023/10/28
 
   *  Updated documentation link for PyPi.org.

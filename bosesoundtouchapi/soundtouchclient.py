@@ -5,7 +5,7 @@ import re
 import time
 from tinytag import TinyTag
 import urllib.parse
-from urllib3 import PoolManager, request
+from urllib3 import PoolManager, request, Timeout
 from xml.etree.ElementTree import fromstring, Element
 
 # our package imports.
@@ -231,7 +231,7 @@ class SoundTouchClient:
     def _GetMetadataFromUrl_nBytes(self, url, size):
 
         headers={'Range': 'bytes=%s-%s' % (0, size-1)}
-        response = self._Manager.request("GET", url, headers=headers)
+        response = self._Manager.request("GET", url, headers=headers, retries=False, timeout=Timeout(connect=0.1, read=0.1))
 
         # req = request.Request(url)
         # req.headers['Range'] = 'bytes=%s-%s' % (0, size-1)
@@ -274,11 +274,10 @@ class SoundTouchClient:
             # return metadata to caller.
             return metadata
         
-        except SoundTouchException: raise  # pass handled exceptions on thru
         except Exception as ex:
         
-            # format unhandled exception.
-            raise SoundTouchException(BSTAppMessages.UNHANDLED_EXCEPTION.format("_GetMetadataFromUrl", str(ex)), ex, _logsi)
+            # ignore exceptions, no metadata available is acceptable.
+            return None
         
 
     def _ValidateDelay(self, delay:int, default:int=5, maxDelay:int=10) -> int:
