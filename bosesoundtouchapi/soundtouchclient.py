@@ -1636,7 +1636,7 @@ class SoundTouchClient:
                 The message text that will appear in the NowPlaying Track node.  
                 Default is "Unknown Track"
             volumeLevel (int):
-                The temporary volume level that will be used when the message is played.  
+                The temporary volume level that will be used when the media is played.  
                 Specify a value of zero to play at the current volume.  
                 Default is zero.
             appKey (str):

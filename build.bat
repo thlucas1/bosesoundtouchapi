@@ -55,11 +55,11 @@ git gc --auto
 
 echo Uploading dist package to TEST Pypi.org site.
 echo Note that this could fail if the version has already been uploaded.
-py -m twine upload --repository testpypi ./dist/*%BUILDENV_PACKAGEVERSION%*
+python -m twine upload --repository testpypi ./dist/*%BUILDENV_PACKAGEVERSION%*
 
 echo.
 echo Use the following command to upload the dist package to TEST Pypi:
-echo ^> py -m twine upload --repository testpypi dist/*%BUILDENV_PACKAGEVERSION%*
+echo ^> python -m twine upload --repository testpypi dist/*%BUILDENV_PACKAGEVERSION%*
 
 echo.
 echo Use the following command to install the package from TEST Pypi:
@@ -67,7 +67,7 @@ echo ^> pip install -i https://test.pypi.org/simple/ %BUILDENV_PACKAGENAME%
 
 echo.
 echo Use the following command to upload the dist package to PROD Pypi:
-echo ^> py -m twine upload --repository pypi dist/*%BUILDENV_PACKAGEVERSION%*
+echo ^> python -m twine upload --repository pypi dist/*%BUILDENV_PACKAGEVERSION%*
 
 echo.
 echo Use the following command to install the package from PROD Pypi:
