@@ -134,24 +134,41 @@ class SoundTouchWebSocket:
         return result
 
 
-    def _OnWebSocketClose(self, wsApp:WebSocketApp, message):
+    def _OnWebSocketOpen(self, wsApp:WebSocketApp) -> None:
+        """
+        Event raised by the web socket event listener when a socket has been opened.
+        
+        Args:
+            wsApp (WebSocketApp):
+                Event sender.
+                
+        Note that there is no message argument with this call.
+        """
+        if _logsi.IsOn(SILevel.Verbose):
+            _logsi.LogVerbose("SoundTouch web socket event listener OnOpen event: '%s'" % (SoundTouchNotifyCategorys.WebSocketOpen.value))
+            
+        # notify listeners.
+        self.NotifyListeners(SoundTouchNotifyCategorys.WebSocketOpen.value, SoundTouchNotifyCategorys.WebSocketOpen.value)
+
+
+    def _OnWebSocketClose(self, wsApp:WebSocketApp) -> None:
         """
         Event raised by the web socket event listener when a socket has been closed.
         
         Args:
             wsApp (WebSocketApp):
                 Event sender.
-            error (bytes):
-                Event argument, in the form of socket close details.
+                
+        Note that there is no message argument with this call.
         """
         if _logsi.IsOn(SILevel.Verbose):
-            _logsi.LogObject(SILevel.Verbose, "SoundTouch web socket event listener OnClose event: '%s' - %s" % (SoundTouchNotifyCategorys.WebSocketClose.value, str(message)), message)
+            _logsi.LogVerbose("SoundTouch web socket event listener OnClose event: '%s'" % (SoundTouchNotifyCategorys.WebSocketClose.value))
             
         # notify listeners.
-        self.NotifyListeners(SoundTouchNotifyCategorys.WebSocketClose.value, message)
+        self.NotifyListeners(SoundTouchNotifyCategorys.WebSocketClose.value, SoundTouchNotifyCategorys.WebSocketClose.value)
 
 
-    def _OnWebSocketError(self, wsApp:WebSocketApp, error):
+    def _OnWebSocketError(self, wsApp:WebSocketApp, error) -> None:
         """
         Event raised by the web socket event listener when a socket error has occurred.
         
@@ -161,14 +178,19 @@ class SoundTouchWebSocket:
             error (bytes):
                 Event argument, in the form of socket error details.
         """
+        # ignore pesky lambda function errors.
+        # not sure why these happen, but the following code suppresses the error messaage.
+        if isinstance(error, TypeError) and str(error).find("<lambda>() takes") != -1:
+            return
+        
         if _logsi.IsOn(SILevel.Verbose):
-            _logsi.LogObject(SILevel.Verbose, "SoundTouch web socket event listener OnError event: '%s' - %s" % (SoundTouchNotifyCategorys.WebSocketError.value, str(error)), error)
+            _logsi.LogObject(SILevel.Verbose, "SoundTouch web socket event listener OnError event: '%s' - (%s) %s" % (SoundTouchNotifyCategorys.WebSocketError.value, str(type(error)), str(error)), error)
            
         # notify listeners.
         self.NotifyListeners(SoundTouchNotifyCategorys.WebSocketError.value, error)
             
 
-    def _OnMessage(self, wsApp:WebSocketApp, message:bytes):
+    def _OnMessage(self, wsApp:WebSocketApp, message:bytes) -> None:
         """
         Event raised by the web socket event listener when a message is received from
         the monitored SoundTouch device.
@@ -357,10 +379,11 @@ class SoundTouchWebSocket:
                     wsUrl,
                     on_message = lambda ws,msg: self._OnMessage(ws, msg),
                     on_error   = lambda ws,msg: self._OnWebSocketError(ws, msg),
-                    on_close   = lambda ws,msg: self._OnWebSocketClose(ws, msg),
+                    on_close   = lambda ws:     self._OnWebSocketClose(ws),
+                    on_open    = lambda ws:     self._OnWebSocketOpen(ws),
                     subprotocols=['gabbo']
             )
-                       
+            
             # start the run_forever loop to receive notifications.
             _logsi.LogVerbose("Starting SoundTouch web socket event listener thread")
             self._Thread = _SoundTouchWebSocketThread(self._WebsocketClient)

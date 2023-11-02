@@ -7,6 +7,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.4 ] - 2023/11/01
+
+  *  Updated SoundTouchWebSocket OnClose event processing to only pass 2 parameters instead of 3.  There is no message argument when a connection is closed.  I also added an OnOpen event to allow the user to listen for when a connection is opened.
+
 ###### [ 1.0.3 ] - 2023/10/30
 
   *  Updated SoundTouchClient `PlayUrl` method to handle metadata retrieval errors more gracefully.

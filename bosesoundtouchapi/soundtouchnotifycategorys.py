@@ -93,14 +93,20 @@ class SoundTouchNotifyCategorys(Enum):
     
     WebSocketClose = 'WebSocketClose'
     """
-    Occurs when a websocket close is encountered (e.g. ConnectionResetError, etc).  This can occur
-    when the SoundTouch device is powered off after a connection was been made to it via a websocket.
+    Occurs when a websocket close is encountered (e.g. connection closed).  This will occur
+    when a connection has been closed to the SoundTouch device via a websocket.
     """
     
     WebSocketError = 'WebSocketError'
     """
     Occurs when a websocket error is encountered (e.g. ConnectionResetError, etc).  This can occur
     when the SoundTouch device is powered off after a connection was been made to it via a websocket.
+    """
+    
+    WebSocketOpen = 'WebSocketOpen'
+    """
+    Occurs when a websocket open is encountered (e.g. connection established).  This will occur
+    when a connection has been made to the SoundTouch device via a websocket.
     """
     
     zoneUpdated = 'zoneUpdated'

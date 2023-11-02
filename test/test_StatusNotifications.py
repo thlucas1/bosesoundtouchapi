@@ -29,7 +29,7 @@ _logsi.LogSystem(SILevel.Message)
 
 class EventHandlerClass:
 
-    def OnSoundTouchInfoEvent(client:SoundTouchClient, args:Element) -> None:
+    def OnSoundTouchInfoEvent(self, client:SoundTouchClient, args:Element) -> None:
         if (args != None):
             ElementTree.indent(args)  # for pretty printing
             argsEncoded = ElementTree.tostring(args, encoding="unicode")
@@ -37,21 +37,21 @@ class EventHandlerClass:
             print("\n'%s' status update:\n%s" % (client.Device.DeviceName, argsEncoded))
 
 
-    def OnSoundTouchWebSocketCloseEvent(client:SoundTouchClient, ex:Exception) -> None:
-        if (ex != None):
-            # args will be an Exception object for websocket close.
-            _logsi.LogError("SoundTouch device websocket close event: %s" % (str(ex)), colorValue=SIColors.LightGreen)
-            print("\n'%s' websocket close:\n%s" % (client.Device.DeviceName, str(ex)))
+    def OnSoundTouchWebSocketConnectionEvent(self, client:SoundTouchClient, args:str) -> None:
+        if (args != None):
+            # args will be a connection type: 'WebSocketOpen', 'WebSocketClose'.
+            _logsi.LogVerbose("SoundTouch device websocket connection event: %s" % (str(args)), colorValue=SIColors.LightGreen)
+            print("\n'%s' websocket connection event:\n%s" % (client.Device.DeviceName, str(args)))
 
 
-    def OnSoundTouchWebSocketErrorEvent(client:SoundTouchClient, ex:Exception) -> None:
+    def OnSoundTouchWebSocketErrorEvent(self, client:SoundTouchClient, ex:Exception) -> None:
         if (ex != None):
             # args will be an Exception object for websocket errors.
             _logsi.LogError("SoundTouch device websocket error event: %s" % (str(ex)), colorValue=SIColors.LightGreen)
             print("\n'%s' websocket error:\n%s" % (client.Device.DeviceName, str(ex)))
 
 
-    def OnSoundTouchUpdateEvent(client:SoundTouchClient, args:Element) -> None:
+    def OnSoundTouchUpdateEvent(self, client:SoundTouchClient, args:Element) -> None:
         if (args != None):
             ElementTree.indent(args)  # for pretty printing
             argsEncoded = ElementTree.tostring(args, encoding="unicode")
@@ -59,7 +59,7 @@ class EventHandlerClass:
             print("\n'%s' status update:\n%s" % (client.Device.DeviceName, argsEncoded))
         
 
-    def OnSoundTouchUpdateEvent_Volume(client:SoundTouchClient, args:Element) -> None:
+    def OnSoundTouchUpdateEvent_Volume(self, client:SoundTouchClient, args:Element) -> None:
         if (args != None):
             ElementTree.indent(args)  # for pretty printing
             argsEncoded = ElementTree.tostring(args, encoding="unicode")
@@ -70,7 +70,7 @@ class EventHandlerClass:
             print(str(config))
             
         
-    def OnSoundTouchUpdateEvent_NowPlaying(client:SoundTouchClient, args:Element) -> None:
+    def OnSoundTouchUpdateEvent_NowPlaying(self, client:SoundTouchClient, args:Element) -> None:
         if (args != None):
             ElementTree.indent(args)  # for pretty printing
             argsEncoded = ElementTree.tostring(args, encoding="unicode")
@@ -103,39 +103,43 @@ try:
                 
         # create and start a websocket to receive notifications from the device.
         socket = SoundTouchWebSocket(client)
+        
+        # create event handler class instance.
+        ehc:EventHandlerClass = EventHandlerClass()
                 
         # add our listener(s) that will handle SoundTouch device status updates.
-        #socket.AddListener(SoundTouchNotifyCategorys.ALL, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.connectionStateUpdated, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.criticalErrorUpdate, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.errorNotification, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.errorUpdate, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.groupUpdated, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.languageUpdated, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.LowPowerStandbyUpdate, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.nameUpdated, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.nowPlayingUpdated, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.nowSelectionUpdated, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.presetsUpdated, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.recentsUpdated, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.soundTouchConfigurationUpdated, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.sourcesUpdated, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.swUpdateStatusUpdated, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.volumeUpdated, EventHandlerClass.OnSoundTouchUpdateEvent)
-        # socket.AddListener(SoundTouchNotifyCategorys.zoneUpdated, EventHandlerClass.OnSoundTouchUpdateEvent)
+        #socket.AddListener(SoundTouchNotifyCategorys.ALL, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.connectionStateUpdated, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.criticalErrorUpdate, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.errorNotification, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.errorUpdate, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.groupUpdated, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.languageUpdated, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.LowPowerStandbyUpdate, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.nameUpdated, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.nowPlayingUpdated, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.nowSelectionUpdated, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.presetsUpdated, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.recentsUpdated, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.soundTouchConfigurationUpdated, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.sourcesUpdated, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.swUpdateStatusUpdated, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.volumeUpdated, ehc.OnSoundTouchUpdateEvent)
+        # socket.AddListener(SoundTouchNotifyCategorys.zoneUpdated, ehc.OnSoundTouchUpdateEvent)
                 
         # you can also add methods for individual models, to make handling them easier.
         # add our listener(s) that will handle SoundTouch device status specific updates.
-        # socket.AddListener(SoundTouchNotifyCategorys.nowPlayingUpdated, EventHandlerClass.OnSoundTouchUpdateEvent_NowPlaying)
-        socket.AddListener(SoundTouchNotifyCategorys.volumeUpdated, EventHandlerClass.OnSoundTouchUpdateEvent_Volume)
+        # socket.AddListener(SoundTouchNotifyCategorys.nowPlayingUpdated, ehc.OnSoundTouchUpdateEvent_NowPlaying)
+        socket.AddListener(SoundTouchNotifyCategorys.volumeUpdated, ehc.OnSoundTouchUpdateEvent_Volume)
 
         # add our listener(s) that will handle SoundTouch device informational events.
-        socket.AddListener(SoundTouchNotifyCategorys.SoundTouchSdkInfo, EventHandlerClass.OnSoundTouchInfoEvent)
-        socket.AddListener(SoundTouchNotifyCategorys.userActivityUpdate, EventHandlerClass.OnSoundTouchInfoEvent)
+        socket.AddListener(SoundTouchNotifyCategorys.SoundTouchSdkInfo, ehc.OnSoundTouchInfoEvent)
+        socket.AddListener(SoundTouchNotifyCategorys.userActivityUpdate, ehc.OnSoundTouchInfoEvent)
         
         # add our listener that will handle SoundTouch websocket related events.
-        socket.AddListener(SoundTouchNotifyCategorys.WebSocketClose, EventHandlerClass.OnSoundTouchWebSocketCloseEvent)
-        socket.AddListener(SoundTouchNotifyCategorys.WebSocketError, EventHandlerClass.OnSoundTouchWebSocketErrorEvent)
+        socket.AddListener(SoundTouchNotifyCategorys.WebSocketOpen, ehc.OnSoundTouchWebSocketConnectionEvent)
+        socket.AddListener(SoundTouchNotifyCategorys.WebSocketClose, ehc.OnSoundTouchWebSocketConnectionEvent)
+        socket.AddListener(SoundTouchNotifyCategorys.WebSocketError, ehc.OnSoundTouchWebSocketErrorEvent)
 
         # start receiving updates.
         socket.StartNotification()
@@ -143,19 +147,26 @@ try:
         print("** Notification event loop has started.")
         print("** Try pressing some buttons on your SoundTouch remote or device ...")
 
-        # for testing status notifications.
-        maxcnt:int = 1200  # 1200=20 mins, 300=5 mins
-        for i in range(maxcnt):
-                
-            # wait 1 second.
-            time.sleep(1)
+        try:
             
-            # did we lose the connection to the SoundTouch device?
-            # if so, then stop / restart the notification event thread.
-            if socket.IsThreadRunForeverActive == False:
-                print("socket.IsThreadRunForeverActive = %s - restarting notification thread ..." % (str(socket.IsThreadRunForeverActive)))
-                socket.StopNotification()
-                socket.StartNotification()
+            # for testing status notifications.
+            maxcnt:int = 1200  # 1200=20 mins, 300=5 mins
+            for i in range(maxcnt):
+                
+                # wait 1 second.
+                time.sleep(1)
+            
+                # did we lose the connection to the SoundTouch device?
+                # if so, then stop / restart the notification event thread.
+                if socket.IsThreadRunForeverActive == False:
+                    print("socket.IsThreadRunForeverActive = %s - restarting notification thread ..." % (str(socket.IsThreadRunForeverActive)))
+                    socket.StopNotification()
+                    socket.StartNotification()
+            
+        except Exception as ex:
+            
+            _logsi.LogException(None, ex)
+            print(str(ex))
             
     else:
         
