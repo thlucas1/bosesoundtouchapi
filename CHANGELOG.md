@@ -1,9 +1,8 @@
 ## Change Log
 
-All notable changes to this project are listed here.
-Detailed changes are listed in the module where the change was made.
+All notable changes to this project are listed here.  
 
-Change are listed in reverse chronological order (newest to oldest).
+Change are listed in reverse chronological order (newest to oldest).  
 
 <span class="changelog">
 
