@@ -2,17 +2,19 @@
 import xml.etree.ElementTree as xmltree
 
 # our package imports.
+from bosesoundtouchapi.bstutils import export
 from bosesoundtouchapi.soundtoucherror import SoundTouchError
 
 # get smartinspect logger reference; create a new session for this module name.
 import logging
 from smartinspectpython.siauto import SIAuto, SILevel, SISession, SIColors
-_logsi:SISession = SIAuto.Si.GetSession(__name__)
+_logsi:SISession = SIAuto.Si.GetSession(__package__)
 if (_logsi == None):
-    _logsi = SIAuto.Si.AddSession(__name__, True)
-_logsi.SystemLogger = logging.getLogger(__name__)
+    _logsi = SIAuto.Si.AddSession(__package__, True)
+_logsi.SystemLogger = logging.getLogger(__package__)
 
 
+@ export
 class SoundTouchFirmwareProduct:
     """
     A class storing the product id and the linked URL where the firmware
@@ -42,7 +44,7 @@ class SoundTouchFirmwareProduct:
     @property
     def DeviceClass(self) -> str:
         """
-        Some products have a special device class added to their entry. (Usage unknown)
+        Some products have a special device class added to their entry (usage unknown).
         """
         return self._DeviceClass
 
@@ -94,11 +96,14 @@ class SoundTouchFirmwareProduct:
         if not element:
             raise SoundTouchError('Invalid XML-Element (nullptr)', logsi=_logsi)
 
-        return SoundTouchFirmwareProduct(
+        product:SoundTouchFirmwareProduct = SoundTouchFirmwareProduct(
             int(element.get('PID', default='0'), 16),
             element.get('URL'),
             element.get('DEVICE_CLASS', None)
         )
+        
+        _logsi.LogObject(SILevel.Verbose,"Firmware Product item: %s" % (product.ProductId), product, excludeNonPublic=True)
+        return product
 
 
     @staticmethod
@@ -118,7 +123,7 @@ class SoundTouchFirmwareProduct:
         if not root:
             return []
 
-        data = []
+        data:list[SoundTouchFirmwareProduct] = []
         for prod in root.findall('PRODUCT'):
             data.append(SoundTouchFirmwareProduct.LoadFromXmlElement(prod))
 

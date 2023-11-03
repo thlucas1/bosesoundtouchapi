@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>b57aea50-a094-4619-b41e-cdade13693c6</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>test\test_StatusNotifications.py</StartupFile>
+    <StartupFile>test\test_SampleCode.py</StartupFile>
     <SearchPath>.;test</SearchPath>
     <WorkingDirectory>C:\Users\thluc\source\repos\BoseSoundTouchApiProject</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -168,9 +168,11 @@
     <Compile Include="docs\include\samplecode\SoundTouchClient\SelectPreset.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\StorePreset.py" />
     <Compile Include="docs\include\samplecode\SoundTouchDevice\_ClassInit.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchFirmware\_ClassInit.py" />
     <Compile Include="docs\include\samplecode\SoundTouchWebSocket\_ClassInit.py" />
     <Compile Include="setup.py" />
     <Compile Include="test\testVS_SoundTouchClient.py" />
+    <Compile Include="test\test_Firmware.py" />
     <Compile Include="test\test_SampleCode.py" />
     <Compile Include="test\test_StatusNotifications.py" />
   </ItemGroup>
@@ -198,6 +200,7 @@
     <Folder Include="docs\" />
     <Folder Include="docs\include\" />
     <Folder Include="docs\include\samplecode\" />
+    <Folder Include="docs\include\samplecode\SoundTouchFirmware\" />
     <Folder Include="docs\include\samplecode\SoundTouchWebSocket\" />
     <Folder Include="docs\include\samplecode\SoundTouchDevice\" />
     <Folder Include="docs\include\samplecode\SoundTouchClient\" />
