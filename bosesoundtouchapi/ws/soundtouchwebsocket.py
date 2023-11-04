@@ -24,15 +24,24 @@ class _SoundTouchWebSocketThread(Thread):
     extra Thread.
     """
 
-    def __init__(self, ws:WebSocketApp) -> None:
+    def __init__(self, ws:WebSocketApp, pingInterval:int, pingTimeout:int) -> None:
         """
         Args:
             ws (WebSocketApp):
                 A websocket client, that receives notifications from the SoundTouch device.
+            pingInterval (int):
+                Interval (in seconds) to send 'KeepAlive' ping request to the SoundTouch 
+                WebSocket, if websocket support is enabled for the SoundTouch device.  Set
+                this value to zero to disable keepalive ping requests.  
+            pingTimeout (int):
+                Interval (in seconds) to wait for the ping response from the SoundTouch 
+                WebSocket, if websocket support is enabled for the SoundTouch device.
         """
         super().__init__()
-        self._wsocket = ws
         self._IsRunForeverActive:bool = False
+        self._PingInterval:int = pingInterval
+        self._PingTimeout:int = pingTimeout
+        self._wsocket = ws
 
 
     @property
@@ -51,8 +60,14 @@ class _SoundTouchWebSocketThread(Thread):
         Starts the event loop for WebSocket framework.  
         """
         self._IsRunForeverActive = True
-        self._wsocket.run_forever()
+        
+        self._wsocket.run_forever(ping_interval=self._PingInterval, 
+                                  ping_timeout=self._PingTimeout, 
+                                  ping_payload='KeepAlive')
+        
         self._IsRunForeverActive = False
+        
+#ws.run_forever(sslopt={"cert_reqs": ssl.CERT_NONE}, ping_interval=10, ping_timeout=5)
 
 
 @export
@@ -84,7 +99,13 @@ class SoundTouchWebSocket:
     </details>
     """
     
-    def __init__(self, client:SoundTouchClient, port:int=8080) -> None:
+    _PING_TIMEOUT:int = 10
+    """
+    Time (in seconds) to wait for a ping request response from the SoundTouch device
+    websocket server.
+    """
+
+    def __init__(self, client:SoundTouchClient, port:int=8080, pingInterval:int=0) -> None:
         """
         Initializes a new instance of the class.
         
@@ -94,14 +115,29 @@ class SoundTouchWebSocket:
             port (int):
                 The port that the SoundTouch WebAPI socket is posting notifications on.  
                 Default is 8080.
-        
+            pingInterval (int):
+                Interval (in seconds) to send 'KeepAlive' ping request to the SoundTouch 
+                WebSocket, if websocket support is enabled for the SoundTouch device.  Set
+                this value to zero to disable keepalive ping requests.  
+                Default is 0 (disabled).
         """
+        # validations.
+        if (port is None) or (not isinstance(port, int)):
+            port = 8080
+            
+        if (pingInterval is None) or (not isinstance(pingInterval, int)):
+            pingInterval = 60
+        if (pingInterval > 0) and (pingInterval <= SoundTouchWebSocket._PING_TIMEOUT):
+            pingInterval = 60
+
+        # initialize internal storage.
         self._CachedListeners:dict = {}
         self._Client:SoundTouchClient = client
+        self._PingInterval:int = int(pingInterval)
         self._Port:int = int(port)
         self._Thread = None
         self._WebsocketClient:WebSocketApp = None
-
+        
 
     def __enter__(self) -> 'SoundTouchWebSocket':
         self.StartNotification()
@@ -134,21 +170,26 @@ class SoundTouchWebSocket:
         return result
 
 
-    def _OnWebSocketOpen(self, wsApp:WebSocketApp) -> None:
-        """
-        Event raised by the web socket event listener when a socket has been opened.
+    @property
+    def PingInterval(self) -> int:
+        """ 
+        Interval (in seconds) to send 'KeepAlive' ping request to the SoundTouch 
+        WebSocket, if websocket support is enabled for the SoundTouch device.  
         
-        Args:
-            wsApp (WebSocketApp):
-                Event sender.
-                
-        Note that there is no message argument with this call.
+        Default is 60.  
+        If zero, then keepalive requests are disabled.  
         """
-        if _logsi.IsOn(SILevel.Verbose):
-            _logsi.LogVerbose("SoundTouch web socket event listener OnOpen event: '%s'" % (SoundTouchNotifyCategorys.WebSocketOpen.value))
-            
-        # notify listeners.
-        self.NotifyListeners(SoundTouchNotifyCategorys.WebSocketOpen.value, SoundTouchNotifyCategorys.WebSocketOpen.value)
+        return self._PingInterval
+
+
+    @property
+    def Port(self) -> int:
+        """ 
+        The port that the SoundTouch WebAPI socket is posting notifications on.  
+
+        Default is 8080.
+        """
+        return self._Port
 
 
     def _OnWebSocketClose(self, wsApp:WebSocketApp) -> None:
@@ -231,6 +272,53 @@ class SoundTouchWebSocket:
 
             # process the root node (there is only one).
             self.NotifyListeners(root.tag, root)
+
+
+    def _OnWebSocketOpen(self, wsApp:WebSocketApp) -> None:
+        """
+        Event raised by the web socket event listener when a socket has been opened.
+        
+        Args:
+            wsApp (WebSocketApp):
+                Event sender.
+                
+        Note that there is no message argument with this call.
+        """
+        if _logsi.IsOn(SILevel.Verbose):
+            _logsi.LogVerbose("SoundTouch web socket event listener OnOpen event: '%s'" % (SoundTouchNotifyCategorys.WebSocketOpen.value))
+            
+        # notify listeners.
+        self.NotifyListeners(SoundTouchNotifyCategorys.WebSocketOpen.value, SoundTouchNotifyCategorys.WebSocketOpen.value)
+
+
+    def _OnWebSocketPing(self, wsApp:WebSocketApp, args:object) -> None:
+        """
+        Event raised by the web socket event listener when a server has sent a ping request.
+        
+        Args:
+            wsApp (WebSocketApp):
+                Event sender.
+        """
+        if _logsi.IsOn(SILevel.Verbose):
+            _logsi.LogBinary(SILevel.Verbose, "SoundTouch web socket event listener OnPing event: '%s'" % (SoundTouchNotifyCategorys.WebSocketPing.value), args)
+            
+        # notify listeners.
+        self.NotifyListeners(SoundTouchNotifyCategorys.WebSocketPing.value, SoundTouchNotifyCategorys.WebSocketPing.value)
+
+
+    def _OnWebSocketPong(self, wsApp:WebSocketApp, args:object) -> None:
+        """
+        Event raised by the web socket event listener when a server has sent a ping response (e.g. pong).
+        
+        Args:
+            wsApp (WebSocketApp):
+                Event sender.
+        """
+        if _logsi.IsOn(SILevel.Verbose):
+            _logsi.LogBinary(SILevel.Verbose, "SoundTouch web socket event listener OnPong event: '%s'" % (SoundTouchNotifyCategorys.WebSocketPong.value), args)
+            
+        # notify listeners.
+        self.NotifyListeners(SoundTouchNotifyCategorys.WebSocketPong.value, SoundTouchNotifyCategorys.WebSocketPong.value)
 
 
     def AddListener(self, category:SoundTouchNotifyCategorys, listener) -> bool:
@@ -373,20 +461,22 @@ class SoundTouchWebSocket:
         if self._WebsocketClient is None:
 
             wsUrl = 'ws://%s:%d/' % (self._Client.Device.Host, self._Port)
-            _logsi.LogVerbose("Creating SoundTouch web socket client (%s)." % (wsUrl))
+            _logsi.LogVerbose("Creating SoundTouch web socket client (%s): pingInterval=%s, pingTimeout=%s." % (wsUrl, self._PingInterval, SoundTouchWebSocket._PING_TIMEOUT))
             
             self._WebsocketClient = WebSocketApp(
                     wsUrl,
-                    on_message = lambda ws,msg: self._OnMessage(ws, msg),
-                    on_error   = lambda ws,msg: self._OnWebSocketError(ws, msg),
-                    on_close   = lambda ws:     self._OnWebSocketClose(ws),
-                    on_open    = lambda ws:     self._OnWebSocketOpen(ws),
+                    on_message = lambda ws,msg:     self._OnMessage(ws, msg),
+                    on_error   = lambda ws,msg:     self._OnWebSocketError(ws, msg),
+                    on_close   = lambda ws:         self._OnWebSocketClose(ws),
+                    on_open    = lambda ws:         self._OnWebSocketOpen(ws),
+                    on_ping    = lambda ws,args:    self._OnWebSocketPing(ws, args),
+                    on_pong    = lambda ws,args:    self._OnWebSocketPong(ws, args),
                     subprotocols=['gabbo']
             )
             
             # start the run_forever loop to receive notifications.
             _logsi.LogVerbose("Starting SoundTouch web socket event listener thread")
-            self._Thread = _SoundTouchWebSocketThread(self._WebsocketClient)
+            self._Thread = _SoundTouchWebSocketThread(self._WebsocketClient, self._PingInterval, SoundTouchWebSocket._PING_TIMEOUT)
             self._Thread.name = 'SoundTouchWSNotifyThread'
             self._Thread.start()
 

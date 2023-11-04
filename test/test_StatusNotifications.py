@@ -51,6 +51,13 @@ class EventHandlerClass:
             print("\n'%s' websocket error:\n%s" % (client.Device.DeviceName, str(ex)))
 
 
+    def OnSoundTouchWebSocketPingPongEvent(self, client:SoundTouchClient, args:str) -> None:
+        if (args != None):
+            # args will be a connection type: 'WebSocketPing', 'WebSocketPong'.
+            _logsi.LogVerbose("SoundTouch device websocket pingpong event: %s" % (str(args)), colorValue=SIColors.LightGreen)
+            print("\n'%s' websocket pingpong event:\n%s" % (client.Device.DeviceName, str(args)))
+
+
     def OnSoundTouchUpdateEvent(self, client:SoundTouchClient, args:Element) -> None:
         if (args != None):
             ElementTree.indent(args)  # for pretty printing
@@ -102,7 +109,7 @@ try:
     if capabilities.IsWebSocketApiProxyCapable:
                 
         # create and start a websocket to receive notifications from the device.
-        socket = SoundTouchWebSocket(client)
+        socket = SoundTouchWebSocket(client, pingInterval=10)
         
         # create event handler class instance.
         ehc:EventHandlerClass = EventHandlerClass()
@@ -137,9 +144,10 @@ try:
         socket.AddListener(SoundTouchNotifyCategorys.userActivityUpdate, ehc.OnSoundTouchInfoEvent)
         
         # add our listener that will handle SoundTouch websocket related events.
-        socket.AddListener(SoundTouchNotifyCategorys.WebSocketOpen, ehc.OnSoundTouchWebSocketConnectionEvent)
         socket.AddListener(SoundTouchNotifyCategorys.WebSocketClose, ehc.OnSoundTouchWebSocketConnectionEvent)
         socket.AddListener(SoundTouchNotifyCategorys.WebSocketError, ehc.OnSoundTouchWebSocketErrorEvent)
+        socket.AddListener(SoundTouchNotifyCategorys.WebSocketOpen, ehc.OnSoundTouchWebSocketConnectionEvent)
+        socket.AddListener(SoundTouchNotifyCategorys.WebSocketPong, ehc.OnSoundTouchWebSocketPingPongEvent)
 
         # start receiving updates.
         socket.StartNotification()

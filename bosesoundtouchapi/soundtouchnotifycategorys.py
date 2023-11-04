@@ -109,6 +109,20 @@ class SoundTouchNotifyCategorys(Enum):
     when a connection has been made to the SoundTouch device via a websocket.
     """
     
+    WebSocketPing = 'WebSocketPing'
+    """
+    Occurs when a websocket ping is encountered.  This will occur when the SoundTouch device websocket
+    server sends us a ping request.  Ping requests can be enabled / disabled when calling the
+    `run_forever()` method.
+    """
+    
+    WebSocketPong = 'WebSocketPong'
+    """
+    Occurs when a websocket pong is encountered.  This will occur when the SoundTouch device websocket
+    server responds to a ping request.  Ping requests can be enabled / disabled when calling the
+    `run_forever()` method.
+    """
+    
     zoneUpdated = 'zoneUpdated'
     """ 
     Occurs when a zone has been modified (created, member added, member removed, etc) on the device.
