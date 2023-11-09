@@ -6,6 +6,15 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.9 ] - 2023/11/08
+
+  *  Accidentally changed the GetrSourceList() method to GetCapabilities() method while testing and pushed the change to PyPi.org.  Changed it back, but hda to update the release to 1.0.9.
+
+###### [ 1.0.8 ] - 2023/11/08
+
+  *  Added SoundTouchWebSocket.ClearListeners() method to allow all listeners to be removed with one call.
+  *  Changed classifier to "Development Status 5 - Production/Stable".
+
 ###### [ 1.0.7 ] - 2023/11/08
 
   *  Added SourceList.ToSourceArray() method that returns an array of available source list items.

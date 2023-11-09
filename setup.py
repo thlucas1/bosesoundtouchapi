@@ -70,8 +70,8 @@ setup(
     
     # set classifiers to associate this package with on Pypi.org.
     classifiers=[
-#       'Development Status :: 5 - Production/Stable',
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
+#       'Development Status :: 2 - Pre-Alpha',
 #       'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 3',

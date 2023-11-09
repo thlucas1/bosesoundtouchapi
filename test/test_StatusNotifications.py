@@ -193,6 +193,7 @@ finally:
     # stop listening for Bose SoundTouch status updates.
     if (socket != None):
         socket.StopNotification()
+        socket.ClearListeners()
 
     # unwire events, and dispose of SmartInspect.
     print("** Disposing of SmartInspect resources")

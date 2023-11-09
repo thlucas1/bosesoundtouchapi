@@ -146,6 +146,7 @@ class SoundTouchWebSocket:
 
     def __exit__(self, etype, value, traceback) -> None:
         self.StopNotification()
+        self.ClearListeners()
 
 
     @property
@@ -358,6 +359,15 @@ class SoundTouchWebSocket:
         else:
             self._CachedListeners[category] = [listener]
         return True
+
+
+    def ClearListeners(self) -> None:
+        """
+        Removes all listeners that were previously added.
+        """
+        # remove all listeners.
+        if self._CachedListeners is not None:
+            self._CachedListeners.clear()
 
 
     def GetListenerGroup(self, category:str) -> list: # list[function]

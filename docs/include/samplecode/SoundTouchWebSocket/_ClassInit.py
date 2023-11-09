@@ -143,3 +143,4 @@ finally:
     # stop listening for Bose SoundTouch status updates.
     if (socket != None):
         socket.StopNotification()
+        socket.ClearListeners()
