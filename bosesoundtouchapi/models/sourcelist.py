@@ -102,6 +102,36 @@ class SourceList:
             elm.append(item.ToElement())
         return elm
 
+
+    def ToSourceArray(self, includeSourceAccount:bool=False) -> list[str]:
+        """
+        Returns an array of SourceItem (and optionally SourceAccount) strings.
+        
+        Args:
+            includeSourceAccount (bool):
+                True to include SourceAccount property values if present;
+                otherwise, False to only return Source property values.
+        
+        If includeSourceAccount=True was specified and a SourceAccount value is present, 
+        then it will return the Source entry as "Source:sourceAccount" as well as a 
+        second entry of just the "Source" value; otherwise, just the "Source" value is 
+        returned for the source item.
+        """
+        sourceList:list[str] = []
+        
+        # load list of supported sources.
+        item:SourceItem
+        for item in self:
+            if (item is not None) and (len(item.Source) > 0):
+                if (includeSourceAccount == False):
+                    sourceList.append(item.Source)
+                elif (item.SourceAccount is not None) and (len(item.SourceAccount) > 0):
+                    sourceList.append("%s:%s" % (item.Source, item.SourceAccount))
+                else:
+                    sourceList.append(item.Source)
+                        
+        return sourceList
+
         
     def ToString(self, includeItems:bool=False) -> str:
         """

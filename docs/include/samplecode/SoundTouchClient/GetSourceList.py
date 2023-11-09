@@ -14,6 +14,12 @@ try:
     sourceList:SourceList = client.GetSourceList()
     print(sourceList.ToString(True))
 
+    # get source list array.
+    print("\nSourceArray:\n%s" % sourceList.ToSourceArray())
+
+    # get source:account list array.
+    print("\nSourceArray (with Account):\n%s" % sourceList.ToSourceArray(True))
+
     # get specific sourceitem with the source name.
     sourceItem = sourceList['TUNEIN']
     print("(by name 'TUNEIN')  %s" % (sourceItem.ToString()))

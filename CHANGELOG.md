@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.7 ] - 2023/11/08
+
+  *  Added SourceList.ToSourceArray() method that returns an array of available source list items.
+
 ###### [ 1.0.6 ] - 2023/11/04
 
   *  Added Ping and Pong functionality to the SoundTouchWebSocket class.  This allows 'keep-alive' ping send requests and pong responses to be tracked by the websocket.  PingInterval is also configurable, and can also be disabled (default setting) if configured to do so.

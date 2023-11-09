@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>b57aea50-a094-4619-b41e-cdade13693c6</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>test\test_StatusNotifications.py</StartupFile>
+    <StartupFile>test\test_SampleCode.py</StartupFile>
     <SearchPath>.;test</SearchPath>
     <WorkingDirectory>C:\Users\thluc\source\repos\BoseSoundTouchApiProject</WorkingDirectory>
     <OutputPath>.</OutputPath>
