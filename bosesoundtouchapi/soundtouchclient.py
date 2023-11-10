@@ -2189,6 +2189,103 @@ class SoundTouchClient:
         return result
 
 
+    def SelectLastSoundTouchSource(self, delay:int=3) -> SoundTouchMessage:
+        """
+        Selects the last SoundTouch source that was selected.
+        
+        Args:
+            delay (int):
+                time delay (in seconds) to wait AFTER selecting the source.  This delay
+                will give the SoundTouch device time to process the change before another 
+                command is accepted.
+                default is 3 seconds, and value range is 0 - 10.
+                
+        Returns:
+            A SoundTouchMessage response that indicates success or failure of the command.
+            
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SelectLastSoundTouchSource.py
+        ```
+        </details>
+        """
+        delay = self._ValidateDelay(delay, 5, 10)
+        
+        msg = self.Get(SoundTouchNodes.selectLastSoundTouchSource)
+        
+        if delay > 0:
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            time.sleep(delay)
+            
+        return msg
+
+
+    def SelectLastSource(self, delay:int=3) -> SoundTouchMessage:
+        """
+        Selects the last source that was selected.
+        
+        Args:
+            delay (int):
+                time delay (in seconds) to wait AFTER selecting the source.  This delay
+                will give the SoundTouch device time to process the change before another 
+                command is accepted.
+                default is 3 seconds, and value range is 0 - 10.
+                
+        Returns:
+            A SoundTouchMessage response that indicates success or failure of the command.
+            
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SelectLastSource.py
+        ```
+        </details>
+        """
+        delay = self._ValidateDelay(delay, 5, 10)
+        
+        msg = self.Get(SoundTouchNodes.selectLastSource)
+        
+        if delay > 0:
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            time.sleep(delay)
+            
+        return msg
+
+
+    def SelectLocalSource(self, delay:int=3) -> SoundTouchMessage:
+        """
+        Selects the LOCAL source;  for some SoundTouch devices, this is the only way 
+        that the LOCAL source can be selected.
+        
+        Args:
+            delay (int):
+                time delay (in seconds) to wait AFTER selecting the source.  This delay
+                will give the SoundTouch device time to process the change before another 
+                command is accepted.
+                default is 3 seconds, and value range is 0 - 10.
+                
+        Returns:
+            A SoundTouchMessage response that indicates success or failure of the command.
+            
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SelectLocalSource.py
+        ```
+        </details>
+        """
+        delay = self._ValidateDelay(delay, 5, 10)
+        
+        msg = self.Get(SoundTouchNodes.selectLocalSource)
+        
+        if delay > 0:
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            time.sleep(delay)
+            
+        return msg
+
+
     def SelectPreset(self, preset:Preset, delay:int=5) -> SoundTouchMessage:
         """
         Selects the given preset.
@@ -2685,24 +2782,3 @@ class SoundTouchClient:
         </details>
         """
         self.Action(SoundTouchKeys.VOLUME_UP)
-
-
-
-###################################################################################################
-# ideas:
-
-# /bluetoothInfo - bt MAC address info.
-
-# play https urls:
-# Well, i own a soundtouch device and am happy with its sound quality. But the the actual component does not play media from https:// urls only from http://.
-# But the soundtouch boxes are capable to play these urls by the notification api. You only need an appkey from the bose developer program. With the appkey, you can get one free for 100 calls a day, it is easy. Just post an XML string and you are done.
-# val String PostData = '<play_info><app_key>' + AppKey + '</app_key><url>' + TTSUrl + '</url><service>OpenHAB</service><volume>' + Volume +'</volume></play_info>';
-# sendHttpPostRequest("http://192.168.178.xx:8090/speaker","",PostData)
-# Perhaps it is possible to add an appkey value to the configuration data and if it is present use the notification api to play the url instead of using the libsoundtouch play_url method.
-
-  # val String AppKey = "Ml7YGAI9JWjFhU7D348e86JPXtisddBa"   <- not sure if this is a temporary key?
-  # val String BoseIP = "172.17.100.21"
-  # val String BoseMsg = "Hallo dies ist ein Test"  // BoseTTSText.state
-  # val String TranslateUrl = "http://translate.google.com/translate_tts?ie=UTF-8&amp;tl=DE&amp;client=tw-ob&amp;q=" + URLEncoder.encode(BoseMsg,"UTF-8")
-  # val String PostData = '<play_info><app_key>' + AppKey + '</app_key><url>' + TranslateUrl + '</url><service>OpenHAB</service><volume>20</volume></play_info>';
-  # sendHttpPostRequest("http://" + BoseIP + ":8090/speaker","",PostData)
