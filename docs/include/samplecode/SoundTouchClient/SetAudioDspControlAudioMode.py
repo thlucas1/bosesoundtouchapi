@@ -17,7 +17,7 @@ try:
         print("\nCurrent Audio DSP Controls Supported Audio Modes array: %s" % (dspBefore.ToSupportedAudioModesArray()))
         print("\nCurrent Audio DSP Controls: %s" % (dspBefore.ToString()))
             
-        # for testing purposes, toggle the audo mode.  if the mode is currently "AUDIO_MODE_NORMAL",
+        # for testing purposes, toggle the audio mode.  if the mode is currently "AUDIO_MODE_NORMAL",
         # then we will use "AUDIO_MODE_DIALOG".
         newMode:str = "AUDIO_MODE_NORMAL"
         if dspBefore.AudioMode == newMode:

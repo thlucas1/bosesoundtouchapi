@@ -49,13 +49,13 @@ class AudioDspControls(SoundTouchModelRequest):
         self._SupportedAudioModes:str = None
         self._VideoSyncAudioDelay:int = None
         
-        # validations.
-        if videoSyncAudioDelay is not None:
-            if not isinstance(videoSyncAudioDelay, int):
-                raise SoundTouchError('videoSyncAudioDelay argument was not of type int', logsi=_logsi)
-
         if (root is None):
             
+            # validations.
+            if videoSyncAudioDelay is not None:
+                if not isinstance(videoSyncAudioDelay, int):
+                    raise SoundTouchError('videoSyncAudioDelay argument was not of type int', logsi=_logsi)
+
             # base fields.
             self._AudioMode = audioMode
             self._VideoSyncAudioDelay = videoSyncAudioDelay

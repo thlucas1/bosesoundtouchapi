@@ -20,14 +20,14 @@ class BSTAppMessages:
     {1}
     """
 
-    ARGUMENT_REQUIRED_ERROR:str = "BST0002E - The \"{0}\" argument is required, and cannot be null / None."
+    ARGUMENT_REQUIRED_ERROR:str = "BST0002E - The '%s' argument is required, and cannot be null / None."
     """
-    BST0002E - The \"{0}\" argument is required, and cannot be null / None.
+    BST0002E - The '%s' argument is required, and cannot be null / None.
     """
 
-    ARGUMENT_TYPE_ERROR:str = "BST0003E - {0} argument must be of type \"{1}\"; the \"{2}\" type is not supported for this argument."
+    ARGUMENT_TYPE_ERROR:str = "BST0003E - '%s' argument must be of type '%s'; the '%s' type is not supported for this argument."
     """
-    BST0003E - {0} argument must be of type \"{1}\"; the \"{2}\" type is not supported for this argument.
+    BST0003E - '%s' argument must be of type '%s'; the '%s' type is not supported for this argument.
     """
 
     BST_HOST_ADDRESS_INVALID:str = "BST1000E - SoundTouch host address is not recognized as a valid IPV4 network address: '%s'."

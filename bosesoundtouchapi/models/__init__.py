@@ -1,5 +1,6 @@
 # import all classes from the namespace.
 from .audiodspcontrols import AudioDspControls
+from .audioproducttonecontrols import AudioProductToneControls, AudioProductToneControl
 from .balance import Balance
 from .bass import Bass
 from .basscapabilities import BassCapabilities
@@ -11,6 +12,7 @@ from .contentitem import ContentItem
 from .dspmonostereoitem import DSPMonoStereoItem
 from .infonetworkconfig import InfoNetworkConfig
 from .mediaserverlist import MediaServerList, MediaServer
+from .musicserviceaccount import MusicServiceAccount
 from .networkinfo import NetworkInfo, NetworkInfoInterface
 from .networkstatus import NetworkStatus, NetworkStatusInterface
 from .nowplayingstatus import NowPlayingStatus
@@ -31,6 +33,8 @@ from .zone import Zone, ZoneMember
 # all classes to import when "import *" is specified.
 __all__ = [
     'AudioDspControls',
+    'AudioProductToneControls',
+    'AudioProductToneControl',
     'Balance',
     'Bass',
     'BassCapabilities',
@@ -42,6 +46,7 @@ __all__ = [
     'DSPMonoStereoItem',
     'InfoNetworkConfig',
     'MediaServerList', 'MediaServer',
+    'MusicServiceAccount',
     'NetworkInfo', 'NetworkInfoInterface',
     'NetworkStatus', 'NetworkStatusInterface',
     'NowPlayingStatus',

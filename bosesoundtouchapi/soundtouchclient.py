@@ -610,6 +610,31 @@ class SoundTouchClient:
         return self.GetProperty(SoundTouchNodes.audiodspcontrols, AudioDspControls, refresh)
 
 
+    def GetAudioProductToneControls(self, refresh=True) -> AudioProductToneControls:
+        """
+        Gets the current audio product tone controls configuration of the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `AudioProductToneControls` object that contains audio product tone control
+            configuration of the device IF the device supports it (e.g. ST-300, etc); 
+            otherwise, None if the device does not support it.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetAudioProductToneControls.py
+        ```
+        </details>
+        """
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioProductToneControls", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.audioproducttonecontrols, AudioProductToneControls, refresh)
+
+
     def GetBalance(self, refresh=True) -> Balance:
         """
         Gets the current balance configuration of the device.
@@ -2711,6 +2736,35 @@ class SoundTouchClient:
         _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio dsp controls audioMode", str(audioMode), self._Device.DeviceName))
         request:AudioDspControls = AudioDspControls(audioMode)
         return self.Put(SoundTouchNodes.audiodspcontrols, request)
+
+
+    def SetAudioProductToneControls(self, audioProductToneControls:AudioProductToneControls) -> SoundTouchMessage:
+        """
+        Sets the current audio product tone controls configuration of the device.
+
+        Args:
+            audioProductToneControls (AudioProductToneControls):
+                A `AudioProductToneControls` object that contains audio product tone control
+                values to set.
+
+        Raises:
+            SoundTouchError: 
+                If the audioProductToneControls argument is None, or not of type `AudioProductToneControls`.
+                
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SetAudioProductToneControls.py
+        ```
+        </details>
+        """
+        # validations.
+        if (audioProductToneControls is None) or (not isinstance(audioProductToneControls, AudioProductToneControls)):
+            raise SoundTouchError('audioProductToneControls argument was not supplied, or is not of type AudioProductToneControls', logsi=_logsi)
+            
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio product tone controls", audioProductToneControls.ToString(), self._Device.DeviceName))
+        request:AudioProductToneControls = audioProductToneControls
+        return self.Put(SoundTouchNodes.audioproducttonecontrols, request)
 
 
     def SetBassLevel(self, level:int) -> SoundTouchMessage:
