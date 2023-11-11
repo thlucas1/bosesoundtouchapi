@@ -133,10 +133,10 @@
                                 <a class="function" href="#SoundTouchClient.GetPresetList">GetPresetList</a>
                         </li>
                         <li>
-                                <a class="function" href="#SoundTouchClient.GetProductHdmiAssignmentControls">GetProductHdmiAssignmentControls</a>
+                                <a class="function" href="#SoundTouchClient.GetProductCecHdmiControl">GetProductCecHdmiControl</a>
                         </li>
                         <li>
-                                <a class="function" href="#SoundTouchClient.GetProductCecHdmiControl">GetProductCecHdmiControl</a>
+                                <a class="function" href="#SoundTouchClient.GetProductHdmiAssignmentControls">GetProductHdmiAssignmentControls</a>
                         </li>
                         <li>
                                 <a class="function" href="#SoundTouchClient.GetProperty">GetProperty</a>
@@ -1001,7 +1001,7 @@ otherwise, False to just return the cached information.</li>
 <h6 id="returns">Returns:</h6>
 
 <blockquote>
-  <p>A <code>AudioDspControls</code> object that contains product HDMI assignment control
+  <p>A <code>AudioDspControls</code> object that contains audio dsp control
   configuration of the device IF the device supports it (e.g. ST-300, etc); 
   otherwise, None if the device does not support it.</p>
 </blockquote>
@@ -2188,6 +2188,80 @@ otherwise, False to just return the cached information.</li>
 
 
                             </div>
+                            <div id="SoundTouchClient.GetProductCecHdmiControl" class="classattr">
+                                <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">GetProductCecHdmiControl</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">refresh</span><span class="o">=</span><span class="kc">True</span></span><span class="return-annotation">) -> <span class="n"><a href="models/productcechdmicontrol.html#ProductCecHdmiControl">bosesoundtouchapi.models.productcechdmicontrol.ProductCecHdmiControl</a></span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#SoundTouchClient.GetProductCecHdmiControl"></a>
+    
+            <div class="docstring"><p>Gets the current product CEC HDMI control configuration of the device.</p>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>refresh (bool):</strong>  True to query the device for realtime information and refresh the cache;
+otherwise, False to just return the cached information.</li>
+</ul>
+
+<h6 id="returns">Returns:</h6>
+
+<blockquote>
+  <p>A <code>ProductCecHdmiControl</code> object that contains product CEC HDMI control
+  configuration of the device IF the device supports it (e.g. ST-300, etc); 
+  otherwise, None if the device does not support it.</p>
+</blockquote>
+
+<p><details>
+  <summary>Sample Code</summary></p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">from</span> <span class="nn">bosesoundtouchapi</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">bosesoundtouchapi.models</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">bosesoundtouchapi.uri</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">try</span><span class="p">:</span>
+
+    <span class="c1"># create SoundTouch device instance.</span>
+    <span class="n">device</span><span class="p">:</span><span class="n">SoundTouchDevice</span> <span class="o">=</span> <span class="n">SoundTouchDevice</span><span class="p">(</span><span class="s2">&quot;192.168.1.131&quot;</span><span class="p">)</span>
+
+    <span class="c1"># create SoundTouch client instance from device.</span>
+    <span class="n">client</span><span class="p">:</span><span class="n">SoundTouchClient</span> <span class="o">=</span> <span class="n">SoundTouchClient</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="c1"># get real-time configuration from the device.</span>
+    <span class="c1"># note that not all devices support retrieval of this information.</span>
+    <span class="n">config</span><span class="p">:</span><span class="n">ProductCecHdmiControl</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetProductCecHdmiControl</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoundTouch device does not support ProductCecHdmiControl!&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
+
+    <span class="c1"># get cached configuration, refreshing from device if needed.</span>
+    <span class="n">config</span><span class="p">:</span><span class="n">ProductCecHdmiControl</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetProductCecHdmiControl</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoundTouch device does not support ProductCecHdmiControl!&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cached configuration:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
+
+    <span class="c1"># get cached configuration directly from the configuration manager dictionary.</span>
+    <span class="k">if</span> <span class="n">SoundTouchNodes</span><span class="o">.</span><span class="n">productcechdmicontrol</span><span class="o">.</span><span class="n">Path</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">ConfigurationCache</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">:</span><span class="n">ProductCecHdmiControl</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">ConfigurationCache</span><span class="p">[</span><span class="n">SoundTouchNodes</span><span class="o">.</span><span class="n">productcechdmicontrol</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cached configuration, direct:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;** Exception: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">))</span>
+</code></pre>
+</div>
+
+<p></details></p>
+</div>
+
+
+                            </div>
                             <div id="SoundTouchClient.GetProductHdmiAssignmentControls" class="classattr">
                                 <div class="attr function">
             
@@ -2249,80 +2323,6 @@ otherwise, False to just return the cached information.</li>
     <span class="c1"># get cached configuration directly from the configuration manager dictionary.</span>
     <span class="k">if</span> <span class="n">SoundTouchNodes</span><span class="o">.</span><span class="n">producthdmiassignmentcontrols</span><span class="o">.</span><span class="n">Path</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">ConfigurationCache</span><span class="p">:</span>
         <span class="n">config</span><span class="p">:</span><span class="n">ProductHdmiAssignmentControls</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">ConfigurationCache</span><span class="p">[</span><span class="n">SoundTouchNodes</span><span class="o">.</span><span class="n">producthdmiassignmentcontrols</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cached configuration, direct:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
-
-<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;** Exception: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">))</span>
-</code></pre>
-</div>
-
-<p></details></p>
-</div>
-
-
-                            </div>
-                            <div id="SoundTouchClient.GetProductCecHdmiControl" class="classattr">
-                                <div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">GetProductCecHdmiControl</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">refresh</span><span class="o">=</span><span class="kc">True</span></span><span class="return-annotation">) -> <span class="n"><a href="models/productcechdmicontrol.html#ProductCecHdmiControl">bosesoundtouchapi.models.productcechdmicontrol.ProductCecHdmiControl</a></span>:</span></span>
-
-        
-    </div>
-    <a class="headerlink" href="#SoundTouchClient.GetProductCecHdmiControl"></a>
-    
-            <div class="docstring"><p>Gets the current product CEC HDMI control configuration of the device.</p>
-
-<h6 id="arguments">Arguments:</h6>
-
-<ul>
-<li><strong>refresh (bool):</strong>  True to query the device for realtime information and refresh the cache;
-otherwise, False to just return the cached information.</li>
-</ul>
-
-<h6 id="returns">Returns:</h6>
-
-<blockquote>
-  <p>A <code>ProductCecHdmiControl</code> object that contains product HDMI assignment control
-  configuration of the device IF the device supports it (e.g. ST-300, etc); 
-  otherwise, None if the device does not support it.</p>
-</blockquote>
-
-<p><details>
-  <summary>Sample Code</summary></p>
-
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="kn">from</span> <span class="nn">bosesoundtouchapi</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">bosesoundtouchapi.models</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">bosesoundtouchapi.uri</span> <span class="kn">import</span> <span class="o">*</span>
-
-<span class="k">try</span><span class="p">:</span>
-
-    <span class="c1"># create SoundTouch device instance.</span>
-    <span class="n">device</span><span class="p">:</span><span class="n">SoundTouchDevice</span> <span class="o">=</span> <span class="n">SoundTouchDevice</span><span class="p">(</span><span class="s2">&quot;192.168.1.131&quot;</span><span class="p">)</span>
-
-    <span class="c1"># create SoundTouch client instance from device.</span>
-    <span class="n">client</span><span class="p">:</span><span class="n">SoundTouchClient</span> <span class="o">=</span> <span class="n">SoundTouchClient</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-
-    <span class="c1"># get real-time configuration from the device.</span>
-    <span class="c1"># note that not all devices support retrieval of this information.</span>
-    <span class="n">config</span><span class="p">:</span><span class="n">ProductCecHdmiControl</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetProductCecHdmiControl</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoundTouch device does not support ProductCecHdmiControl!&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
-
-    <span class="c1"># get cached configuration, refreshing from device if needed.</span>
-    <span class="n">config</span><span class="p">:</span><span class="n">ProductCecHdmiControl</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetProductCecHdmiControl</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoundTouch device does not support ProductCecHdmiControl!&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cached configuration:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
-
-    <span class="c1"># get cached configuration directly from the configuration manager dictionary.</span>
-    <span class="k">if</span> <span class="n">SoundTouchNodes</span><span class="o">.</span><span class="n">productcechdmicontrol</span><span class="o">.</span><span class="n">Path</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">ConfigurationCache</span><span class="p">:</span>
-        <span class="n">config</span><span class="p">:</span><span class="n">ProductCecHdmiControl</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">ConfigurationCache</span><span class="p">[</span><span class="n">SoundTouchNodes</span><span class="o">.</span><span class="n">productcechdmicontrol</span><span class="o">.</span><span class="n">Path</span><span class="p">]</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cached configuration, direct:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
 
 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>

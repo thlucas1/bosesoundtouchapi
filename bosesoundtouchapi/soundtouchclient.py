@@ -595,7 +595,7 @@ class SoundTouchClient:
                 otherwise, False to just return the cached information.
 
         Returns:
-            A `AudioDspControls` object that contains product HDMI assignment control
+            A `AudioDspControls` object that contains audio dsp control
             configuration of the device IF the device supports it (e.g. ST-300, etc); 
             otherwise, None if the device does not support it.
 
@@ -1029,6 +1029,31 @@ class SoundTouchClient:
         return self.GetProperty(SoundTouchNodes.presets, PresetList, refresh)
         
 
+    def GetProductCecHdmiControl(self, refresh=True) -> ProductCecHdmiControl:
+        """
+        Gets the current product CEC HDMI control configuration of the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `ProductCecHdmiControl` object that contains product CEC HDMI control
+            configuration of the device IF the device supports it (e.g. ST-300, etc); 
+            otherwise, None if the device does not support it.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetProductCecHdmiControl.py
+        ```
+        </details>
+        """
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ProductCecHdmiControl", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.productcechdmicontrol, ProductCecHdmiControl, refresh)
+
+
     def GetProductHdmiAssignmentControls(self, refresh=True) -> ProductHdmiAssignmentControls:
         """
         Gets the current product HDMI assignment controls configuration of the device.
@@ -1052,31 +1077,6 @@ class SoundTouchClient:
         """
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ProductHdmiAssignmentControls", self._Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.producthdmiassignmentcontrols, ProductHdmiAssignmentControls, refresh)
-
-
-    def GetProductCecHdmiControl(self, refresh=True) -> ProductCecHdmiControl:
-        """
-        Gets the current product CEC HDMI control configuration of the device.
-
-        Args:
-            refresh (bool):
-                True to query the device for realtime information and refresh the cache;
-                otherwise, False to just return the cached information.
-
-        Returns:
-            A `ProductCecHdmiControl` object that contains product HDMI assignment control
-            configuration of the device IF the device supports it (e.g. ST-300, etc); 
-            otherwise, None if the device does not support it.
-
-        <details>
-          <summary>Sample Code</summary>
-        ```python
-        .. include:: ../docs/include/samplecode/SoundTouchClient/GetProductCecHdmiControl.py
-        ```
-        </details>
-        """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ProductCecHdmiControl", self._Device.DeviceName))
-        return self.GetProperty(SoundTouchNodes.productcechdmicontrol, ProductCecHdmiControl, refresh)
 
 
     def GetProperty(self, uri:SoundTouchUri, classType, refresh=True):
