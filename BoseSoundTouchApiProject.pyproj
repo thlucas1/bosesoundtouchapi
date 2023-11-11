@@ -32,6 +32,11 @@
     <Compile Include="bosesoundtouchapi\firmware\soundtouchfirmwareproduct.py" />
     <Compile Include="bosesoundtouchapi\firmware\soundtouchfirmwarerelease.py" />
     <Compile Include="bosesoundtouchapi\firmware\__init__.py" />
+    <Compile Include="bosesoundtouchapi\models\bluetoothinfo.py" />
+    <Compile Include="bosesoundtouchapi\models\audiodspcontrols.py" />
+    <Compile Include="bosesoundtouchapi\models\rebroadcastlatencymode.py" />
+    <Compile Include="bosesoundtouchapi\models\productcechdmicontrol.py" />
+    <Compile Include="bosesoundtouchapi\models\producthdmiassignmentcontrols.py" />
     <Compile Include="bosesoundtouchapi\models\recentlist.py" />
     <Compile Include="bosesoundtouchapi\models\recent.py" />
     <Compile Include="bosesoundtouchapi\models\playinfo.py" />
@@ -90,6 +95,11 @@
     <Compile Include="docs\include\samplecode\SmartInspectPython\ClassLogging.py" />
     <Compile Include="docs\include\samplecode\SmartInspectPython\MainLogging.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\Action.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetAudioDspControls.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetProductCecHdmiControl.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetRebroadcastLatencyMode.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetProductHdmiAssignmentControls.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetBlueToothInfo.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\MakeRequest.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetOptions.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetRecentList.py" />
@@ -110,6 +120,7 @@
     <Compile Include="docs\include\samplecode\SoundTouchClient\SelectContentItem.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SelectLocalSource.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SelectSource.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SetAudioDspControlAudioMode.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\ThumbsDown.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\ThumbsUp.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\RemoveFavorite.py" />

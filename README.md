@@ -18,6 +18,7 @@ The following features are supported by this API.
 - Select Sources (Aux, Bluetooth, Airplay, Deezer, Spotify, iHeart, SiriusXm, etc)
 - Multi-room Zone functions (create zone, add / remove zone members, syncronized play)
 - Power functions (smart power on / off, power toggle, power to standby)
+- Audio mode switching (Normal, Dialog, etc)
 - Bass Level (set, retrieve, supported min / max values)
 - Presets (store, remove, remove all, select)
 - Recent Media History (list recent content that was played, select recent item for play)

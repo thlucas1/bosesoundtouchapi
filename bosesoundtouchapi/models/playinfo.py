@@ -171,7 +171,7 @@ class PlayInfo(SoundTouchModelRequest):
             device configuration.
         """
         elm = self.ToElement()
-        xml = tostring(elm, encoding='unicode')  #.decode(encoding)
+        xml = tostring(elm, encoding='unicode')
         return xml
 
 

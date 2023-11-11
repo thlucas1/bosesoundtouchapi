@@ -15,6 +15,12 @@ class SoundTouchNotifyCategorys(Enum):
     """
     ALL = '*'
     
+    audiodspcontrols = 'audiodspcontrols'
+    """
+    Occurs when audio dsp controls audio mode state has changed.  This normally happens when the device
+    switches from AUDIO_MODE_NORMAL to AUDIO_MODE_DIALOG, or vice versa.
+    """
+    
     connectionStateUpdated = 'connectionStateUpdated'
     """
     Occurs when a network connection state has changed.  This normally happens when the device

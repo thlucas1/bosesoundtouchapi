@@ -1,7 +1,9 @@
 # import all classes from the namespace.
+from .audiodspcontrols import AudioDspControls
 from .balance import Balance
 from .bass import Bass
 from .basscapabilities import BassCapabilities
+from .bluetoothinfo import BlueToothInfo
 from .capabilities import Capabilities
 from .clockconfig import ClockConfig
 from .clocktime import ClockTime
@@ -15,6 +17,9 @@ from .nowplayingstatus import NowPlayingStatus
 from .playinfo import PlayInfo
 from .powermanagement import PowerManagement
 from .presetlist import PresetList, Preset
+from .productcechdmicontrol import ProductCecHdmiControl
+from .producthdmiassignmentcontrols import ProductHdmiAssignmentControls
+from .rebroadcastlatencymode import RebroadcastLatencyMode
 from .recentlist import RecentList, Recent
 from .simpleconfig import SimpleConfig
 from .sourcelist import SourceList, SourceItem
@@ -25,9 +30,11 @@ from .zone import Zone, ZoneMember
 
 # all classes to import when "import *" is specified.
 __all__ = [
+    'AudioDspControls',
     'Balance',
     'Bass',
     'BassCapabilities',
+    'BlueToothInfo',
     'Capabilities',
     'ClockConfig',
     'ClockTime',
@@ -41,6 +48,9 @@ __all__ = [
     'PlayInfo',
     'PowerManagement',
     'PresetList', 'Preset',
+    'ProductCecHdmiControl',
+    'ProductHdmiAssignmentControls',
+    'RebroadcastLatencyMode',
     'RecentList', 'Recent',
     'SimpleConfig',
     'SourceList', 'SourceItem',

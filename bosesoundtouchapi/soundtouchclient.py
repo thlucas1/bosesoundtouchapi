@@ -585,6 +585,31 @@ class SoundTouchClient:
         return message
 
 
+    def GetAudioDspControls(self, refresh=True) -> AudioDspControls:
+        """
+        Gets the current audio DSP controls configuration of the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `AudioDspControls` object that contains product HDMI assignment control
+            configuration of the device IF the device supports it (e.g. ST-300, etc); 
+            otherwise, None if the device does not support it.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetAudioDspControls.py
+        ```
+        </details>
+        """
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioDspControls", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.audiodspcontrols, AudioDspControls, refresh)
+
+
     def GetBalance(self, refresh=True) -> Balance:
         """
         Gets the current balance configuration of the device.
@@ -652,6 +677,29 @@ class SoundTouchClient:
         """
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("BassCapabilities", self._Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.bassCapabilities, BassCapabilities, refresh)
+
+
+    def GetBlueToothInfo(self, refresh=True) -> BlueToothInfo:
+        """
+        Gets the current bluetooth configuration of the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `BlueToothInfo` object that contains bluetooth configuration of the device.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetBlueToothInfo.py
+        ```
+        </details>
+        """
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("BlueToothInfo", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.bluetoothInfo, BlueToothInfo, refresh)
 
 
     def GetCapabilities(self, refresh=True) -> Capabilities:
@@ -981,6 +1029,56 @@ class SoundTouchClient:
         return self.GetProperty(SoundTouchNodes.presets, PresetList, refresh)
         
 
+    def GetProductHdmiAssignmentControls(self, refresh=True) -> ProductHdmiAssignmentControls:
+        """
+        Gets the current product HDMI assignment controls configuration of the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `ProductHdmiAssignmentControls` object that contains product HDMI assignment control
+            configuration of the device IF the device supports it (e.g. ST-300, etc); 
+            otherwise, None if the device does not support it.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetProductHdmiAssignmentControls.py
+        ```
+        </details>
+        """
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ProductHdmiAssignmentControls", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.producthdmiassignmentcontrols, ProductHdmiAssignmentControls, refresh)
+
+
+    def GetProductCecHdmiControl(self, refresh=True) -> ProductCecHdmiControl:
+        """
+        Gets the current product CEC HDMI control configuration of the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `ProductCecHdmiControl` object that contains product HDMI assignment control
+            configuration of the device IF the device supports it (e.g. ST-300, etc); 
+            otherwise, None if the device does not support it.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetProductCecHdmiControl.py
+        ```
+        </details>
+        """
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ProductCecHdmiControl", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.productcechdmicontrol, ProductCecHdmiControl, refresh)
+
+
     def GetProperty(self, uri:SoundTouchUri, classType, refresh=True):
         """
         Returns a cached property mapped to the given URI.
@@ -1007,6 +1105,31 @@ class SoundTouchClient:
             _logsi.LogVerbose("SoundTouchClient configuration object: '%s'" % (str(self[uri])))
 
         return self[uri]
+
+
+    def GetRebroadcastLatencyMode(self, refresh=True) -> RebroadcastLatencyMode:
+        """
+        Gets the current rebroadcast latency mode configuration of the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `RebroadcastLatencyMode` object that contains rebroadcast latency mode
+            configuration of the device IF the device supports it; 
+            otherwise, None if the device does not support it.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetRebroadcastLatencyMode.py
+        ```
+        </details>
+        """
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("RebroadcastLatencyMode", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.rebroadcastlatencymode, RebroadcastLatencyMode, refresh)
 
 
     def GetRecentList(self, refresh=True) -> RecentList:
@@ -2570,7 +2693,27 @@ class SoundTouchClient:
         return self.SelectContentItem(ContentItem(source=source, sourceAccount=sourceAccount), delay)
 
 
-    def SetBassLevel(self, level: int) -> SoundTouchMessage:
+    def SetAudioDspControlAudioMode(self, audioMode:str) -> SoundTouchMessage:
+        """
+        Sets the device audio dsp controls to the given values.
+        
+        Args:
+            audioMode (str):
+                Audio mode value (e.g. "AUDIO_MODE_NORMAL", "AUDIO_MODE_DIALOG", etc).
+
+        <details>
+          <summary>Sample Code</summary><br/>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SetAudioDspControlAudioMode.py
+        ```
+        </details>
+        """
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio dsp controls audioMode", str(audioMode), self._Device.DeviceName))
+        request:AudioDspControls = AudioDspControls(audioMode)
+        return self.Put(SoundTouchNodes.audiodspcontrols, request)
+
+
+    def SetBassLevel(self, level:int) -> SoundTouchMessage:
         """
         Sets the device bass level to the given level.
         
