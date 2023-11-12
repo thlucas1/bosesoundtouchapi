@@ -13,18 +13,12 @@ try:
     # get real-time configuration from the device.
     # note that not all devices support retrieval of this information.
     config:AudioDspControls = client.GetAudioDspControls()
-    if config is None:
-        print("SoundTouch device does not support AudioDspControls!")
-    else:
-        print(config.ToString())
-        print("\nCurrent Audio DSP Controls Supported Audio Modes array: %s" % (config.ToSupportedAudioModesArray()))
+    print(config.ToString())
+    print("\nCurrent Audio DSP Controls Supported Audio Modes array: %s" % (config.ToSupportedAudioModesArray()))
 
     # get cached configuration, refreshing from device if needed.
     config:AudioDspControls = client.GetAudioDspControls(False)
-    if config is None:
-        print("SoundTouch device does not support AudioDspControls!")
-    else:
-        print("\nCached configuration:\n%s" % config.ToString())
+    print("\nCached configuration:\n%s" % config.ToString())
 
     # get cached configuration directly from the configuration manager dictionary.
     if SoundTouchNodes.audiodspcontrols.Path in client.ConfigurationCache:

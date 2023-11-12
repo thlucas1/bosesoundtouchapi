@@ -11,11 +11,12 @@ try:
     client:SoundTouchClient = SoundTouchClient(device)
 
     # get real-time configuration from the device.
-    config:RebroadcastLatencyMode = client.GetRebroadcastLatencyMode()
+    # note that not all devices support retrieval of this information.
+    config:RebroadcastLatencyMode = client.GetReBroadcastLatencyMode()
     print(config.ToString())
 
     # get cached configuration, refreshing from device if needed.
-    config:RebroadcastLatencyMode = client.GetRebroadcastLatencyMode(False)
+    config:RebroadcastLatencyMode = client.GetReBroadcastLatencyMode(False)
     print("\nCached configuration:\n%s" % config.ToString())
 
     # get cached configuration directly from the configuration manager dictionary.

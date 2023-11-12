@@ -33,7 +33,7 @@
     <Compile Include="bosesoundtouchapi\firmware\soundtouchfirmwarerelease.py" />
     <Compile Include="bosesoundtouchapi\firmware\__init__.py" />
     <Compile Include="bosesoundtouchapi\models\audioproducttonecontrols.py" />
-    <Compile Include="bosesoundtouchapi\models\audioproducttonecontrol.py" />
+    <Compile Include="bosesoundtouchapi\models\controllevelinfo.py" />
     <Compile Include="bosesoundtouchapi\models\musicserviceaccount.py" />
     <Compile Include="bosesoundtouchapi\models\bluetoothinfo.py" />
     <Compile Include="bosesoundtouchapi\models\audiodspcontrols.py" />
@@ -101,7 +101,7 @@
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetAudioProductToneControls.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetAudioDspControls.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetProductCecHdmiControl.py" />
-    <Compile Include="docs\include\samplecode\SoundTouchClient\GetRebroadcastLatencyMode.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetReBroadcastLatencyMode.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetProductHdmiAssignmentControls.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetBlueToothInfo.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\MakeRequest.py" />

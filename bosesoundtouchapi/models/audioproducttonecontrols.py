@@ -4,7 +4,7 @@ from xml.etree.ElementTree import Element, tostring
 # our package imports.
 from ..bstutils import export
 from ..soundtouchmodelrequest import SoundTouchModelRequest
-from .audioproducttonecontrol import AudioProductToneControl
+from .controllevelinfo import ControlLevelInfo
 
 # get smartinspect logger reference; create a new session for this module name.
 import logging
@@ -34,24 +34,24 @@ class AudioProductToneControls(SoundTouchModelRequest):
                 If specified, then other passed arguments are ignored.
         """
         # initialize storage.
-        self._Bass:AudioProductToneControl = None
-        self._Treble:AudioProductToneControl = None
+        self._Bass:ControlLevelInfo = None
+        self._Treble:ControlLevelInfo = None
         
         if (root is None):
         
             # create empty control objects.
-            self._Bass:AudioProductToneControl = AudioProductToneControl('bass')
+            self._Bass:ControlLevelInfo = ControlLevelInfo('bass')
             self._Bass.Value = 0
-            self._Treble:AudioProductToneControl = AudioProductToneControl('treble')
+            self._Treble:ControlLevelInfo = ControlLevelInfo('treble')
             self._Treble.Value = 0
         
         else:
 
             # base fields.
             elmBass:Element = root.find('bass')
-            self._Bass = AudioProductToneControl(root=elmBass)
+            self._Bass = ControlLevelInfo(root=elmBass)
             elmTreble:Element = root.find('treble')
-            self._Treble = AudioProductToneControl(root=elmTreble)
+            self._Treble = ControlLevelInfo(root=elmTreble)
             
 
     def __repr__(self) -> str:
@@ -59,24 +59,29 @@ class AudioProductToneControls(SoundTouchModelRequest):
 
 
     @property
-    def Bass(self) -> AudioProductToneControl:
+    def Bass(self) -> ControlLevelInfo:
         """ Audio product tone control settings for bass details. """
         return self._Bass
 
 
     @property
-    def Treble(self) -> AudioProductToneControl:
+    def Treble(self) -> ControlLevelInfo:
         """ Audio product tone control settings for treble details. """
         return self._Treble
 
 
-    def ToElement(self) -> Element:
+    def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Returns an xmltree Element node representation of the class. 
+
+        Args:
+            isRequestBody (bool):
+                True if the element should only return attributes needed for a POST
+                request body; otherwise, False to return all attributes.
         """
         elm = Element('audioproducttonecontrols')
-        elm.append(self._Bass.ToElement())
-        elm.append(self._Treble.ToElement())
+        elm.append(self._Bass.ToElement(isRequestBody))
+        elm.append(self._Treble.ToElement(isRequestBody))
         return elm
 
         
@@ -99,6 +104,6 @@ class AudioProductToneControls(SoundTouchModelRequest):
             An xml string that can be used in a POST request to update the
             device configuration.
         """
-        elm = self.ToElement()
+        elm = self.ToElement(True)
         xml = tostring(elm, encoding='unicode')
         return xml

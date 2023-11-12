@@ -8,7 +8,8 @@ Change are listed in reverse chronological order (newest to oldest).
 
 ###### [ 1.0.12 ] - 2023/11/11
 
-  *  Added new methods to SoundTouchClient: GetAudioProductToneControls, SetAudioProductToneControls.
+  *  Added new methods to `SoundTouchClient`: GetAudioProductToneControls, SetAudioProductToneControls.
+  *  Updated `SoundTouchClient` methods GetAudioDspControls, GetBlueToothInfo, GetProductCecHdmiControl, GetProductHdmiAssignmentControls, GetRebroadcastLatencyMode, and SetAudioDspControlAudioMode to check device capabilities prior to executing the request.  A `SoundTouchError` will be thrown if the device does not support the capability.
 
 ###### [ 1.0.11 ] - 2023/11/11
 

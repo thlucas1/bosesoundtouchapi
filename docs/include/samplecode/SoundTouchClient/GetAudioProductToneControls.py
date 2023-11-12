@@ -13,17 +13,11 @@ try:
     # get real-time configuration from the device.
     # note that not all devices support retrieval of this information.
     config:AudioProductToneControls = client.GetAudioProductToneControls()
-    if config is None:
-        print("SoundTouch device does not support AudioProductToneControls!")
-    else:
-        print(config.ToString())
+    print(config.ToString())
 
     # get cached configuration, refreshing from device if needed.
     config:AudioProductToneControls = client.GetAudioProductToneControls(False)
-    if config is None:
-        print("SoundTouch device does not support AudioProductToneControls!")
-    else:
-        print("\nCached configuration:\n%s" % config.ToString())
+    print("\nCached configuration:\n%s" % config.ToString())
 
     # get cached configuration directly from the configuration manager dictionary.
     if SoundTouchNodes.audioproducttonecontrols.Path in client.ConfigurationCache:

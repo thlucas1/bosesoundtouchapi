@@ -145,7 +145,7 @@
                                 <a class="function" href="#SoundTouchClient.GetProperty">GetProperty</a>
                         </li>
                         <li>
-                                <a class="function" href="#SoundTouchClient.GetRebroadcastLatencyMode">GetRebroadcastLatencyMode</a>
+                                <a class="function" href="#SoundTouchClient.GetReBroadcastLatencyMode">GetReBroadcastLatencyMode</a>
                         </li>
                         <li>
                                 <a class="function" href="#SoundTouchClient.GetRecentList">GetRecentList</a>
@@ -1012,6 +1012,18 @@ otherwise, False to just return the cached information.</li>
   otherwise, None if the device does not support it.</p>
 </blockquote>
 
+<h6 id="raises">Raises:</h6>
+
+<ul>
+<li><strong>SoundTouchError:</strong>  If the device is not capable of supporting <code>AudioDspControls</code> functions,
+as determined by a query to <code><a href="#SoundTouchClient.GetCapabilities">GetCapabilities</a></code> configuration.</li>
+</ul>
+
+<p>Note that some SoundTouch devices do not support this functionality.  For example,
+the ST-300 will support this, but the ST-10 will not.  This method will first query
+the device capabilities to determine if it supports the function; if so, then the
+request is made to the device; if not, then a <code>SoundTouchError</code> is raised.</p>
+
 <p><details>
   <summary>Sample Code</summary></p>
 
@@ -1031,18 +1043,12 @@ otherwise, False to just return the cached information.</li>
     <span class="c1"># get real-time configuration from the device.</span>
     <span class="c1"># note that not all devices support retrieval of this information.</span>
     <span class="n">config</span><span class="p">:</span><span class="n">AudioDspControls</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetAudioDspControls</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoundTouch device does not support AudioDspControls!&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Current Audio DSP Controls Supported Audio Modes array: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ToSupportedAudioModesArray</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Current Audio DSP Controls Supported Audio Modes array: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ToSupportedAudioModesArray</span><span class="p">()))</span>
 
     <span class="c1"># get cached configuration, refreshing from device if needed.</span>
     <span class="n">config</span><span class="p">:</span><span class="n">AudioDspControls</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetAudioDspControls</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoundTouch device does not support AudioDspControls!&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cached configuration:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cached configuration:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
 
     <span class="c1"># get cached configuration directly from the configuration manager dictionary.</span>
     <span class="k">if</span> <span class="n">SoundTouchNodes</span><span class="o">.</span><span class="n">audiodspcontrols</span><span class="o">.</span><span class="n">Path</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">ConfigurationCache</span><span class="p">:</span>
@@ -1087,6 +1093,18 @@ otherwise, False to just return the cached information.</li>
   otherwise, None if the device does not support it.</p>
 </blockquote>
 
+<h6 id="raises">Raises:</h6>
+
+<ul>
+<li><strong>SoundTouchError:</strong>  If the device is not capable of supporting <code>AudioProductToneControls</code> functions,
+as determined by a query to <code><a href="#SoundTouchClient.GetCapabilities">GetCapabilities</a></code> configuration.</li>
+</ul>
+
+<p>Note that some SoundTouch devices do not support this functionality.  For example,
+the ST-300 will support this, but the ST-10 will not.  This method will first query
+the device capabilities to determine if it supports the function; if so, then the
+request is made to the device; if not, then a <code>SoundTouchError</code> is raised.</p>
+
 <p><details>
   <summary>Sample Code</summary></p>
 
@@ -1106,17 +1124,11 @@ otherwise, False to just return the cached information.</li>
     <span class="c1"># get real-time configuration from the device.</span>
     <span class="c1"># note that not all devices support retrieval of this information.</span>
     <span class="n">config</span><span class="p">:</span><span class="n">AudioProductToneControls</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetAudioProductToneControls</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoundTouch device does not support AudioProductToneControls!&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
 
     <span class="c1"># get cached configuration, refreshing from device if needed.</span>
     <span class="n">config</span><span class="p">:</span><span class="n">AudioProductToneControls</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetAudioProductToneControls</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoundTouch device does not support AudioProductToneControls!&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cached configuration:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cached configuration:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
 
     <span class="c1"># get cached configuration directly from the configuration manager dictionary.</span>
     <span class="k">if</span> <span class="n">SoundTouchNodes</span><span class="o">.</span><span class="n">audioproducttonecontrols</span><span class="o">.</span><span class="n">Path</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">ConfigurationCache</span><span class="p">:</span>
@@ -2295,6 +2307,18 @@ otherwise, False to just return the cached information.</li>
   otherwise, None if the device does not support it.</p>
 </blockquote>
 
+<h6 id="raises">Raises:</h6>
+
+<ul>
+<li><strong>SoundTouchError:</strong>  If the device is not capable of supporting <code>ProductCecHdmiControl</code> functions,
+as determined by a query to <code><a href="#SoundTouchClient.GetCapabilities">GetCapabilities</a></code> configuration.</li>
+</ul>
+
+<p>Note that some SoundTouch devices do not support this functionality.  For example,
+the ST-300 will support this, but the ST-10 will not.  This method will first query
+the device capabilities to determine if it supports the function; if so, then the
+request is made to the device; if not, then a <code>SoundTouchError</code> is raised.</p>
+
 <p><details>
   <summary>Sample Code</summary></p>
 
@@ -2314,17 +2338,11 @@ otherwise, False to just return the cached information.</li>
     <span class="c1"># get real-time configuration from the device.</span>
     <span class="c1"># note that not all devices support retrieval of this information.</span>
     <span class="n">config</span><span class="p">:</span><span class="n">ProductCecHdmiControl</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetProductCecHdmiControl</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoundTouch device does not support ProductCecHdmiControl!&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
 
     <span class="c1"># get cached configuration, refreshing from device if needed.</span>
     <span class="n">config</span><span class="p">:</span><span class="n">ProductCecHdmiControl</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetProductCecHdmiControl</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoundTouch device does not support ProductCecHdmiControl!&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cached configuration:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cached configuration:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
 
     <span class="c1"># get cached configuration directly from the configuration manager dictionary.</span>
     <span class="k">if</span> <span class="n">SoundTouchNodes</span><span class="o">.</span><span class="n">productcechdmicontrol</span><span class="o">.</span><span class="n">Path</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">ConfigurationCache</span><span class="p">:</span>
@@ -2369,6 +2387,18 @@ otherwise, False to just return the cached information.</li>
   otherwise, None if the device does not support it.</p>
 </blockquote>
 
+<h6 id="raises">Raises:</h6>
+
+<ul>
+<li><strong>SoundTouchError:</strong>  If the device is not capable of supporting <code>ProductHdmiAssignmentControls</code> functions,
+as determined by a query to <code><a href="#SoundTouchClient.GetCapabilities">GetCapabilities</a></code> configuration.</li>
+</ul>
+
+<p>Note that some SoundTouch devices do not support this functionality.  For example,
+the ST-300 will support this, but the ST-10 will not.  This method will first query
+the device capabilities to determine if it supports the function; if so, then the
+request is made to the device; if not, then a <code>SoundTouchError</code> is raised.</p>
+
 <p><details>
   <summary>Sample Code</summary></p>
 
@@ -2388,17 +2418,11 @@ otherwise, False to just return the cached information.</li>
     <span class="c1"># get real-time configuration from the device.</span>
     <span class="c1"># note that not all devices support retrieval of this information.</span>
     <span class="n">config</span><span class="p">:</span><span class="n">ProductHdmiAssignmentControls</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetProductHdmiAssignmentControls</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoundTouch device does not support ProductHdmiAssignmentControls!&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
 
     <span class="c1"># get cached configuration, refreshing from device if needed.</span>
     <span class="n">config</span><span class="p">:</span><span class="n">ProductHdmiAssignmentControls</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetProductHdmiAssignmentControls</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoundTouch device does not support ProductHdmiAssignmentControls!&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cached configuration:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cached configuration:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
 
     <span class="c1"># get cached configuration directly from the configuration manager dictionary.</span>
     <span class="k">if</span> <span class="n">SoundTouchNodes</span><span class="o">.</span><span class="n">producthdmiassignmentcontrols</span><span class="o">.</span><span class="n">Path</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">ConfigurationCache</span><span class="p">:</span>
@@ -2449,15 +2473,15 @@ does not exist in the cache, regardless of the refresh argument value.</p>
 
 
                             </div>
-                            <div id="SoundTouchClient.GetRebroadcastLatencyMode" class="classattr">
+                            <div id="SoundTouchClient.GetReBroadcastLatencyMode" class="classattr">
                                 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">GetRebroadcastLatencyMode</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">refresh</span><span class="o">=</span><span class="kc">True</span></span><span class="return-annotation">) -> <span class="n"><a href="models/rebroadcastlatencymode.html#RebroadcastLatencyMode">bosesoundtouchapi.models.rebroadcastlatencymode.RebroadcastLatencyMode</a></span>:</span></span>
+        <span class="name">GetReBroadcastLatencyMode</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">refresh</span><span class="o">=</span><span class="kc">True</span></span><span class="return-annotation">) -> <span class="n"><a href="models/rebroadcastlatencymode.html#RebroadcastLatencyMode">bosesoundtouchapi.models.rebroadcastlatencymode.RebroadcastLatencyMode</a></span>:</span></span>
 
         
     </div>
-    <a class="headerlink" href="#SoundTouchClient.GetRebroadcastLatencyMode"></a>
+    <a class="headerlink" href="#SoundTouchClient.GetReBroadcastLatencyMode"></a>
     
             <div class="docstring"><p>Gets the current rebroadcast latency mode configuration of the device.</p>
 
@@ -2476,6 +2500,18 @@ otherwise, False to just return the cached information.</li>
   otherwise, None if the device does not support it.</p>
 </blockquote>
 
+<h6 id="raises">Raises:</h6>
+
+<ul>
+<li><strong>SoundTouchError:</strong>  If the device is not capable of supporting <code>RebroadcastLatencyMode</code> functions,
+as determined by a query to <code><a href="#SoundTouchClient.GetCapabilities">GetCapabilities</a></code> configuration.</li>
+</ul>
+
+<p>Note that some SoundTouch devices do not support this functionality.  For example,
+the ST-300 will support this, but the ST-10 will not.  This method will first query
+the device capabilities to determine if it supports the function; if so, then the
+request is made to the device; if not, then a <code>SoundTouchError</code> is raised.</p>
+
 <p><details>
   <summary>Sample Code</summary></p>
 
@@ -2493,11 +2529,12 @@ otherwise, False to just return the cached information.</li>
     <span class="n">client</span><span class="p">:</span><span class="n">SoundTouchClient</span> <span class="o">=</span> <span class="n">SoundTouchClient</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 
     <span class="c1"># get real-time configuration from the device.</span>
-    <span class="n">config</span><span class="p">:</span><span class="n">RebroadcastLatencyMode</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetRebroadcastLatencyMode</span><span class="p">()</span>
+    <span class="c1"># note that not all devices support retrieval of this information.</span>
+    <span class="n">config</span><span class="p">:</span><span class="n">RebroadcastLatencyMode</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetReBroadcastLatencyMode</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
 
     <span class="c1"># get cached configuration, refreshing from device if needed.</span>
-    <span class="n">config</span><span class="p">:</span><span class="n">RebroadcastLatencyMode</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetRebroadcastLatencyMode</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">config</span><span class="p">:</span><span class="n">RebroadcastLatencyMode</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetReBroadcastLatencyMode</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cached configuration:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
 
     <span class="c1"># get cached configuration directly from the configuration manager dictionary.</span>
@@ -5869,6 +5906,18 @@ default is 3 seconds, and value range is 0 - 10.</li>
 <li><strong>audioMode (str):</strong>  Audio mode value (e.g. "AUDIO_MODE_NORMAL", "AUDIO_MODE_DIALOG", etc).</li>
 </ul>
 
+<h6 id="raises">Raises:</h6>
+
+<ul>
+<li><strong>SoundTouchError:</strong>  If the device is not capable of supporting <code>AudioDspControls</code> functions,
+as determined by a query to <code><a href="#SoundTouchClient.GetCapabilities">GetCapabilities</a></code> configuration.</li>
+</ul>
+
+<p>Note that some SoundTouch devices do not support this functionality.  For example,
+the ST-300 will support this, but the ST-10 will not.  This method will first query
+the device capabilities to determine if it supports the function; if so, then the
+request is made to the device; if not, then a <code>SoundTouchError</code> is raised.</p>
+
 <p><details>
   <summary>Sample Code</summary><br/></p>
 
@@ -5885,26 +5934,24 @@ default is 3 seconds, and value range is 0 - 10.</li>
     <span class="n">client</span><span class="p">:</span><span class="n">SoundTouchClient</span> <span class="o">=</span> <span class="n">SoundTouchClient</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 
     <span class="c1"># get current audio dsp controls.</span>
+    <span class="c1"># note that not all devices support retrieval of this information.</span>
     <span class="n">dspBefore</span><span class="p">:</span><span class="n">AudioDspControls</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetAudioDspControls</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">dspBefore</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoundTouch device does not support AudioDspControls!&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Current Audio DSP Controls Supported Audio Modes array: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dspBefore</span><span class="o">.</span><span class="n">ToSupportedAudioModesArray</span><span class="p">()))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Current Audio DSP Controls: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dspBefore</span><span class="o">.</span><span class="n">ToString</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Current Audio DSP Controls: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dspBefore</span><span class="o">.</span><span class="n">ToString</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Current Audio DSP Controls Supported Audio Modes array: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dspBefore</span><span class="o">.</span><span class="n">ToSupportedAudioModesArray</span><span class="p">()))</span>
 
-        <span class="c1"># for testing purposes, toggle the audio mode.  if the mode is currently &quot;AUDIO_MODE_NORMAL&quot;,</span>
-        <span class="c1"># then we will use &quot;AUDIO_MODE_DIALOG&quot;.</span>
-        <span class="n">newMode</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;AUDIO_MODE_NORMAL&quot;</span>
-        <span class="k">if</span> <span class="n">dspBefore</span><span class="o">.</span><span class="n">AudioMode</span> <span class="o">==</span> <span class="n">newMode</span><span class="p">:</span>
-            <span class="n">newMode</span> <span class="o">=</span> <span class="s2">&quot;AUDIO_MODE_DIALOG&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Setting Audio DSP Controls AudioMode to &#39;</span><span class="si">%s</span><span class="s2">&#39; (from &#39;</span><span class="si">%s</span><span class="s2">&#39;) ...&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">newMode</span><span class="p">,</span> <span class="n">dspBefore</span><span class="o">.</span><span class="n">AudioMode</span><span class="p">))</span>
+    <span class="c1"># for testing purposes, toggle the audio mode.  if the mode is currently &quot;AUDIO_MODE_NORMAL&quot;,</span>
+    <span class="c1"># then we will use &quot;AUDIO_MODE_DIALOG&quot;.</span>
+    <span class="n">newMode</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;AUDIO_MODE_NORMAL&quot;</span>
+    <span class="k">if</span> <span class="n">dspBefore</span><span class="o">.</span><span class="n">AudioMode</span> <span class="o">==</span> <span class="n">newMode</span><span class="p">:</span>
+        <span class="n">newMode</span> <span class="o">=</span> <span class="s2">&quot;AUDIO_MODE_DIALOG&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Setting Audio DSP Controls AudioMode to &#39;</span><span class="si">%s</span><span class="s2">&#39; (from &#39;</span><span class="si">%s</span><span class="s2">&#39;) ...&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">newMode</span><span class="p">,</span> <span class="n">dspBefore</span><span class="o">.</span><span class="n">AudioMode</span><span class="p">))</span>
 
-        <span class="c1"># set audio dsp controls to specific audio mode.</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">SetAudioDspControlAudioMode</span><span class="p">(</span><span class="n">newMode</span><span class="p">)</span>
+    <span class="c1"># set audio dsp controls to specific audio mode.</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">SetAudioDspControlAudioMode</span><span class="p">(</span><span class="n">newMode</span><span class="p">)</span>
 
-        <span class="c1"># get current audio dsp controls.</span>
-        <span class="n">dspAfter</span><span class="p">:</span><span class="n">AudioDspControls</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetAudioDspControls</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Changed Audio DSP Controls: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dspAfter</span><span class="o">.</span><span class="n">ToString</span><span class="p">()))</span>
+    <span class="c1"># get current audio dsp controls.</span>
+    <span class="n">dspAfter</span><span class="p">:</span><span class="n">AudioDspControls</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetAudioDspControls</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Changed Audio DSP Controls: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">dspAfter</span><span class="o">.</span><span class="n">ToString</span><span class="p">()))</span>
 
 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
 
@@ -5939,8 +5986,15 @@ values to set.</li>
 <h6 id="raises">Raises:</h6>
 
 <ul>
-<li><strong>SoundTouchError:</strong>   If the audioProductToneControls argument is None, or not of type <code>AudioProductToneControls</code>.</li>
+<li><strong>SoundTouchError:</strong>  If the device is not capable of supporting <code>AudioProductToneControls</code> functions,
+as determined by a query to <code><a href="#SoundTouchClient.GetCapabilities">GetCapabilities</a></code> configuration. <br />
+If the audioProductToneControls argument is None, or not of type <code>AudioProductToneControls</code>.</li>
 </ul>
+
+<p>Note that some SoundTouch devices do not support this functionality.  For example,
+the ST-300 will support this, but the ST-10 will not.  This method will first query
+the device capabilities to determine if it supports the function; if so, then the
+request is made to the device; if not, then a <code>SoundTouchError</code> is raised.</p>
 
 <p><details>
   <summary>Sample Code</summary></p>
@@ -5958,35 +6012,34 @@ values to set.</li>
     <span class="n">client</span><span class="p">:</span><span class="n">SoundTouchClient</span> <span class="o">=</span> <span class="n">SoundTouchClient</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 
     <span class="c1"># get current audio product tone controls.</span>
-    <span class="n">toneBefore</span><span class="p">:</span><span class="n">AudioProductToneControls</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetAudioProductToneControls</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">toneBefore</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SoundTouch device does not support AudioProductToneControls!&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Current Audio Product Tone Control Levels: </span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
+    <span class="c1"># note that not all devices support retrieval of this information.</span>
+    <span class="n">toneBefore</span><span class="p">:</span><span class="n">AudioProductToneControls</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">toneBefore</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetAudioProductToneControls</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Current Audio Product Tone Control Levels: </span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">ToString</span><span class="p">())</span>
 
-        <span class="c1"># create new tone controls object.</span>
-        <span class="n">toneUpdate</span><span class="p">:</span><span class="n">AudioProductToneControls</span> <span class="o">=</span> <span class="n">AudioProductToneControls</span><span class="p">()</span>
+    <span class="c1"># create new tone controls object.</span>
+    <span class="n">toneUpdate</span><span class="p">:</span><span class="n">AudioProductToneControls</span> <span class="o">=</span> <span class="n">AudioProductToneControls</span><span class="p">()</span>
 
-        <span class="c1"># for testing purposes, toggle the Bass level.  </span>
-        <span class="c1"># if the level is currently minValue, then we will set to maxValue.</span>
-        <span class="n">toneUpdate</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">MinValue</span>
-        <span class="k">if</span> <span class="n">toneUpdate</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">Value</span> <span class="o">==</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">Value</span><span class="p">:</span>
-            <span class="n">toneUpdate</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">MaxValue</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Setting Audio Product Tone Control Bass Level to &#39;</span><span class="si">%s</span><span class="s2">&#39; (from &#39;</span><span class="si">%s</span><span class="s2">&#39;) ...&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">toneUpdate</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">Value</span><span class="p">,</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">Value</span><span class="p">))</span>
+    <span class="c1"># for testing purposes, toggle the Bass level.  </span>
+    <span class="c1"># if the level is currently minValue, then we will set to maxValue.</span>
+    <span class="n">toneUpdate</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">MinValue</span>
+    <span class="k">if</span> <span class="n">toneUpdate</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">Value</span> <span class="o">==</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">Value</span><span class="p">:</span>
+        <span class="n">toneUpdate</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">MaxValue</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Setting Audio Product Tone Control Bass Level to &#39;</span><span class="si">%s</span><span class="s2">&#39; (from &#39;</span><span class="si">%s</span><span class="s2">&#39;) ...&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">toneUpdate</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">Value</span><span class="p">,</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Bass</span><span class="o">.</span><span class="n">Value</span><span class="p">))</span>
 
-        <span class="c1"># for testing purposes, toggle the Treble level.  </span>
-        <span class="c1"># if the level is currently minValue, then we will set to maxValue.</span>
-        <span class="n">toneUpdate</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">MinValue</span>
-        <span class="k">if</span> <span class="n">toneUpdate</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">Value</span> <span class="o">==</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">Value</span><span class="p">:</span>
-            <span class="n">toneUpdate</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">MaxValue</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Setting Audio Product Tone Control Treble Level to &#39;</span><span class="si">%s</span><span class="s2">&#39; (from &#39;</span><span class="si">%s</span><span class="s2">&#39;) ...&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">toneUpdate</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">Value</span><span class="p">,</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">Value</span><span class="p">))</span>
+    <span class="c1"># for testing purposes, toggle the Treble level.  </span>
+    <span class="c1"># if the level is currently minValue, then we will set to maxValue.</span>
+    <span class="n">toneUpdate</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">MinValue</span>
+    <span class="k">if</span> <span class="n">toneUpdate</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">Value</span> <span class="o">==</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">Value</span><span class="p">:</span>
+        <span class="n">toneUpdate</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">Value</span> <span class="o">=</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">MaxValue</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Setting Audio Product Tone Control Treble Level to &#39;</span><span class="si">%s</span><span class="s2">&#39; (from &#39;</span><span class="si">%s</span><span class="s2">&#39;) ...&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">toneUpdate</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">Value</span><span class="p">,</span> <span class="n">toneBefore</span><span class="o">.</span><span class="n">Treble</span><span class="o">.</span><span class="n">Value</span><span class="p">))</span>
 
-        <span class="c1"># update audio product tone controls.</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">SetAudioProductToneControls</span><span class="p">(</span><span class="n">toneUpdate</span><span class="p">)</span>
+    <span class="c1"># update audio product tone controls.</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">SetAudioProductToneControls</span><span class="p">(</span><span class="n">toneUpdate</span><span class="p">)</span>
 
-        <span class="c1"># get current audio product tone controls.</span>
-        <span class="n">toneAfter</span><span class="p">:</span><span class="n">AudioProductToneControls</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetAudioProductToneControls</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Changed Audio Product Tone Controls: </span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">toneAfter</span><span class="o">.</span><span class="n">ToString</span><span class="p">()))</span>
+    <span class="c1"># get current audio product tone controls.</span>
+    <span class="n">toneAfter</span><span class="p">:</span><span class="n">AudioProductToneControls</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">GetAudioProductToneControls</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Changed Audio Product Tone Controls: </span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">toneAfter</span><span class="o">.</span><span class="n">ToString</span><span class="p">()))</span>
 
 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
 

@@ -13,17 +13,11 @@ try:
     # get real-time configuration from the device.
     # note that not all devices support retrieval of this information.
     config:ProductHdmiAssignmentControls = client.GetProductHdmiAssignmentControls()
-    if config is None:
-        print("SoundTouch device does not support ProductHdmiAssignmentControls!")
-    else:
-        print(config.ToString())
+    print(config.ToString())
 
     # get cached configuration, refreshing from device if needed.
     config:ProductHdmiAssignmentControls = client.GetProductHdmiAssignmentControls(False)
-    if config is None:
-        print("SoundTouch device does not support ProductHdmiAssignmentControls!")
-    else:
-        print("\nCached configuration:\n%s" % config.ToString())
+    print("\nCached configuration:\n%s" % config.ToString())
 
     # get cached configuration directly from the configuration manager dictionary.
     if SoundTouchNodes.producthdmiassignmentcontrols.Path in client.ConfigurationCache:

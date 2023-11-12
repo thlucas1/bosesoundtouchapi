@@ -34,3 +34,9 @@ class BSTAppMessages:
     """
     BST1000E - SoundTouch host address is not recognized as a valid IPV4 network address: '%s'.
     """
+
+    BST_DEVICE_NOT_CAPABLE_FUNCTION:str = "BST1001E - '%s': device is not capable of processing '%s' functions"
+    """
+    BST1001E - '%s': device is not capable of processing '%s' functions".
+    """
+    

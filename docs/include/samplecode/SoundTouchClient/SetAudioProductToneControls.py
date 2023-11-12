@@ -10,35 +10,34 @@ try:
     client:SoundTouchClient = SoundTouchClient(device)
 
     # get current audio product tone controls.
-    toneBefore:AudioProductToneControls = client.GetAudioProductToneControls()
-    if toneBefore is None:
-        print("SoundTouch device does not support AudioProductToneControls!")
-    else:
-        print("\nCurrent Audio Product Tone Control Levels: \n%s" % toneBefore.ToString())
+    # note that not all devices support retrieval of this information.
+    toneBefore:AudioProductToneControls = None
+    toneBefore = client.GetAudioProductToneControls()
+    print("\nCurrent Audio Product Tone Control Levels: \n%s" % toneBefore.ToString())
         
-        # create new tone controls object.
-        toneUpdate:AudioProductToneControls = AudioProductToneControls()
+    # create new tone controls object.
+    toneUpdate:AudioProductToneControls = AudioProductToneControls()
 
-        # for testing purposes, toggle the Bass level.  
-        # if the level is currently minValue, then we will set to maxValue.
-        toneUpdate.Bass.Value = toneBefore.Bass.MinValue
-        if toneUpdate.Bass.Value == toneBefore.Bass.Value:
-            toneUpdate.Bass.Value = toneBefore.Bass.MaxValue
-        print("\nSetting Audio Product Tone Control Bass Level to '%s' (from '%s') ..." % (toneUpdate.Bass.Value, toneBefore.Bass.Value))
+    # for testing purposes, toggle the Bass level.  
+    # if the level is currently minValue, then we will set to maxValue.
+    toneUpdate.Bass.Value = toneBefore.Bass.MinValue
+    if toneUpdate.Bass.Value == toneBefore.Bass.Value:
+        toneUpdate.Bass.Value = toneBefore.Bass.MaxValue
+    print("\nSetting Audio Product Tone Control Bass Level to '%s' (from '%s') ..." % (toneUpdate.Bass.Value, toneBefore.Bass.Value))
                 
-        # for testing purposes, toggle the Treble level.  
-        # if the level is currently minValue, then we will set to maxValue.
-        toneUpdate.Treble.Value = toneBefore.Treble.MinValue
-        if toneUpdate.Treble.Value == toneBefore.Treble.Value:
-            toneUpdate.Treble.Value = toneBefore.Treble.MaxValue
-        print("Setting Audio Product Tone Control Treble Level to '%s' (from '%s') ..." % (toneUpdate.Treble.Value, toneBefore.Treble.Value))
+    # for testing purposes, toggle the Treble level.  
+    # if the level is currently minValue, then we will set to maxValue.
+    toneUpdate.Treble.Value = toneBefore.Treble.MinValue
+    if toneUpdate.Treble.Value == toneBefore.Treble.Value:
+        toneUpdate.Treble.Value = toneBefore.Treble.MaxValue
+    print("Setting Audio Product Tone Control Treble Level to '%s' (from '%s') ..." % (toneUpdate.Treble.Value, toneBefore.Treble.Value))
                 
-        # update audio product tone controls.
-        client.SetAudioProductToneControls(toneUpdate)
+    # update audio product tone controls.
+    client.SetAudioProductToneControls(toneUpdate)
             
-        # get current audio product tone controls.
-        toneAfter:AudioProductToneControls = client.GetAudioProductToneControls(True)
-        print("\nChanged Audio Product Tone Controls: \n%s" % (toneAfter.ToString()))
+    # get current audio product tone controls.
+    toneAfter:AudioProductToneControls = client.GetAudioProductToneControls(True)
+    print("\nChanged Audio Product Tone Controls: \n%s" % (toneAfter.ToString()))
         
 except Exception as ex:
 

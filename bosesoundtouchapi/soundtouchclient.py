@@ -5,14 +5,13 @@ import re
 import time
 from tinytag import TinyTag
 import urllib.parse
-from urllib3 import PoolManager, request, Timeout
+from urllib3 import PoolManager, Timeout
 from xml.etree.ElementTree import fromstring, Element
 
 # our package imports.
 from .bstappmessages import BSTAppMessages
 from .bstutils import export
 from .models import *
-import bosesoundtouchapi.models
 from .soundtouchdevice import SoundTouchDevice
 from .soundtoucherror import SoundTouchError
 from .soundtouchexception import SoundTouchException
@@ -21,7 +20,7 @@ from .soundtouchmessage import SoundTouchMessage
 from .soundtouchmodelrequest import SoundTouchModelRequest
 from .soundtouchsources import SoundTouchSources
 from .soundtouchwarning import SoundTouchWarning
-from bosesoundtouchapi.uri import *
+from .uri import *
 
 from .bstconst import (
     MSG_TRACE_ACTION_KEY,
@@ -599,6 +598,16 @@ class SoundTouchClient:
             configuration of the device IF the device supports it (e.g. ST-300, etc); 
             otherwise, None if the device does not support it.
 
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `AudioDspControls` functions,
+                as determined by a query to `GetCapabilities` configuration.
+
+        Note that some SoundTouch devices do not support this functionality.  For example,
+        the ST-300 will support this, but the ST-10 will not.  This method will first query
+        the device capabilities to determine if it supports the function; if so, then the
+        request is made to the device; if not, then a `SoundTouchError` is raised.
+        
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -606,6 +615,12 @@ class SoundTouchClient:
         ```
         </details>
         """
+        # check device capabilities, refreshing from device if needed.
+        capabilities:Capabilities = self.GetCapabilities(False)
+        if not capabilities.IsAudioDspControlsCapable:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName,"AudioDspControls"), logsi=_logsi)
+
+        # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioDspControls", self._Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.audiodspcontrols, AudioDspControls, refresh)
 
@@ -624,6 +639,16 @@ class SoundTouchClient:
             configuration of the device IF the device supports it (e.g. ST-300, etc); 
             otherwise, None if the device does not support it.
 
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `AudioProductToneControls` functions,
+                as determined by a query to `GetCapabilities` configuration.
+
+        Note that some SoundTouch devices do not support this functionality.  For example,
+        the ST-300 will support this, but the ST-10 will not.  This method will first query
+        the device capabilities to determine if it supports the function; if so, then the
+        request is made to the device; if not, then a `SoundTouchError` is raised.
+        
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -631,6 +656,12 @@ class SoundTouchClient:
         ```
         </details>
         """
+        # check device capabilities, refreshing from device if needed.
+        capabilities:Capabilities = self.GetCapabilities(False)
+        if not capabilities.IsAudioProductToneControlsCapable:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName,"AudioProductToneControls"), logsi=_logsi)
+
+        # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioProductToneControls", self._Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.audioproducttonecontrols, AudioProductToneControls, refresh)
 
@@ -1068,6 +1099,16 @@ class SoundTouchClient:
             configuration of the device IF the device supports it (e.g. ST-300, etc); 
             otherwise, None if the device does not support it.
 
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `ProductCecHdmiControl` functions,
+                as determined by a query to `GetCapabilities` configuration.
+
+        Note that some SoundTouch devices do not support this functionality.  For example,
+        the ST-300 will support this, but the ST-10 will not.  This method will first query
+        the device capabilities to determine if it supports the function; if so, then the
+        request is made to the device; if not, then a `SoundTouchError` is raised.
+        
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -1075,6 +1116,12 @@ class SoundTouchClient:
         ```
         </details>
         """
+        # check device capabilities, refreshing from device if needed.
+        capabilities:Capabilities = self.GetCapabilities(False)
+        if not capabilities.IsProductCecHdmiControlCapable:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName,"ProductCecHdmiControl"), logsi=_logsi)
+
+        # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ProductCecHdmiControl", self._Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.productcechdmicontrol, ProductCecHdmiControl, refresh)
 
@@ -1093,6 +1140,16 @@ class SoundTouchClient:
             configuration of the device IF the device supports it (e.g. ST-300, etc); 
             otherwise, None if the device does not support it.
 
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `ProductHdmiAssignmentControls` functions,
+                as determined by a query to `GetCapabilities` configuration.
+
+        Note that some SoundTouch devices do not support this functionality.  For example,
+        the ST-300 will support this, but the ST-10 will not.  This method will first query
+        the device capabilities to determine if it supports the function; if so, then the
+        request is made to the device; if not, then a `SoundTouchError` is raised.
+        
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -1100,6 +1157,12 @@ class SoundTouchClient:
         ```
         </details>
         """
+        # check device capabilities, refreshing from device if needed.
+        capabilities:Capabilities = self.GetCapabilities(False)
+        if not capabilities.IsProductHdmiAssignmentControlsCapable:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName,"ProductHdmiAssignmentControls"), logsi=_logsi)
+
+        # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ProductHdmiAssignmentControls", self._Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.producthdmiassignmentcontrols, ProductHdmiAssignmentControls, refresh)
 
@@ -1132,7 +1195,7 @@ class SoundTouchClient:
         return self[uri]
 
 
-    def GetRebroadcastLatencyMode(self, refresh=True) -> RebroadcastLatencyMode:
+    def GetReBroadcastLatencyMode(self, refresh=True) -> RebroadcastLatencyMode:
         """
         Gets the current rebroadcast latency mode configuration of the device.
 
@@ -1145,14 +1208,30 @@ class SoundTouchClient:
             A `RebroadcastLatencyMode` object that contains rebroadcast latency mode
             configuration of the device IF the device supports it; 
             otherwise, None if the device does not support it.
+            
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `RebroadcastLatencyMode` functions,
+                as determined by a query to `GetCapabilities` configuration.
 
+        Note that some SoundTouch devices do not support this functionality.  For example,
+        the ST-300 will support this, but the ST-10 will not.  This method will first query
+        the device capabilities to determine if it supports the function; if so, then the
+        request is made to the device; if not, then a `SoundTouchError` is raised.
+        
         <details>
           <summary>Sample Code</summary>
         ```python
-        .. include:: ../docs/include/samplecode/SoundTouchClient/GetRebroadcastLatencyMode.py
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetReBroadcastLatencyMode.py
         ```
         </details>
         """
+        # check device capabilities, refreshing from device if needed.
+        capabilities:Capabilities = self.GetCapabilities(False)
+        if not capabilities.IsReBroadcastLatencyModeCapable:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName,"RebroadcastLatencyMode"), logsi=_logsi)
+
+        # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("RebroadcastLatencyMode", self._Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.rebroadcastlatencymode, RebroadcastLatencyMode, refresh)
 
@@ -2726,6 +2805,16 @@ class SoundTouchClient:
             audioMode (str):
                 Audio mode value (e.g. "AUDIO_MODE_NORMAL", "AUDIO_MODE_DIALOG", etc).
 
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `AudioDspControls` functions,
+                as determined by a query to `GetCapabilities` configuration.
+
+        Note that some SoundTouch devices do not support this functionality.  For example,
+        the ST-300 will support this, but the ST-10 will not.  This method will first query
+        the device capabilities to determine if it supports the function; if so, then the
+        request is made to the device; if not, then a `SoundTouchError` is raised.
+        
         <details>
           <summary>Sample Code</summary><br/>
         ```python
@@ -2733,6 +2822,12 @@ class SoundTouchClient:
         ```
         </details>
         """
+        # check device capabilities, refreshing from device if needed.
+        capabilities:Capabilities = self.GetCapabilities(False)
+        if not capabilities.IsAudioDspControlsCapable:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName,"AudioDspControls"), logsi=_logsi)
+
+        # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio dsp controls audioMode", str(audioMode), self._Device.DeviceName))
         request:AudioDspControls = AudioDspControls(audioMode)
         return self.Put(SoundTouchNodes.audiodspcontrols, request)
@@ -2748,9 +2843,16 @@ class SoundTouchClient:
                 values to set.
 
         Raises:
-            SoundTouchError: 
+            SoundTouchError:
+                If the device is not capable of supporting `AudioProductToneControls` functions,
+                as determined by a query to `GetCapabilities` configuration.  
                 If the audioProductToneControls argument is None, or not of type `AudioProductToneControls`.
                 
+        Note that some SoundTouch devices do not support this functionality.  For example,
+        the ST-300 will support this, but the ST-10 will not.  This method will first query
+        the device capabilities to determine if it supports the function; if so, then the
+        request is made to the device; if not, then a `SoundTouchError` is raised.
+        
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -2762,6 +2864,12 @@ class SoundTouchClient:
         if (audioProductToneControls is None) or (not isinstance(audioProductToneControls, AudioProductToneControls)):
             raise SoundTouchError('audioProductToneControls argument was not supplied, or is not of type AudioProductToneControls', logsi=_logsi)
             
+        # check device capabilities, refreshing from device if needed.
+        capabilities:Capabilities = self.GetCapabilities(False)
+        if not capabilities.IsAudioProductToneControlsCapable:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName,"AudioProductToneControls"), logsi=_logsi)
+
+        # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio product tone controls", audioProductToneControls.ToString(), self._Device.DeviceName))
         request:AudioProductToneControls = audioProductToneControls
         return self.Put(SoundTouchNodes.audioproducttonecontrols, request)

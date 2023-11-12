@@ -18,12 +18,12 @@ _logsi.SystemLogger = logging.getLogger(__package__)
 
 
 @export
-class AudioProductToneControl(SoundTouchModelRequest):
+class ControlLevelInfo(SoundTouchModelRequest):
     """
-    SoundTouch device AudioProductToneControl configuration object.
+    SoundTouch device generic Control Level Info configuration object.
        
-    This class contains the attributes and sub-items that represent the 
-    Audio Product Tone Control configuration of the device.      
+    This class contains the attributes and sub-items that represent a
+    control value configuration for the device.      
     """
 
     def __init__(self, controlType:str=None, value:int=None, minValue:int=None, maxValue:int=None, step:int=None,
@@ -34,7 +34,7 @@ class AudioProductToneControl(SoundTouchModelRequest):
         
         Args:
             controlType (str):
-                Type of audio these control values represent (e.g. "bass", "treble", etc).
+                Type of control the values represent (e.g. "bass", "treble", etc).
             value (int):
                 The current value of the tone control.
             minValue (int):
@@ -99,7 +99,7 @@ class AudioProductToneControl(SoundTouchModelRequest):
 
     @property
     def ControlType(self) -> str:
-        """ Type of audio these control values represent (e.g. "bass", "treble", etc). """
+        """ Type of control the values represent (e.g. "bass", "treble", etc). """
         return self._ControlType
 
 
@@ -136,15 +136,23 @@ class AudioProductToneControl(SoundTouchModelRequest):
         return self._Step
 
 
-    def ToElement(self) -> Element:
+    def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
-        Returns an xmltree Element node representation of the class
-        for the `ToXmlRequestBody` method.
+        Returns an xmltree Element node representation of the class.
+        
+        Args:
+            isRequestBody (bool):
+                True if the element should only return attributes needed for a POST
+                request body; otherwise, False to return all attributes.
         """
         elm = Element(self._ControlType)
         if self._Value is not None: elm.set('value', str(self._Value))
-        # all we need is the "value" for a POST request!
-        # SoundTouch device treats it as invalid input if other values are specified!
+        if isRequestBody == True:
+            return elm
+        
+        if self._MinValue is not None: elm.set('minValue', str(self._MinValue))
+        if self._MaxValue is not None: elm.set('maxValue', str(self._MaxValue))
+        if self._Step is not None: elm.set('step', str(self._Step))
         return elm
 
         
@@ -163,12 +171,12 @@ class AudioProductToneControl(SoundTouchModelRequest):
     def ToXmlRequestBody(self, encoding:str='utf-8') -> str:
         """ 
         Overridden.
-        Returns a POST request body for changing the audio tone control value. 
+        Returns a POST request body for changing the control value. 
         
         Returns:
             An xml string that can be used in a POST request to update the
             device configuration.
         """
-        elm = self.ToElement()
+        elm = self.ToElement(True)
         xml = tostring(elm, encoding='unicode')
         return xml

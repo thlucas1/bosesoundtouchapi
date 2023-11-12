@@ -77,6 +77,30 @@ class Capabilities:
     
 
     @property
+    def IsAudioDspControlsCapable(self) -> bool:
+        """ Returns whether the device supports audiodspcontrols functionality. """
+        return 'audiodspcontrols' in self._capabilities
+
+
+    @property
+    def IsAudioProductLevelControlsCapable(self) -> bool:
+        """ Returns whether the device supports audioproductlevelcontrols functionality. """
+        return 'audioproductlevelcontrols' in self._capabilities
+
+
+    @property
+    def IsAudioProductToneControlsCapable(self) -> bool:
+        """ Returns whether the device supports audioproducttonecontrols functionality. """
+        return 'audioproducttonecontrols' in self._capabilities
+
+
+    @property
+    def IsAudioSpeakerAttributeAndSettingCapable(self) -> bool:
+        """ Returns whether the device supports audiospeakerattributeandsetting functionality. """
+        return 'audiospeakerattributeandsetting' in self._capabilities
+
+
+    @property
     def IsBcoResetCapable(self) -> bool:
         """ Returns whether the device contains a Bose coreset. """
         return self._IsBcoResetCapable
@@ -110,6 +134,36 @@ class Capabilities:
     def IsLrStereoCapable(self) -> bool:
         """ Returns whether the device is left-right stereo capable. """
         return self._IsLrStereoCapable
+
+
+    @property
+    def IsProductCecHdmiControlCapable(self) -> bool:
+        """ Returns whether the device supports productcechdmicontrol functionality. """
+        return 'productcechdmicontrol' in self._capabilities
+
+
+    @property
+    def IsProductHdmiAssignmentControlsCapable(self) -> bool:
+        """ Returns whether the device supports producthdmiassignmentcontrols functionality. """
+        return 'producthdmiassignmentcontrols' in self._capabilities
+
+
+    @property
+    def IsReBroadcastLatencyModeCapable(self) -> bool:
+        """ Returns whether the device supports rebroadcastlatencymode functionality. """
+        return 'rebroadcastlatencymode' in self._capabilities
+
+
+    @property
+    def IsSystemTimeoutCapable(self) -> bool:
+        """ Returns whether the device supports systemtimeout functionality. """
+        return 'systemtimeout' in self._capabilities
+
+
+    @property
+    def IsSystemTimeoutControlCapable(self) -> bool:
+        """ Returns whether the device supports systemtimeoutcontrol functionality. """
+        return 'systemtimeoutcontrol' in self._capabilities
 
 
     @property

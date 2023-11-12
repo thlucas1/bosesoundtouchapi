@@ -1,6 +1,6 @@
 # import all classes from the namespace.
 from .audiodspcontrols import AudioDspControls
-from .audioproducttonecontrols import AudioProductToneControls, AudioProductToneControl
+from .audioproducttonecontrols import AudioProductToneControls
 from .balance import Balance
 from .bass import Bass
 from .basscapabilities import BassCapabilities
@@ -9,6 +9,7 @@ from .capabilities import Capabilities
 from .clockconfig import ClockConfig
 from .clocktime import ClockTime
 from .contentitem import ContentItem
+from .controllevelinfo import ControlLevelInfo
 from .dspmonostereoitem import DSPMonoStereoItem
 from .infonetworkconfig import InfoNetworkConfig
 from .mediaserverlist import MediaServerList, MediaServer
@@ -34,7 +35,6 @@ from .zone import Zone, ZoneMember
 __all__ = [
     'AudioDspControls',
     'AudioProductToneControls',
-    'AudioProductToneControl',
     'Balance',
     'Bass',
     'BassCapabilities',
@@ -43,6 +43,7 @@ __all__ = [
     'ClockConfig',
     'ClockTime',
     'ContentItem',
+    'ControlLevelInfo',
     'DSPMonoStereoItem',
     'InfoNetworkConfig',
     'MediaServerList', 'MediaServer',

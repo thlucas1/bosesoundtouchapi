@@ -192,13 +192,20 @@ If specified, then other passed arguments are ignored.</li>
                                 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">ToElement</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">) -> <span class="n">xml</span><span class="o">.</span><span class="n">etree</span><span class="o">.</span><span class="n">ElementTree</span><span class="o">.</span><span class="n">Element</span>:</span></span>
+        <span class="name">ToElement</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">isRequestBody</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="n">xml</span><span class="o">.</span><span class="n">etree</span><span class="o">.</span><span class="n">ElementTree</span><span class="o">.</span><span class="n">Element</span>:</span></span>
 
         
     </div>
     <a class="headerlink" href="#AudioDspControls.ToElement"></a>
     
-            <div class="docstring"><p>Returns an xmltree Element node representation of the class.</p>
+            <div class="docstring"><p>Returns an xmltree Element node representation of the class. </p>
+
+<h6 id="arguments">Arguments:</h6>
+
+<ul>
+<li><strong>isRequestBody (bool):</strong>  True if the element should only return attributes needed for a POST
+request body; otherwise, False to return all attributes.</li>
+</ul>
 </div>
 
 

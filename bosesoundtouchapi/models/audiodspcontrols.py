@@ -90,13 +90,23 @@ class AudioDspControls(SoundTouchModelRequest):
         return self._VideoSyncAudioDelay
 
 
-    def ToElement(self) -> Element:
+    def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Returns an xmltree Element node representation of the class. 
+
+        Args:
+            isRequestBody (bool):
+                True if the element should only return attributes needed for a POST
+                request body; otherwise, False to return all attributes.
         """
         elm = Element('audiodspcontrols')
+        
         if self._AudioMode is not None and len(self._AudioMode) > 0: elm.set('audiomode', self._AudioMode)
         if self._VideoSyncAudioDelay is not None: elm.set('videosyncaudiodelay', str(self._VideoSyncAudioDelay))
+        if isRequestBody == True:
+            return elm
+
+        if self._SupportedAudioModes is not None and len(self._SupportedAudioModes) > 0: elm.set('supportedaudiomodes', self._SupportedAudioModes)
         return elm
 
         
@@ -136,6 +146,6 @@ class AudioDspControls(SoundTouchModelRequest):
             An xml string that can be used in a POST request to update the
             device configuration.
         """
-        elm = self.ToElement()
+        elm = self.ToElement(True)
         xml = tostring(elm, encoding='unicode')
         return xml

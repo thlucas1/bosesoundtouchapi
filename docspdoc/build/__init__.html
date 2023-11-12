@@ -310,7 +310,8 @@ Click on the topics below to expand the section and reveal more information.  </
 <h6 id="1012-20231111">[ 1.0.12 ] - 2023/11/11</h6>
 
 <ul>
-<li>Added new methods to SoundTouchClient: GetAudioProductToneControls, SetAudioProductToneControls.</li>
+<li>Added new methods to <code>SoundTouchClient</code>: GetAudioProductToneControls, SetAudioProductToneControls.</li>
+<li>Updated <code>SoundTouchClient</code> methods GetAudioDspControls, GetBlueToothInfo, GetProductCecHdmiControl, GetProductHdmiAssignmentControls, GetRebroadcastLatencyMode, and SetAudioDspControlAudioMode to check device capabilities prior to executing the request.  A <code>SoundTouchError</code> will be thrown if the device does not support the capability.</li>
 </ul>
 
 <h6 id="1011-20231111">[ 1.0.11 ] - 2023/11/11</h6>
