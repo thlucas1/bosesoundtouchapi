@@ -1,12 +1,13 @@
 # external package imports.
-from typing import Iterator
-from xml.etree.ElementTree import Element
+from xml.etree.ElementTree import Element, tostring
 
 # our package imports.
 from ..bstutils import export
+from ..soundtouchmodelrequest import SoundTouchModelRequest
+from ..soundtouchproductcechdmicontrolmodes import SoundTouchProductCecHdmiControlModes
 
 @export
-class ProductCecHdmiControl:
+class ProductCecHdmiControl(SoundTouchModelRequest):
     """
     SoundTouch device ProductCecHdmiControl configuration object.
        
@@ -42,10 +43,43 @@ class ProductCecHdmiControl:
 
     @property
     def CecMode(self) -> str:
-        """ The HDMI CEC mode value. """
+        """ 
+        The HDMI CEC mode value.
+       
+        See `SoundTouchProductCecHdmiModes` for more information.
+        """
         return self._CecMode
+    
+    @CecMode.setter
+    def CecMode(self, value:str):
+        """ 
+        Sets the CecMode property value.
+        """
+        if value != None:
+            if isinstance(value, SoundTouchProductCecHdmiControlModes):
+                self._CecMode = value.value
+            elif isinstance(value, str):
+                self._CecMode = value
 
 
+    def ToElement(self, isRequestBody:bool=False) -> Element:
+        """ 
+        Returns an xmltree Element node representation of the class. 
+
+        Args:
+            isRequestBody (bool):
+                True if the element should only return attributes needed for a POST
+                request body; otherwise, False to return all attributes.
+        """
+        elm = Element('productcechdmicontrol')
+        
+        if self._CecMode is not None and len(self._CecMode) > 0: elm.set('cecmode', self._CecMode)
+        if isRequestBody == True:
+            return elm
+
+        return elm
+
+        
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.
@@ -53,3 +87,22 @@ class ProductCecHdmiControl:
         msg:str = 'ProductCecHdmiControl:'
         msg = '%s CecMode="%s"' % (msg, str(self._CecMode))
         return msg 
+
+
+    def ToXmlRequestBody(self, encoding:str='utf-8') -> str:
+        """ 
+        Overridden.
+        Returns a POST request body, which is used to update the device configuration.
+        
+        Args:
+            encoding (str):
+                encode type (e.g. 'utf-8', 'unicode', etc).  
+                Default is 'utf-8'.
+
+        Returns:
+            An xml string that can be used in a POST request to update the
+            device configuration.
+        """
+        elm = self.ToElement(True)
+        xml = tostring(elm, encoding='unicode')
+        return xml

@@ -159,7 +159,7 @@ class PlayInfo(SoundTouchModelRequest):
     def ToXmlRequestBody(self, encoding:str='utf-8') -> str:
         """ 
         Overridden.
-        Returns a POST request body for changing the volume level. 
+        Returns a POST request body, which is used to update the device configuration.
         
         Args:
             encoding (str):

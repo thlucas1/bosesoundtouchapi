@@ -21,6 +21,7 @@ The following features are supported by this API.
 - Audio mode switching (Normal, Dialog, etc)
 - Audio Tone Controls for Bass Level (set, retrieve, supported min / max values)
 - Audio Tone Controls for Treble Level (set, retrieve, supported min / max values)
+- Audio Product CEC HDMI Control support (set, retrieve, supported values)
 - Presets (store, remove, remove all, select)
 - Recent Media History (list recent content that was played, select recent item for play)
 - Favorites (add, remove, thumbs up, thumbs down)

@@ -43,6 +43,7 @@
     <Compile Include="bosesoundtouchapi\models\recentlist.py" />
     <Compile Include="bosesoundtouchapi\models\recent.py" />
     <Compile Include="bosesoundtouchapi\models\playinfo.py" />
+    <Compile Include="bosesoundtouchapi\soundtouchproductcechdmicontrolmodes.py" />
     <Compile Include="bosesoundtouchapi\soundtouchwarning.py" />
     <Compile Include="bosesoundtouchapi\soundtoucherror.py" />
     <Compile Include="bosesoundtouchapi\soundtouchkeys.py" />
@@ -124,6 +125,7 @@
     <Compile Include="docs\include\samplecode\SoundTouchClient\SelectContentItem.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SelectLocalSource.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SelectSource.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SetProductCecHdmiControl.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SetAudioProductToneControls.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SetAudioDspControlAudioMode.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\ThumbsDown.py" />

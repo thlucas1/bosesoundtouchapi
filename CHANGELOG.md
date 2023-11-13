@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.13 ] - 2023/11/12
+
+  *  Added new method to `SoundTouchClient`: SetProductCecHdmiControl - allows HDMI CEC mode to be turned ON/OFF.
+  *  Updated documentation for various classes and sample code snippets.
+
 ###### [ 1.0.12 ] - 2023/11/11
 
   *  Added new methods to `SoundTouchClient`: GetAudioProductToneControls, SetAudioProductToneControls.

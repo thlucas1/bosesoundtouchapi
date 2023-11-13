@@ -18,6 +18,7 @@ from bosesoundtouchapi.soundtouchexception import SoundTouchException
 from bosesoundtouchapi.soundtouchkeys import SoundTouchKeys
 from bosesoundtouchapi.soundtouchmessage import SoundTouchMessage
 from bosesoundtouchapi.soundtouchnotifycategorys import SoundTouchNotifyCategorys
+from bosesoundtouchapi.soundtouchproductcechdmicontrolmodes import SoundTouchProductCecHdmiControlModes
 from bosesoundtouchapi.soundtouchsources import SoundTouchSources
 from bosesoundtouchapi.soundtouchwarning import SoundTouchWarning
 
@@ -30,6 +31,7 @@ __all__ = [
     'SoundTouchKeys',
     'SoundTouchMessage',
     'SoundTouchNotifyCategorys',
+    'SoundTouchProductCecHdmiControlModes',
     'SoundTouchSources',
     'SoundTouchWarning'
 ]

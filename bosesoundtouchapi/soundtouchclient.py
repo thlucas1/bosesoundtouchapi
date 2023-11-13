@@ -615,10 +615,10 @@ class SoundTouchClient:
         ```
         </details>
         """
-        # check device capabilities, refreshing from device if needed.
-        capabilities:Capabilities = self.GetCapabilities(False)
-        if not capabilities.IsAudioDspControlsCapable:
-            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName,"AudioDspControls"), logsi=_logsi)
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.audiodspcontrols.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioDspControls", self._Device.DeviceName))
@@ -656,10 +656,10 @@ class SoundTouchClient:
         ```
         </details>
         """
-        # check device capabilities, refreshing from device if needed.
-        capabilities:Capabilities = self.GetCapabilities(False)
-        if not capabilities.IsAudioProductToneControlsCapable:
-            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName,"AudioProductToneControls"), logsi=_logsi)
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.audioproducttonecontrols.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioProductToneControls", self._Device.DeviceName))
@@ -1116,10 +1116,10 @@ class SoundTouchClient:
         ```
         </details>
         """
-        # check device capabilities, refreshing from device if needed.
-        capabilities:Capabilities = self.GetCapabilities(False)
-        if not capabilities.IsProductCecHdmiControlCapable:
-            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName,"ProductCecHdmiControl"), logsi=_logsi)
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.productcechdmicontrol.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ProductCecHdmiControl", self._Device.DeviceName))
@@ -1157,10 +1157,10 @@ class SoundTouchClient:
         ```
         </details>
         """
-        # check device capabilities, refreshing from device if needed.
-        capabilities:Capabilities = self.GetCapabilities(False)
-        if not capabilities.IsProductHdmiAssignmentControlsCapable:
-            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName,"ProductHdmiAssignmentControls"), logsi=_logsi)
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.producthdmiassignmentcontrols.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ProductHdmiAssignmentControls", self._Device.DeviceName))
@@ -1226,10 +1226,10 @@ class SoundTouchClient:
         ```
         </details>
         """
-        # check device capabilities, refreshing from device if needed.
-        capabilities:Capabilities = self.GetCapabilities(False)
-        if not capabilities.IsReBroadcastLatencyModeCapable:
-            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName,"RebroadcastLatencyMode"), logsi=_logsi)
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.rebroadcastlatencymode.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("RebroadcastLatencyMode", self._Device.DeviceName))
@@ -2822,10 +2822,10 @@ class SoundTouchClient:
         ```
         </details>
         """
-        # check device capabilities, refreshing from device if needed.
-        capabilities:Capabilities = self.GetCapabilities(False)
-        if not capabilities.IsAudioDspControlsCapable:
-            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName,"AudioDspControls"), logsi=_logsi)
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.audiodspcontrols.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio dsp controls audioMode", str(audioMode), self._Device.DeviceName))
@@ -2864,15 +2864,57 @@ class SoundTouchClient:
         if (audioProductToneControls is None) or (not isinstance(audioProductToneControls, AudioProductToneControls)):
             raise SoundTouchError('audioProductToneControls argument was not supplied, or is not of type AudioProductToneControls', logsi=_logsi)
             
-        # check device capabilities, refreshing from device if needed.
-        capabilities:Capabilities = self.GetCapabilities(False)
-        if not capabilities.IsAudioProductToneControlsCapable:
-            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName,"AudioProductToneControls"), logsi=_logsi)
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.audioproducttonecontrols.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio product tone controls", audioProductToneControls.ToString(), self._Device.DeviceName))
         request:AudioProductToneControls = audioProductToneControls
         return self.Put(SoundTouchNodes.audioproducttonecontrols, request)
+
+
+    def SetProductCecHdmiControl(self, control:ProductCecHdmiControl) -> SoundTouchMessage:
+        """
+        Sets the current product cec hdmi control configuration of the device.
+
+        Args:
+            control (ProductCecHdmiControl):
+                A `ProductCecHdmiControl` object that contains product cec hdmi control
+                values to set.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `ProductCecHdmiControl` functions,
+                as determined by a query to `GetCapabilities` configuration.  
+                If the control argument is None, or not of type `ProductCecHdmiControl`.
+                
+        Note that some SoundTouch devices do not support this functionality.  For example,
+        the ST-300 will support this, but the ST-10 will not.  This method will first query
+        the device capabilities to determine if it supports the function; if so, then the
+        request is made to the device; if not, then a `SoundTouchError` is raised.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SetProductCecHdmiControl.py
+        ```
+        </details>
+        """
+        # validations.
+        if (control is None) or (not isinstance(control, ProductCecHdmiControl)):
+            raise SoundTouchError('control argument was not supplied, or is not of type ProductCecHdmiControl', logsi=_logsi)
+            
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.productcechdmicontrol.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("product cec hdmi control", control.ToString(), self._Device.DeviceName))
+        request:ProductCecHdmiControl = control
+        return self.Put(SoundTouchNodes.productcechdmicontrol, request)
 
 
     def SetBassLevel(self, level:int) -> SoundTouchMessage:

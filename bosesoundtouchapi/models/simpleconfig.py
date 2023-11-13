@@ -81,8 +81,13 @@ class SimpleConfig(SoundTouchModelRequest):
     def ToXmlRequestBody(self, encoding:str='utf-8') -> str:
         """ 
         Overridden.
-        Returns a POST request body for changing a simple configuration value.
+        Returns a POST request body, which is used to update the device configuration.
         
+        Args:
+            encoding (str):
+                encode type (e.g. 'utf-8', 'unicode', etc).  
+                Default is 'utf-8'.
+
         Returns:
             An xml string that can be used in a POST request to update the
             device configuration.
