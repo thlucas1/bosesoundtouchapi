@@ -601,11 +601,11 @@ class SoundTouchClient:
         Raises:
             SoundTouchError:
                 If the device is not capable of supporting `AudioDspControls` functions,
-                as determined by a query to `GetCapabilities` configuration.
+                as determined by a query to the cached `supportedURLs` web-services api.  
 
         Note that some SoundTouch devices do not support this functionality.  For example,
         the ST-300 will support this, but the ST-10 will not.  This method will first query
-        the device capabilities to determine if it supports the function; if so, then the
+        the device supportedUris to determine if it supports the function; if so, then the
         request is made to the device; if not, then a `SoundTouchError` is raised.
         
         <details>
@@ -625,6 +625,47 @@ class SoundTouchClient:
         return self.GetProperty(SoundTouchNodes.audiodspcontrols, AudioDspControls, refresh)
 
 
+    def GetAudioProductLevelControls(self, refresh=True) -> AudioProductLevelControls:
+        """
+        Gets the current audio product level controls configuration of the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `AudioProductLevelControls` object that contains audio product level control
+            configuration of the device IF the device supports it (e.g. ST-300, etc); 
+            otherwise, None if the device does not support it.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `AudioProductLevelControls` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        Note that some SoundTouch devices do not support this functionality.  For example,
+        the ST-300 will support this, but the ST-10 will not.  This method will first query
+        the device supportedUris to determine if it supports the function; if so, then the
+        request is made to the device; if not, then a `SoundTouchError` is raised.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetAudioProductLevelControls.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.audioproductlevelcontrols.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioProductLevelControls", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.audioproductlevelcontrols, AudioProductLevelControls, refresh)
+
+
     def GetAudioProductToneControls(self, refresh=True) -> AudioProductToneControls:
         """
         Gets the current audio product tone controls configuration of the device.
@@ -642,11 +683,11 @@ class SoundTouchClient:
         Raises:
             SoundTouchError:
                 If the device is not capable of supporting `AudioProductToneControls` functions,
-                as determined by a query to `GetCapabilities` configuration.
+                as determined by a query to the cached `supportedURLs` web-services api.  
 
         Note that some SoundTouch devices do not support this functionality.  For example,
         the ST-300 will support this, but the ST-10 will not.  This method will first query
-        the device capabilities to determine if it supports the function; if so, then the
+        the device supportedUris to determine if it supports the function; if so, then the
         request is made to the device; if not, then a `SoundTouchError` is raised.
         
         <details>
@@ -664,6 +705,47 @@ class SoundTouchClient:
         # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioProductToneControls", self._Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.audioproducttonecontrols, AudioProductToneControls, refresh)
+
+
+    def GetAudioSpeakerAttributeAndSetting(self, refresh=True) -> AudioSpeakerAttributeAndSetting:
+        """
+        Gets the current audio speaker attrribute and setting configuration of the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `AudioSpeakerAttributeAndSetting` object that contains audio speaker attribute and setting
+            configuration of the device IF the device supports it (e.g. ST-300, etc); 
+            otherwise, None if the device does not support it.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `AudioSpeakerAttributeAndSetting` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        Note that some SoundTouch devices do not support this functionality.  For example,
+        the ST-300 will support this, but the ST-10 will not.  This method will first query
+        the device supportedUris to determine if it supports the function; if so, then the
+        request is made to the device; if not, then a `SoundTouchError` is raised.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetAudioSpeakerAttributeAndSetting.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.audiospeakerattributeandsetting.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioSpeakerAttributeAndSetting", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.audiospeakerattributeandsetting, AudioSpeakerAttributeAndSetting, refresh)
 
 
     def GetBalance(self, refresh=True) -> Balance:
@@ -1102,11 +1184,11 @@ class SoundTouchClient:
         Raises:
             SoundTouchError:
                 If the device is not capable of supporting `ProductCecHdmiControl` functions,
-                as determined by a query to `GetCapabilities` configuration.
+                as determined by a query to the cached `supportedURLs` web-services api.  
 
         Note that some SoundTouch devices do not support this functionality.  For example,
         the ST-300 will support this, but the ST-10 will not.  This method will first query
-        the device capabilities to determine if it supports the function; if so, then the
+        the device supportedUris to determine if it supports the function; if so, then the
         request is made to the device; if not, then a `SoundTouchError` is raised.
         
         <details>
@@ -1143,11 +1225,11 @@ class SoundTouchClient:
         Raises:
             SoundTouchError:
                 If the device is not capable of supporting `ProductHdmiAssignmentControls` functions,
-                as determined by a query to `GetCapabilities` configuration.
+                as determined by a query to the cached `supportedURLs` web-services api.  
 
         Note that some SoundTouch devices do not support this functionality.  For example,
         the ST-300 will support this, but the ST-10 will not.  This method will first query
-        the device capabilities to determine if it supports the function; if so, then the
+        the device supportedUris to determine if it supports the function; if so, then the
         request is made to the device; if not, then a `SoundTouchError` is raised.
         
         <details>
@@ -1212,11 +1294,11 @@ class SoundTouchClient:
         Raises:
             SoundTouchError:
                 If the device is not capable of supporting `RebroadcastLatencyMode` functions,
-                as determined by a query to `GetCapabilities` configuration.
+                as determined by a query to the cached `supportedURLs` web-services api.  
 
         Note that some SoundTouch devices do not support this functionality.  For example,
         the ST-300 will support this, but the ST-10 will not.  This method will first query
-        the device capabilities to determine if it supports the function; if so, then the
+        the device supportedUris to determine if it supports the function; if so, then the
         request is made to the device; if not, then a `SoundTouchError` is raised.
         
         <details>
@@ -2797,60 +2879,107 @@ class SoundTouchClient:
         return self.SelectContentItem(ContentItem(source=source, sourceAccount=sourceAccount), delay)
 
 
-    def SetAudioDspControlAudioMode(self, audioMode:str) -> SoundTouchMessage:
+    def SetAudioDspControls(self, controls:AudioDspControls) -> SoundTouchMessage:
         """
-        Sets the device audio dsp controls to the given values.
+        Sets the current audio dsp controls configuration of the device.
         
         Args:
-            audioMode (str):
-                Audio mode value (e.g. "AUDIO_MODE_NORMAL", "AUDIO_MODE_DIALOG", etc).
+            controls (AudioDspControls):
+                A `AudioDspControls` object that contains audio dsp control
+                values to set.
 
         Raises:
             SoundTouchError:
                 If the device is not capable of supporting `AudioDspControls` functions,
-                as determined by a query to `GetCapabilities` configuration.
+                as determined by a query to the cached `supportedURLs` web-services api.  
 
         Note that some SoundTouch devices do not support this functionality.  For example,
         the ST-300 will support this, but the ST-10 will not.  This method will first query
-        the device capabilities to determine if it supports the function; if so, then the
+        the device supportedUris to determine if it supports the function; if so, then the
         request is made to the device; if not, then a `SoundTouchError` is raised.
         
         <details>
           <summary>Sample Code</summary><br/>
         ```python
-        .. include:: ../docs/include/samplecode/SoundTouchClient/SetAudioDspControlAudioMode.py
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SetAudioDspControls.py
         ```
         </details>
         """
+        # validations.
+        if (controls is None) or (not isinstance(controls, AudioDspControls)):
+            raise SoundTouchError('controls argument was not supplied, or is not of type AudioDspControls', logsi=_logsi)
+            
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.audiodspcontrols.Path
         if not uriPath in self._Device._SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio dsp controls audioMode", str(audioMode), self._Device.DeviceName))
-        request:AudioDspControls = AudioDspControls(audioMode)
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio dsp controls", controls.ToString(), self._Device.DeviceName))
+        request:AudioDspControls = controls
         return self.Put(SoundTouchNodes.audiodspcontrols, request)
 
 
-    def SetAudioProductToneControls(self, audioProductToneControls:AudioProductToneControls) -> SoundTouchMessage:
+    def SetAudioProductLevelControls(self, controls:AudioProductLevelControls) -> SoundTouchMessage:
         """
         Sets the current audio product tone controls configuration of the device.
 
         Args:
-            audioProductToneControls (AudioProductToneControls):
+            controls (AudioProductLevelControls):
+                A `AudioProductLevelControls` object that contains audio product tone control
+                values to set.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `AudioProductLevelControls` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.    
+                If the controls argument is None, or not of type `AudioProductLevelControls`.
+                
+        Note that some SoundTouch devices do not support this functionality.  For example,
+        the ST-300 will support this, but the ST-10 will not.  This method will first query
+        the device supportedUris to determine if it supports the function; if so, then the
+        request is made to the device; if not, then a `SoundTouchError` is raised.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SetAudioProductLevelControls.py
+        ```
+        </details>
+        """
+        # validations.
+        if (controls is None) or (not isinstance(controls, AudioProductLevelControls)):
+            raise SoundTouchError('controls argument was not supplied, or is not of type AudioProductLevelControls', logsi=_logsi)
+            
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.audioproductlevelcontrols.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio product level controls", controls.ToString(), self._Device.DeviceName))
+        request:AudioProductLevelControls = controls
+        return self.Put(SoundTouchNodes.audioproductlevelcontrols, request)
+
+
+    def SetAudioProductToneControls(self, controls:AudioProductToneControls) -> SoundTouchMessage:
+        """
+        Sets the current audio product tone controls configuration of the device.
+
+        Args:
+            controls (AudioProductToneControls):
                 A `AudioProductToneControls` object that contains audio product tone control
                 values to set.
 
         Raises:
             SoundTouchError:
                 If the device is not capable of supporting `AudioProductToneControls` functions,
-                as determined by a query to `GetCapabilities` configuration.  
-                If the audioProductToneControls argument is None, or not of type `AudioProductToneControls`.
+                as determined by a query to the cached `supportedURLs` web-services api.    
+                If the controls argument is None, or not of type `AudioProductToneControls`.
                 
         Note that some SoundTouch devices do not support this functionality.  For example,
         the ST-300 will support this, but the ST-10 will not.  This method will first query
-        the device capabilities to determine if it supports the function; if so, then the
+        the device supportedUris to determine if it supports the function; if so, then the
         request is made to the device; if not, then a `SoundTouchError` is raised.
         
         <details>
@@ -2861,8 +2990,8 @@ class SoundTouchClient:
         </details>
         """
         # validations.
-        if (audioProductToneControls is None) or (not isinstance(audioProductToneControls, AudioProductToneControls)):
-            raise SoundTouchError('audioProductToneControls argument was not supplied, or is not of type AudioProductToneControls', logsi=_logsi)
+        if (controls is None) or (not isinstance(controls, AudioProductToneControls)):
+            raise SoundTouchError('controls argument was not supplied, or is not of type AudioProductToneControls', logsi=_logsi)
             
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.audioproducttonecontrols.Path
@@ -2870,8 +2999,8 @@ class SoundTouchClient:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio product tone controls", audioProductToneControls.ToString(), self._Device.DeviceName))
-        request:AudioProductToneControls = audioProductToneControls
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio product tone controls", controls.ToString(), self._Device.DeviceName))
+        request:AudioProductToneControls = controls
         return self.Put(SoundTouchNodes.audioproducttonecontrols, request)
 
 
@@ -2887,12 +3016,12 @@ class SoundTouchClient:
         Raises:
             SoundTouchError:
                 If the device is not capable of supporting `ProductCecHdmiControl` functions,
-                as determined by a query to `GetCapabilities` configuration.  
+                as determined by a query to the cached `supportedURLs` web-services api.    
                 If the control argument is None, or not of type `ProductCecHdmiControl`.
                 
         Note that some SoundTouch devices do not support this functionality.  For example,
         the ST-300 will support this, but the ST-10 will not.  This method will first query
-        the device capabilities to determine if it supports the function; if so, then the
+        the device supportedUris to determine if it supports the function; if so, then the
         request is made to the device; if not, then a `SoundTouchError` is raised.
         
         <details>

@@ -35,7 +35,7 @@ class RebroadcastLatencyMode:
 
             # base fields.
             self._Mode = root.get('mode', default=None)
-            self._Controllable = bool(root.get('controllable', default=False))
+            self._Controllable = bool(root.get('controllable', default='false') == 'true')
 
 
     def __repr__(self) -> str:

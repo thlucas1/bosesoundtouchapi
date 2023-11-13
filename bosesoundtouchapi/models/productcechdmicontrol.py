@@ -4,7 +4,7 @@ from xml.etree.ElementTree import Element, tostring
 # our package imports.
 from ..bstutils import export
 from ..soundtouchmodelrequest import SoundTouchModelRequest
-from ..soundtouchproductcechdmicontrolmodes import SoundTouchProductCecHdmiControlModes
+from ..soundtouchhdmicecmodes import SoundTouchHdmiCecModes
 
 @export
 class ProductCecHdmiControl(SoundTouchModelRequest):
@@ -56,7 +56,7 @@ class ProductCecHdmiControl(SoundTouchModelRequest):
         Sets the CecMode property value.
         """
         if value != None:
-            if isinstance(value, SoundTouchProductCecHdmiControlModes):
+            if isinstance(value, SoundTouchHdmiCecModes):
                 self._CecMode = value.value
             elif isinstance(value, str):
                 self._CecMode = value

@@ -11,27 +11,29 @@ _________________
 """
 
 # our package imports.
+from bosesoundtouchapi.soundtouchaudiomodes import SoundTouchAudioModes
 from bosesoundtouchapi.soundtouchclient import SoundTouchClient
 from bosesoundtouchapi.soundtouchdevice import SoundTouchDevice
 from bosesoundtouchapi.soundtoucherror import SoundTouchError
 from bosesoundtouchapi.soundtouchexception import SoundTouchException
+from bosesoundtouchapi.soundtouchhdmicecmodes import SoundTouchHdmiCecModes
 from bosesoundtouchapi.soundtouchkeys import SoundTouchKeys
 from bosesoundtouchapi.soundtouchmessage import SoundTouchMessage
 from bosesoundtouchapi.soundtouchnotifycategorys import SoundTouchNotifyCategorys
-from bosesoundtouchapi.soundtouchproductcechdmicontrolmodes import SoundTouchProductCecHdmiControlModes
 from bosesoundtouchapi.soundtouchsources import SoundTouchSources
 from bosesoundtouchapi.soundtouchwarning import SoundTouchWarning
 
 # all classes to import when "import *" is specified.
 __all__ = [
+    'SoundTouchAudioModes',
     'SoundTouchClient',
     'SoundTouchDevice',
     'SoundTouchError',
     'SoundTouchException',
+    'SoundTouchHdmiCecModes',
     'SoundTouchKeys',
     'SoundTouchMessage',
     'SoundTouchNotifyCategorys',
-    'SoundTouchProductCecHdmiControlModes',
     'SoundTouchSources',
     'SoundTouchWarning'
 ]

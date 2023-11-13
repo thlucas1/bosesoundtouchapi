@@ -16,12 +16,12 @@ _logsi.SystemLogger = logging.getLogger(__package__)
 
 
 @export
-class AudioProductToneControls(SoundTouchModelRequest):
+class AudioProductLevelControls(SoundTouchModelRequest):
     """
-    SoundTouch device AudioProductToneControls configuration object.
+    SoundTouch device AudioProductLevelControls configuration object.
        
     This class contains the attributes and sub-items that represent the 
-    Audio Product Tone Controls configuration of the device.      
+    Audio Product Level Controls configuration of the device.      
     """
 
     def __init__(self, root:Element=None) -> None:
@@ -34,26 +34,24 @@ class AudioProductToneControls(SoundTouchModelRequest):
                 If specified, then other passed arguments are ignored.
         """
         # initialize storage.
-        self._Bass:ControlLevelInfo = None
-        self._Treble:ControlLevelInfo = None
+        self._FrontCenterSpeakerLevel:ControlLevelInfo = None
+        self._RearSurroundSpeakersLevel:ControlLevelInfo = None
         
         if (root is None):
         
             # create empty control objects.
-            self._Bass:ControlLevelInfo = ControlLevelInfo('bass')
-            self._Bass.Value = 0
-            self._Treble:ControlLevelInfo = ControlLevelInfo('treble')
-            self._Treble.Value = 0
+            self._FrontCenterSpeakerLevel:ControlLevelInfo = ControlLevelInfo('frontCenterSpeakerLevel')
+            self._FrontCenterSpeakerLevel.Value = 0
+            self._RearSurroundSpeakersLevel:ControlLevelInfo = ControlLevelInfo('rearSurroundSpeakersLevel')
+            self._RearSurroundSpeakersLevel.Value = 0
         
         else:
 
             # base fields.
-            elmBass:Element = root.find('bass')
-            if (elmBass is not None):
-                self._Bass = ControlLevelInfo(root=elmBass)
-            elmTreble:Element = root.find('treble')
-            if (elmTreble is not None):
-                self._Treble = ControlLevelInfo(root=elmTreble)
+            elmFrontCenterSpkr:Element = root.find('frontCenterSpeakerLevel')
+            self._FrontCenterSpeakerLevel = ControlLevelInfo(root=elmFrontCenterSpkr)
+            elmRearSurroundSpkr:Element = root.find('rearSurroundSpeakersLevel')
+            self._RearSurroundSpeakersLevel = ControlLevelInfo(root=elmRearSurroundSpkr)
             
 
     def __repr__(self) -> str:
@@ -61,15 +59,15 @@ class AudioProductToneControls(SoundTouchModelRequest):
 
 
     @property
-    def Bass(self) -> ControlLevelInfo:
-        """ Audio product tone control settings for bass details. """
-        return self._Bass
+    def FrontCenterSpeakerLevel(self) -> ControlLevelInfo:
+        """ Audio product level control settings for front center speaker level details. """
+        return self._FrontCenterSpeakerLevel
 
 
     @property
-    def Treble(self) -> ControlLevelInfo:
-        """ Audio product tone control settings for treble details. """
-        return self._Treble
+    def RearSurroundSpeakersLevel(self) -> ControlLevelInfo:
+        """ Audio product level control settings for rear surround speaker level details. """
+        return self._RearSurroundSpeakersLevel
 
 
     def ToElement(self, isRequestBody:bool=False) -> Element:
@@ -81,9 +79,9 @@ class AudioProductToneControls(SoundTouchModelRequest):
                 True if the element should only return attributes needed for a POST
                 request body; otherwise, False to return all attributes.
         """
-        elm = Element('audioproducttonecontrols')
-        elm.append(self._Bass.ToElement(isRequestBody))
-        elm.append(self._Treble.ToElement(isRequestBody))
+        elm = Element('audioproductlevelcontrols')
+        elm.append(self._FrontCenterSpeakerLevel.ToElement(isRequestBody))
+        elm.append(self._RearSurroundSpeakersLevel.ToElement(isRequestBody))
         return elm
 
         
@@ -91,9 +89,9 @@ class AudioProductToneControls(SoundTouchModelRequest):
         """
         Returns a displayable string representation of the class.
         """
-        msg:str = 'AudioProductToneControls:'
-        msg = '%s\n  %s' % (msg, self._Bass.ToString())
-        msg = '%s\n  %s' % (msg, self._Treble.ToString())
+        msg:str = 'AudioProductLevelControls:'
+        msg = '%s\n  %s' % (msg, self._FrontCenterSpeakerLevel.ToString())
+        msg = '%s\n  %s' % (msg, self._RearSurroundSpeakersLevel.ToString())
         return msg 
 
 

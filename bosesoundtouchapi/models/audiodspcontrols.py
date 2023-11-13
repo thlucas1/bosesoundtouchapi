@@ -4,6 +4,7 @@ from xml.etree.ElementTree import Element, tostring
 
 # our package imports.
 from ..bstutils import export
+from ..soundtouchaudiomodes import SoundTouchAudioModes
 from ..soundtouchmodelrequest import SoundTouchModelRequest
 from ..soundtoucherror import SoundTouchError
 
@@ -77,6 +78,17 @@ class AudioDspControls(SoundTouchModelRequest):
         """ Audio mode value (e.g. "AUDIO_MODE_NORMAL", "AUDIO_MODE_DIALOG", etc). """
         return self._AudioMode
 
+    @AudioMode.setter
+    def AudioMode(self, value:str):
+        """ 
+        Sets the AudioMode property value.
+        """
+        if value != None:
+            if isinstance(value, SoundTouchAudioModes):
+                self._AudioMode = value.value
+            elif isinstance(value, str):
+                self._AudioMode = value
+
 
     @property
     def SupportedAudioModes(self) -> str:
@@ -88,6 +100,15 @@ class AudioDspControls(SoundTouchModelRequest):
     def VideoSyncAudioDelay(self) -> int:
         """ Video syncronization audio delay value. """
         return self._VideoSyncAudioDelay
+
+    @VideoSyncAudioDelay.setter
+    def VideoSyncAudioDelay(self, value:int):
+        """ 
+        Sets the VideoSyncAudioDelay property value.
+        """
+        if value != None:
+            if isinstance(value, int):
+                self._VideoSyncAudioDelay = value
 
 
     def ToElement(self, isRequestBody:bool=False) -> Element:

@@ -5,11 +5,9 @@ from enum import Enum
 from .bstutils import export
 
 @export
-class SoundTouchProductCecHdmiControlModes(Enum):
+class SoundTouchHdmiCecModes(Enum):
     """
-    SoundTouch Product HDMI CEC Control Modes.
-    
-    These constants can be used when updating the ProductCecHdmiControl CecMode value.
+    SoundTouch HDMI CEC Modes.
     """
     
     ALTERNATE = 'CEC_MODE_ALTERNATE'
@@ -36,6 +34,6 @@ class SoundTouchProductCecHdmiControlModes(Enum):
     @staticmethod    
     def ToString(value) -> str:
         """ Returns the enum.value (instead of classname.value) as a string. """
-        if isinstance(value, SoundTouchProductCecHdmiControlModes):
+        if isinstance(value, SoundTouchHdmiCecModes):
             return value.value
         return str(value)

@@ -20,9 +20,9 @@ try:
 
     # for testing purposes, toggle the value from OFF to ON or vice versa.
     # if the level is currently ON, then we will set to OFF.
-    cfgUpdate.CecMode = SoundTouchProductCecHdmiControlModes.OFF
+    cfgUpdate.CecMode = SoundTouchHdmiCecModes.OFF
     if cfgUpdate.CecMode == cfgBefore.CecMode:
-        cfgUpdate.CecMode = SoundTouchProductCecHdmiControlModes.ON
+        cfgUpdate.CecMode = SoundTouchHdmiCecModes.ON
     print("\nSetting product cec hdmi control to '%s' (from '%s') ..." % (cfgUpdate.CecMode, cfgBefore.CecMode))
                 
     # update product cec hdmi control.
@@ -40,8 +40,7 @@ finally:
     
     if cfgBefore is not None:
         
-        # reset product cec hdmi control to original values.
-        print("\nRestoring product cec hdmi control to original values.")
+        # restore product cec hdmi control to original values.
         client.SetProductCecHdmiControl(cfgBefore)            
 
         # get current product cec hdmi control.

@@ -17,10 +17,19 @@ class SoundTouchNotifyCategorys(Enum):
     
     audiodspcontrols = 'audiodspcontrols'
     """
-    Occurs when audio dsp controls audio mode state has changed.  This normally happens when the device
-    switches from AUDIO_MODE_NORMAL to AUDIO_MODE_DIALOG, or vice versa.
+    Occurs when audio dsp control values (e.g. AudioMode, etc) have changed.
     """
     
+    audioproductlevelcontrols = 'audioproductlevelcontrols'
+    """ 
+    Occurs when audio product level control values (e.g. FrontCenterSpeakerLevel, RearSurroundSpeakersLevel, etc) have changed.
+    """
+
+    audioproducttonecontrols = 'audioproducttonecontrols'
+    """ 
+    Occurs when audio product tone control values (e.g. Bass, Treble, etc) have changed.
+    """
+
     connectionStateUpdated = 'connectionStateUpdated'
     """
     Occurs when a network connection state has changed.  This normally happens when the device
@@ -66,6 +75,11 @@ class SoundTouchNotifyCategorys(Enum):
     presetsUpdated = 'presetsUpdated'
     """ 
     Occurs when a preset has been updated, added, or removed from the device.
+    """
+    
+    productcechdmicontrol = 'productcechdmicontrol'
+    """ 
+    Occurs when the HDMI CEC Mode is changed.
     """
     
     recentsUpdated = 'recentsUpdated'

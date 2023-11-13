@@ -1,6 +1,8 @@
 # import all classes from the namespace.
 from .audiodspcontrols import AudioDspControls
+from .audioproductlevelcontrols import AudioProductLevelControls
 from .audioproducttonecontrols import AudioProductToneControls
+from .audiospeakerattributeandsetting import AudioSpeakerAttributeAndSetting
 from .balance import Balance
 from .bass import Bass
 from .basscapabilities import BassCapabilities
@@ -34,7 +36,9 @@ from .zone import Zone, ZoneMember
 # all classes to import when "import *" is specified.
 __all__ = [
     'AudioDspControls',
+    'AudioProductLevelControls',
     'AudioProductToneControls',
+    'AudioSpeakerAttributeAndSetting',
     'Balance',
     'Bass',
     'BassCapabilities',

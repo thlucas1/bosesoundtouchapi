@@ -66,15 +66,15 @@ class ControlLevelInfo(SoundTouchModelRequest):
             
             # validations.
             if (controlType is None) or (not isinstance(controlType, str)):
-                raise SoundTouchError(BSTAppMessages.ARGUMENT_TYPE_ERROR % ("controlType","str",str(type(controlType))), logsi=_logsi)
+                raise SoundTouchError(BSTAppMessages.ARGUMENT_TYPE_ERROR % ("controlType","str",str(type(controlType).__name__)), logsi=_logsi)
             if (value is not None) and (not isinstance(value, int)):
-                raise SoundTouchError(BSTAppMessages.ARGUMENT_TYPE_ERROR % ('value','int',str(type(value))), logsi=_logsi)
+                raise SoundTouchError(BSTAppMessages.ARGUMENT_TYPE_ERROR % ('value','int',str(type(value).__name__)), logsi=_logsi)
             if (minValue is not None) and (not isinstance(minValue, int)):
-                raise SoundTouchError(BSTAppMessages.ARGUMENT_TYPE_ERROR % ('minValue','int',str(type(minValue))), logsi=_logsi)
+                raise SoundTouchError(BSTAppMessages.ARGUMENT_TYPE_ERROR % ('minValue','int',str(type(minValue).__name__)), logsi=_logsi)
             if (maxValue is not None) and (not isinstance(maxValue, int)):
-                raise SoundTouchError(BSTAppMessages.ARGUMENT_TYPE_ERROR % ('maxValue','int',str(type(maxValue))), logsi=_logsi)
+                raise SoundTouchError(BSTAppMessages.ARGUMENT_TYPE_ERROR % ('maxValue','int',str(type(maxValue).__name__)), logsi=_logsi)
             if (step is not None) and (not isinstance(step, int)):
-                raise SoundTouchError(BSTAppMessages.ARGUMENT_TYPE_ERROR % ('step','int',str(type(step))), logsi=_logsi)
+                raise SoundTouchError(BSTAppMessages.ARGUMENT_TYPE_ERROR % ('step','int',str(type(step).__name__)), logsi=_logsi)
 
             # base fields.
             self._ControlType = controlType
@@ -104,21 +104,6 @@ class ControlLevelInfo(SoundTouchModelRequest):
 
 
     @property
-    def Value(self) -> int:
-        """ The current value of the tone control. """
-        return self._Value
-
-    @Value.setter
-    def Value(self, value:int):
-        """ 
-        Sets the Value property value.
-        """
-        if value != None:
-            if isinstance(value, int):
-                self._Value = value
-
-
-    @property
     def MinValue(self) -> int:
         """ The minimum allowed value. """
         return self._MinValue
@@ -134,6 +119,21 @@ class ControlLevelInfo(SoundTouchModelRequest):
     def Step(self) -> int:
         """ The amount the value can increase or decrease at a time. """
         return self._Step
+
+
+    @property
+    def Value(self) -> int:
+        """ The current value of the tone control. """
+        return self._Value
+
+    @Value.setter
+    def Value(self, value:int):
+        """ 
+        Sets the Value property value.
+        """
+        if value != None:
+            if isinstance(value, int):
+                self._Value = value
 
 
     def ToElement(self, isRequestBody:bool=False) -> Element:

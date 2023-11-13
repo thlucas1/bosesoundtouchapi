@@ -6,6 +6,17 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.14 ] - 2023/11/13
+
+  *  Added new method to `SoundTouchClient`: GetAudioSpeakerAttributeAndSetting - allows speaker attribute and settings to be retrieved (Rear, SubWoofer01, SubWoofer02).
+  *  Added new method to `SoundTouchClient`: GetAudioProductLevelControls - allows speaker levels to be retrieved (FrontCenterSpeakerLevel, RearSurroundSpeakersLevel).
+  *  Added new method to `SoundTouchClient`: SetAudioProductLevelControls - allows speaker levels to be adjusted (FrontCenterSpeakerLevel, RearSurroundSpeakersLevel).
+  *  Added new method to `SoundTouchClient`: SetAudioDspControls - allows audio dsp controls to be adjusted (AudioMode, VideoSyncAudioDelay, SupportedAudioModes).
+  *  Removed method from `SoundTouchClient`: SetAudioDspControlsAudioMode - replaced this with the more robust SetAudioDspControls method.
+  *  Added class `SoundTouchHdmiCecModes` to define HDMI CEC Mode values.
+  *  Added class `SoundTouchAudioModes` to define Audio Mode values.
+  *  Updated documentation for various classes and sample code snippets.
+
 ###### [ 1.0.13 ] - 2023/11/12
 
   *  Added new method to `SoundTouchClient`: SetProductCecHdmiControl - allows HDMI CEC mode to be turned ON/OFF.
