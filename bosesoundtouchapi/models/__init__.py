@@ -26,7 +26,9 @@ from .productcechdmicontrol import ProductCecHdmiControl
 from .producthdmiassignmentcontrols import ProductHdmiAssignmentControls
 from .rebroadcastlatencymode import RebroadcastLatencyMode
 from .recentlist import RecentList, Recent
+from .serviceAvailability import ServiceAvailability, Service
 from .simpleconfig import SimpleConfig
+from .soundTouchConfigurationStatus import SoundTouchConfigurationStatus
 from .sourcelist import SourceList, SourceItem
 from .systemtimeout import SystemTimeout
 from .volume import Volume
@@ -62,7 +64,9 @@ __all__ = [
     'ProductHdmiAssignmentControls',
     'RebroadcastLatencyMode',
     'RecentList', 'Recent',
+    'ServiceAvailability', 'Service',
     'SimpleConfig',
+    'SoundTouchConfigurationStatus',
     'SourceList', 'SourceItem',
     'SystemTimeout',
     'Volume',

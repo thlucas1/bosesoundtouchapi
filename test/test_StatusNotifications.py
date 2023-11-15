@@ -1,6 +1,5 @@
 # external package imports.
 from smartinspectpython.siauto import *
-from smartinspectpython.sisourceid import *
 import time
 from xml.etree.ElementTree import Element
 from xml.etree import ElementTree

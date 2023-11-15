@@ -13,7 +13,7 @@ from .models import InfoNetworkConfig
 from .uri.soundtouchnodes import SoundTouchNodes
 
 # get smartinspect logger reference; create a new session for this module name.
-from smartinspectpython.siauto import SIAuto, SILevel, SISession, SISourceId
+from smartinspectpython.siauto import SIAuto, SILevel, SISession
 import logging
 _logsi:SISession = SIAuto.Si.GetSession(__name__)
 if (_logsi == None):

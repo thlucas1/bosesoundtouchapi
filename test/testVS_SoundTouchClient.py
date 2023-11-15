@@ -7,7 +7,6 @@ import unittest
 from collections.abc import Iterable 
 import time
 from smartinspectpython.siauto import *
-from smartinspectpython.sisourceid import *
 from xml.etree.ElementTree import Element
 from xml.etree import ElementTree
 

@@ -1,10 +1,5 @@
 # external package imports.
-from collections.abc import Iterable 
-import time
 from smartinspectpython.siauto import *
-from smartinspectpython.sisourceid import *
-from xml.etree.ElementTree import Element, tostring
-from xml.etree import ElementTree
 
 # our package imports.
 from bosesoundtouchapi import *

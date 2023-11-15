@@ -1268,11 +1268,13 @@ class SoundTouchClient:
         This method will refresh the property from the device if the property
         does not exist in the cache, regardless of the refresh argument value.
         """
+        cacheDesc:str = 'cached'
         if repr(uri) not in self or refresh:
             self.RefreshConfiguration(uri, classType)
+            cacheDesc = 'current'
 
         if _logsi.IsOn(SILevel.Verbose):
-            _logsi.LogVerbose("SoundTouchClient configuration object: '%s'" % (str(self[uri])))
+            _logsi.LogVerbose("SoundTouchClient configuration object (%s): '%s'" % (cacheDesc, str(self[uri])))
 
         return self[uri]
 
@@ -1362,6 +1364,64 @@ class SoundTouchClient:
         """
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("RequestToken", self._Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.requestToken, SimpleConfig, refresh)
+
+
+    def GetServiceAvailability(self, refresh=True) -> ServiceAvailability:
+        """
+        Gets the current service availability configuration of the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `ServiceAvailability` object that contains service availability configuration of the device.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python 
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetServiceAvailability.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.serviceAvailability.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ServiceAvailability", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.serviceAvailability, ServiceAvailability, refresh)
+
+
+    def GetSoundTouchConfigurationStatus(self, refresh=True) -> SoundTouchConfigurationStatus:
+        """
+        Gets the current SoundTouch configuration status configuration of the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `SoundTouchConfigurationStatus` object that contains SoundTouch configuration status of the device.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetSoundTouchConfigurationStatus.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.soundTouchConfigurationStatus.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("SoundTouchConfigurationStatus", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.soundTouchConfigurationStatus, SoundTouchConfigurationStatus, refresh)
 
 
     def GetSourceList(self, refresh=True) -> SourceList:

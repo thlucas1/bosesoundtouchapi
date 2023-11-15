@@ -1,10 +1,9 @@
 # external package imports.
 import time
-from typing import Iterator
 from xml.etree.ElementTree import Element, tostring
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export, _xmlFind
 from .contentitem import ContentItem
 
 @export
@@ -15,13 +14,6 @@ class Recent:
     This class contains the attributes and sub-items that represent a
     single recent configuration of the device.
     """
-
-#     <recent deviceID="9070658C9D4A" utcTime="1697080317" id="2482521126">
-#         <contentItem source="TUNEIN" type="stationurl" location="/v1/playback/station/s309605" sourceAccount="" isPresetable="true">
-#             <itemName>K-LOVE 90s</itemName>
-#         </contentItem>
-#     </recent>
-
 
     def __init__(self, recentId:int = None, createdOn:int = None, source: str = None, typeValue: str = None, 
                  location: str = None, sourceAccount: str = None, isPresetable: bool = None, name: str = None, containerArt:str = None,

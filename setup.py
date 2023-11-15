@@ -62,7 +62,8 @@ setup(
         'tinytag>=1.10.0',
         'urllib3',
         'websocket-client>=1.6.4',
-        'xmltodict'
+        'xmltodict',
+        'zeroconf>=0.126.0'
     ],
     
     # set keywords to associate this package with on Pypi.org.

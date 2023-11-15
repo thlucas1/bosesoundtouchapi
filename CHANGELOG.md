@@ -6,6 +6,12 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.15 ] - 2023/11/14
+
+  *  Added new class `SoundTouchDiscovery` to support discovery of SoundTouch devices on the network using Zeroconf MDNS.
+  *  Added new method to `SoundTouchClient`: GetServiceAvailability - Gets the current service availability configuration of the device.
+  *  Added new method to `SoundTouchClient`: GetSoundTouchConfigurationStatus - Gets the current SoundTouch configuration status of the device.
+
 ###### [ 1.0.14 ] - 2023/11/13
 
   *  Added new method to `SoundTouchClient`: GetAudioSpeakerAttributeAndSetting - allows speaker attribute and settings to be retrieved (Rear, SubWoofer01, SubWoofer02).

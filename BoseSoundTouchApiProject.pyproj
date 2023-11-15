@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>b57aea50-a094-4619-b41e-cdade13693c6</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>test\test_SampleCode.py</StartupFile>
+    <StartupFile>test\test_ZeroconfDiscovery.py</StartupFile>
     <SearchPath>.;test</SearchPath>
     <WorkingDirectory>C:\Users\thluc\source\repos\BoseSoundTouchApiProject</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -39,6 +39,7 @@
     <Compile Include="bosesoundtouchapi\models\musicserviceaccount.py" />
     <Compile Include="bosesoundtouchapi\models\bluetoothinfo.py" />
     <Compile Include="bosesoundtouchapi\models\audiodspcontrols.py" />
+    <Compile Include="bosesoundtouchapi\models\serviceAvailability.py" />
     <Compile Include="bosesoundtouchapi\models\rebroadcastlatencymode.py" />
     <Compile Include="bosesoundtouchapi\models\productcechdmicontrol.py" />
     <Compile Include="bosesoundtouchapi\models\producthdmiassignmentcontrols.py" />
@@ -46,7 +47,10 @@
     <Compile Include="bosesoundtouchapi\models\recent.py" />
     <Compile Include="bosesoundtouchapi\models\playinfo.py" />
     <Compile Include="bosesoundtouchapi\models\speakerattributeandsetting.py" />
+    <Compile Include="bosesoundtouchapi\models\service.py" />
+    <Compile Include="bosesoundtouchapi\models\soundTouchConfigurationStatus.py" />
     <Compile Include="bosesoundtouchapi\soundtouchaudiomodes.py" />
+    <Compile Include="bosesoundtouchapi\soundtouchdiscovery.py" />
     <Compile Include="bosesoundtouchapi\soundtouchhdmicecmodes.py" />
     <Compile Include="bosesoundtouchapi\soundtouchwarning.py" />
     <Compile Include="bosesoundtouchapi\soundtoucherror.py" />
@@ -111,6 +115,8 @@
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetReBroadcastLatencyMode.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetProductHdmiAssignmentControls.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetBlueToothInfo.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetServiceAvailability.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetSoundTouchConfigurationStatus.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\MakeRequest.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetOptions.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetRecentList.py" />
@@ -196,12 +202,14 @@
     <Compile Include="docs\include\samplecode\SoundTouchClient\SelectPreset.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\StorePreset.py" />
     <Compile Include="docs\include\samplecode\SoundTouchDevice\_ClassInit.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchDiscovery\DiscoverDevices.py" />
     <Compile Include="docs\include\samplecode\SoundTouchFirmware\_ClassInit.py" />
     <Compile Include="docs\include\samplecode\SoundTouchWebSocket\_ClassInit.py" />
     <Compile Include="setup.py" />
     <Compile Include="test\testVS_SoundTouchClient.py" />
     <Compile Include="test\test_Firmware.py" />
     <Compile Include="test\test_SampleCode.py" />
+    <Compile Include="test\test_ZeroconfDiscovery.py" />
     <Compile Include="test\test_StatusNotifications.py" />
   </ItemGroup>
   <ItemGroup>
@@ -228,6 +236,7 @@
     <Folder Include="docs\" />
     <Folder Include="docs\include\" />
     <Folder Include="docs\include\samplecode\" />
+    <Folder Include="docs\include\samplecode\SoundTouchDiscovery\" />
     <Folder Include="docs\include\samplecode\SoundTouchFirmware\" />
     <Folder Include="docs\include\samplecode\SoundTouchWebSocket\" />
     <Folder Include="docs\include\samplecode\SoundTouchDevice\" />
