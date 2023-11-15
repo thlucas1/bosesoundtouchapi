@@ -63,7 +63,7 @@ setup(
         'urllib3',
         'websocket-client>=1.6.4',
         'xmltodict',
-        'zeroconf>=0.126.0'
+        'zeroconf'
     ],
     
     # set keywords to associate this package with on Pypi.org.

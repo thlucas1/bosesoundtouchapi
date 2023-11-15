@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.16 ] - 2023/11/15
+
+  *  Changed Zeroconf dependency, as it was interfering with Home Assistant dependencies.
+
 ###### [ 1.0.15 ] - 2023/11/14
 
   *  Added new class `SoundTouchDiscovery` to support discovery of SoundTouch devices on the network using Zeroconf MDNS.
