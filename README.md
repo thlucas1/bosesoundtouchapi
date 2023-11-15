@@ -29,6 +29,7 @@ The following features are supported by this API.
 - Change Device Name
 - Configuration data (clock time, clock, timezone, capabilities, bass capabilities)
 - Notifications (receive real-time status updates from the device)
+- Zeroconf (aka MDNS) discovery of SoundTouch devices on the network
 - ID3 tag support for media content played from a url
 - ... and more
 
@@ -66,6 +67,7 @@ Almost every method is documented with sample code; just click on the "Sample Co
 
 Check out the following classes to get you started:
 - `bosesoundtouchapi.soundtouchclient.SoundTouchClient` - device controls and data gathering.  
+- `bosesoundtouchapi.soundtouchdiscovery.SoundTouchDiscovery` - device discovery via Zeroconf.  
 - `bosesoundtouchapi.ws.soundtouchwebsocket.SoundTouchWebSocket` - web-socket notification support.  
 
 ## Licensing
