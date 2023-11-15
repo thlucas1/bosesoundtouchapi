@@ -25,7 +25,7 @@ class SourceList:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        self._items = []
+        self._SourceItems = []
         
         if (root is None):
             pass  # no other parms to process.
@@ -41,6 +41,10 @@ class SourceList:
                     for item in root.find('sources'):
                         self.append(SourceItem(root=item))
 
+            # sort items on Source property, descending order.
+            if len(self._SourceItems) > 0:
+                self._SourceItems.sort(key=lambda x: x.Source or "", reverse=False)
+
 
     def __getitem__(self, key) -> SourceItem:
         if isinstance(key, str):
@@ -48,15 +52,23 @@ class SourceList:
                 if item.Source == key:
                     return item
         else:
-            return self._items[key]
+            return self._SourceItems[key]
 
 
     def __iter__(self) -> Iterator:
-        return iter(self._items)
+        return iter(self._SourceItems)
 
 
     def __len__(self) -> int:
-        return len(self._items)
+        return len(self._SourceItems)
+
+
+    @property
+    def SourceItems(self) -> list[SourceItem]:
+        """ 
+        The list of `SourceItem` items. 
+        """
+        return self._SourceItems
 
 
     def append(self, value: SourceItem):
@@ -67,7 +79,7 @@ class SourceList:
             value:
                 The `SourceItem` object to append.
         """
-        self._items.append(value)
+        self._SourceItems.append(value)
 
 
     def ToDictionary(self, encoding:str='utf-8') -> dict:

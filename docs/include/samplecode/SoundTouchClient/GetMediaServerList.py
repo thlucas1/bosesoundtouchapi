@@ -23,6 +23,10 @@ try:
         mediaServerList:MediaServerList = client.ConfigurationCache[SoundTouchNodes.listMediaServers.Path]
         print("\nCached configuration, direct:\n%s" % mediaServerList.ToString(True))
         
+    # sort the list (in place) by ServerId, ascending order.
+    mediaServerList.MediaServers.sort(key=lambda x: x.ServerId or "", reverse=False)
+    print("\nList sorted by ServerId:\n%s" % mediaServerList.ToString(True))
+
 except Exception as ex:
 
     print("** Exception: %s" % str(ex))

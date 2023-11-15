@@ -40,6 +40,28 @@ class SourceItem:
         return self.ToString()
 
 
+    # implement sorting support.
+    def __eq__(self, other):
+        try:
+            return self.Source == other.Source
+        except Exception as ex:
+            if (isinstance(self, SourceItem )) and (isinstance(other, SourceItem )):
+                return self.Source == other.Source
+            return False
+
+    def __lt__(self, other):
+        try:
+            # the following comparison will fail if the property value is None!  
+            # use the following syntax when calling a sort method that uses lambda searches:
+            # epColl.sort(Source=lambda x: x.Source or "", reverse=False)     <- GOOD syntax
+            # epColl.sort(Source=lambda x: x.Source, reverse=False)           <- BAD syntax, as the "x.Source" property may be None, and will cause this to fail!
+            return self.Source < other.Source
+        except Exception as ex:
+            if (isinstance(self, SourceItem )) and (isinstance(other, SourceItem )):
+                return self.Source < other.Source
+            return False
+
+
     @property
     def IsLocal(self) -> bool:
         """

@@ -42,6 +42,28 @@ class MediaServer:
         return self.ToString()
 
 
+    # implement sorting support.
+    def __eq__(self, other):
+        try:
+            return self.FriendlyName == other.FriendlyName
+        except Exception as ex:
+            if (isinstance(self, MediaServer )) and (isinstance(other, MediaServer )):
+                return self.FriendlyName == other.FriendlyName
+            return False
+
+    def __lt__(self, other):
+        try:
+            # the following comparison will fail if the property value is None!  
+            # use the following syntax when calling a sort method that uses lambda searches:
+            # epColl.sort(FriendlyName=lambda x: x.FriendlyName or "", reverse=False)     <- GOOD syntax
+            # epColl.sort(FriendlyName=lambda x: x.FriendlyName, reverse=False)           <- BAD syntax, as the "x.FriendlyName" property may be None, and will cause this to fail!
+            return self.FriendlyName < other.FriendlyName
+        except Exception as ex:
+            if (isinstance(self, MediaServer )) and (isinstance(other, MediaServer )):
+                return self.FriendlyName < other.FriendlyName
+            return False
+
+
     @property
     def FriendlyName(self) -> str:
         """ The friendly name of the media server (e.g. "Home (Home Assistant)", "Hue Bridge", etc). """

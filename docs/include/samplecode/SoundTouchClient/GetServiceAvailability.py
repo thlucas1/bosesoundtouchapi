@@ -23,6 +23,14 @@ try:
         config:ServiceAvailability = client.ConfigurationCache[SoundTouchNodes.serviceAvailability.Path]
         print("\nCached configuration, direct:\n%s" % config.ToString(True))
         
+    # sort the list (in place) by ServiceType, ascending order.
+    config.Services.sort(key=lambda x: x.ServiceType or "", reverse=False)
+    print("\nList sorted by ServiceType:\n%s" % config.ToString(True))
+           
+    # sort the list (in place) by IsAvailable, ascending order.
+    config.Services.sort(key=lambda x: x.IsAvailable or False, reverse=False)
+    print("\nList sorted by IsAvailable:\n%s" % config.ToString(True))
+        
 except Exception as ex:
 
     print("** Exception: %s" % str(ex))

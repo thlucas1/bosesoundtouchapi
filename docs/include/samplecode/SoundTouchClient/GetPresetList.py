@@ -23,6 +23,10 @@ try:
         presetList:PresetList = client.ConfigurationCache[SoundTouchNodes.presets.Path]
         print("\nCached configuration, direct:\n%s" % presetList.ToString(True))
         
+    # sort the list (in place) by Name, ascending order.
+    presetList.Presets.sort(key=lambda x: x.Name or "", reverse=False)
+    print("\nList sorted by Name:\n%s" % presetList.ToString(True))
+        
 except Exception as ex:
 
     print("** Exception: %s" % str(ex))

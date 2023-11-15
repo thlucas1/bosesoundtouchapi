@@ -24,7 +24,7 @@ class ServiceAvailability:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        self._services = []
+        self._Services = []
         
         if (root is None):
             
@@ -39,20 +39,20 @@ class ServiceAvailability:
                 self.append(Service(root=service))
             
             # sort items on ServiceType property, ascending order.
-            if len(self._services) > 0:
-                self._services.sort(key=lambda x: x.ServiceType, reverse=False)
+            if len(self._Services) > 0:
+                self._Services.sort(key=lambda x: x.ServiceType or "", reverse=False)
 
 
     def __getitem__(self, key) -> Service:
-        return self._services[key]
+        return self._Services[key]
 
 
     def __iter__(self) -> Iterator:
-        return iter(self._services)
+        return iter(self._Services)
 
 
     def __len__(self) -> int:
-        return len(self._services)
+        return len(self._Services)
 
 
     def __repr__(self) -> str:
@@ -64,7 +64,15 @@ class ServiceAvailability:
         """ 
         The total number of services defined. 
         """
-        return len(self._services)
+        return len(self._Services)
+
+
+    @property
+    def Services(self) -> list[Service]:
+        """ 
+        The list of `Service` items. 
+        """
+        return self._Services
 
 
     def append(self, value:Service):
@@ -75,7 +83,7 @@ class ServiceAvailability:
             value:
                 The `Service` object to append.
         """
-        self._services.append(value)
+        self._Services.append(value)
 
 
     def ToString(self, includeItems:bool=True) -> str:

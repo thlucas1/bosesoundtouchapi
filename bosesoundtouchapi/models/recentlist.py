@@ -29,7 +29,7 @@ class RecentList:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        self._recents = []
+        self._Recents = []
         
         if (root is None):
             pass  # no other parms to process.
@@ -39,24 +39,32 @@ class RecentList:
                 self.append(Recent(root=recent))
                 
             # sort items on CreatedOn property, descending order (latest first).
-            if len(self._recents) > 0:
-                self._recents.sort(key=lambda x: x.CreatedOn, reverse=True)
+            if len(self._Recents) > 0:
+                self._Recents.sort(key=lambda x: x.CreatedOn, reverse=True)
 
 
     def __getitem__(self, key) -> Recent:
-        return self._recents[key]
+        return self._Recents[key]
 
 
     def __iter__(self) -> Iterator:
-        return iter(self._recents)
+        return iter(self._Recents)
 
 
     def __len__(self) -> int:
-        return len(self._recents)
+        return len(self._Recents)
 
 
     def __repr__(self) -> str:
         return self.ToString()
+
+
+    @property
+    def Recents(self) -> list[Recent]:
+        """ 
+        The list of `Recent` items. 
+        """
+        return self._Recents
 
 
     def append(self, value: Recent):
@@ -67,7 +75,7 @@ class RecentList:
             value:
                 The `Recent` object to append.
         """
-        self._recents.append(value)
+        self._Recents.append(value)
 
 
     def ToDictionary(self, encoding:str='utf-8') -> dict:

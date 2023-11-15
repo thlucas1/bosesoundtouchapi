@@ -36,8 +36,11 @@ try:
     if SoundTouchNodes.sources.Path in client.ConfigurationCache:
         sourceList:SourceList = client.ConfigurationCache[SoundTouchNodes.sources.Path]
         print("\nCached configuration, direct:\n%s" % sourceList.ToString(True))
-                
         
+    # sort the list (in place) by SourceAccount, ascending order.
+    sourceList.SourceItems.sort(key=lambda x: x.SourceAccount or "", reverse=False)
+    print("\nList sorted by SourceAccount:\n%s" % sourceList.ToString(True))
+                       
 except Exception as ex:
 
     print("** Exception: %s" % str(ex))

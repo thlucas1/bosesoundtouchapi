@@ -56,10 +56,6 @@ class Service:
 
     def __lt__(self, other):
         try:
-            # the following comparison will fail if the property value is None!  
-            # use the following syntax when calling a sort method that uses lambda searches:
-            # epColl.sort(ServiceType=lambda x: x.ServiceType or "", reverse=False)     <- GOOD syntax
-            # epColl.sort(ServiceType=lambda x: x.ServiceType, reverse=False)           <- BAD syntax, as the "x.ServiceType" property may be None, and will cause this to fail!
             return self.ServiceType < other.ServiceType
         except Exception as ex:
             if (isinstance(self, Service )) and (isinstance(other, Service )):

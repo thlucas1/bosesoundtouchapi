@@ -96,6 +96,28 @@ class Preset:
         return self.ToString()
 
 
+    # implement sorting support.
+    def __eq__(self, other):
+        try:
+            return self.PresetId == other.PresetId
+        except Exception as ex:
+            if (isinstance(self, Preset )) and (isinstance(other, Preset )):
+                return self.PresetId == other.PresetId
+            return False
+
+    def __lt__(self, other):
+        try:
+            # the following comparison will fail if the property value is None!  
+            # use the following syntax when calling a sort method that uses lambda searches:
+            # epColl.sort(PresetId=lambda x: x.PresetId or "", reverse=False)     <- GOOD syntax
+            # epColl.sort(PresetId=lambda x: x.PresetId, reverse=False)           <- BAD syntax, as the "x.PresetId" property may be None, and will cause this to fail!
+            return self.PresetId < other.PresetId
+        except Exception as ex:
+            if (isinstance(self, Preset )) and (isinstance(other, Preset )):
+                return self.PresetId < other.PresetId
+            return False
+
+
     @property
     def CreatedOn(self) -> int:
         """ Date and time (in epoch format) of when the preset was created. """

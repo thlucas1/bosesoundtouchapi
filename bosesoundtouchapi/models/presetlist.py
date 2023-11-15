@@ -25,7 +25,7 @@ class PresetList:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        self._presets = []
+        self._Presets = []
         
         if (root is None):
             pass  # no other parms to process.
@@ -37,19 +37,27 @@ class PresetList:
 
 
     def __getitem__(self, key) -> Preset:
-        return self._presets[key]
+        return self._Presets[key]
 
 
     def __iter__(self) -> Iterator:
-        return iter(self._presets)
+        return iter(self._Presets)
 
 
     def __len__(self) -> int:
-        return len(self._presets)
+        return len(self._Presets)
 
 
     def __repr__(self) -> str:
         return self.ToString()
+
+
+    @property
+    def Presets(self) -> list[Preset]:
+        """ 
+        The list of `Preset` items. 
+        """
+        return self._Presets
 
 
     def append(self, value: Preset):
@@ -60,7 +68,7 @@ class PresetList:
             value:
                 The `Preset` object to append.
         """
-        self._presets.append(value)
+        self._Presets.append(value)
 
 
     def ToDictionary(self, encoding:str='utf-8') -> dict:

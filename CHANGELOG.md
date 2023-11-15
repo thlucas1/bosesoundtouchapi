@@ -6,6 +6,17 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.17 ] - 2023/11/15
+
+  *  Add sort support to model `MediaServerList`, to allow sorting on any column.
+  *  Add sort support to model `PresetList`, to allow sorting on any column.
+  *  Add sort support to model `RecentList`, to allow sorting on any column.
+  *  Add sort support to model `ServiceAvailability`, to allow sorting on any column.
+  *  Add sort support to model `SourceList`, to allow sorting on any column.
+  *  Updated `SoundTouchClient`: GetMediaServerList method - automatically sorts the returned list objects by FriendlyName.
+  *  Updated `SoundTouchClient`: GetServiceAvailability method - automatically sorts the returned list objects by ServiceType.
+  *  Updated `SoundTouchClient`: GetSourceList method - automatically sorts the returned list objects by Source.
+
 ###### [ 1.0.16 ] - 2023/11/15
 
   *  Changed Zeroconf dependency, as it was interfering with Home Assistant dependencies.

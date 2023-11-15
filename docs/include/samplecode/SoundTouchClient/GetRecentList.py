@@ -13,7 +13,7 @@ try:
     # get real-time configuration from the device.
     recentList:RecentList = client.GetRecentList()
     print(recentList.ToString(True))
-
+    
     # get cached configuration, refreshing from device if needed.
     recentList:RecentList = client.GetRecentList(False)
     print("\nCached configuration:\n%s" % recentList.ToString(True))
@@ -22,6 +22,10 @@ try:
     if SoundTouchNodes.recents.Path in client.ConfigurationCache:
         recentList:RecentList = client.ConfigurationCache[SoundTouchNodes.recents.Path]
         print("\nCached configuration, direct:\n%s" % recentList.ToString(True))
+
+    # sort the list (in place) by Name, ascending order.
+    recentList.Recents.sort(key=lambda x: x.Name or "", reverse=False)
+    print("\nList sorted by Name:\n%s" % recentList.ToString(True))
         
 except Exception as ex:
 

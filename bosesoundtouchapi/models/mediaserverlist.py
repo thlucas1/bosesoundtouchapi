@@ -24,31 +24,43 @@ class MediaServerList:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        self._servers = []
+        self._MediaServers = []
         
         if (root is None):
             pass  # no other parms to process.
         else:
 
             # base fields.
-            for server in root.findall('media_server'):
-                self.append(MediaServer(server))
+            for mediaServer in root.findall('media_server'):
+                self.append(MediaServer(mediaServer))
+
+            # sort items on FriendlyName property, ascending order.
+            if len(self._MediaServers) > 0:
+                self._MediaServers.sort(key=lambda x: x.FriendlyName or "", reverse=False)
 
 
     def __getitem__(self, key) -> MediaServer:
-        return self._servers[key]
+        return self._MediaServers[key]
 
 
     def __iter__(self) -> Iterator:
-        return iter(self._servers)
+        return iter(self._MediaServers)
 
 
     def __len__(self) -> int:
-        return len(self._servers)
+        return len(self._MediaServers)
 
 
     def __repr__(self) -> str:
         return self.ToString()
+
+
+    @property
+    def MediaServers(self) -> list[MediaServer]:
+        """ 
+        The list of `MediaServer` items. 
+        """
+        return self._MediaServers
 
 
     def append(self, value: MediaServer):
@@ -59,7 +71,7 @@ class MediaServerList:
             value:
                 The `MediaServer` object to append.
         """
-        self._servers.append(value)
+        self._MediaServers.append(value)
 
 
     def ToString(self, includeItems:bool=False) -> str:
