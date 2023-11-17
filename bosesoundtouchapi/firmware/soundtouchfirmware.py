@@ -22,11 +22,16 @@ _logsi.SystemLogger = logging.getLogger(__package__)
 
 BOSE_SOUNDTOUCH_UPDATE_INDEX_URL = 'https://worldwide.bose.com/updates/soundtouch'
 """
-To fetch the Bose SoundTouch index.xml file this URL has to be visited.
+To fetch the Bose SoundTouch index.xml file, this URL has to be visited.
 
 The request is forwarded to another backend which contains a XML-Document 
 named `index.xml`. This file contains information about the locations of 
 all available SoundTouch firmware upgrades.
+
+This url can also be derived from a call to the `/swUpdateCheck` url for a
+SoundTouch device, specifically the `indexFileUrl` attribute.  The same 
+information is also returned by the `SoundTouchClient.GetSoftwareUpdateCheckInfo()` 
+method.
 """
 
 @export
@@ -146,7 +151,8 @@ class SoundTouchFirmware:
 
         Args:
             url (str):
-                Url to query for the index.xml file.
+                Url to query for the index.xml file.  
+                Refer to the `BOSE_SOUNDTOUCH_UPDATE_INDEX_URL` constant for more information.
                 
         Returns:
             An xml.etree.ElementTree.Element object of the index file contents if downloaded successfully;

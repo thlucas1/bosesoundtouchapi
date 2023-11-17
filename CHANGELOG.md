@@ -6,6 +6,16 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.18 ] - 2023/11/15
+
+  *  Updated model `AudioDspControls`.`ToSupportedAudioModesArray` method to return a sorted list of supported audio modes.
+  *  Added method `ToMinMaxString` to model `ControlLevelInfo` to retrieve a description of the allowed Min / Max range values.
+  *  Added new method to `SoundTouchClient`: PlayNotificationBeep - Plays a quick beep notification sound on devices that support it.
+  *  Added new method to `SoundTouchClient`: GetSoftwareUpdateCheckInfo - Gets the latest available software update release version information for the device.
+  *  Added new method to `SoundTouchClient`: GetSoftwareUpdateStatus - Gets the status of a SoundTouch software update for the device.
+  *  Added new method to `SoundTouchClient`: GetWirelessSiteSurvey - Gets a list of wireless networks that can be detected by the device.
+  *  Added new method to `SoundTouchClient`: SelectLastWiFiSource - Selects the last wifi source that was selected.
+
 ###### [ 1.0.17 ] - 2023/11/15
 
   *  Add sort support to model `MediaServerList`, to allow sorting on any column.

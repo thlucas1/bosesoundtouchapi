@@ -19,6 +19,7 @@ from .musicserviceaccount import MusicServiceAccount
 from .networkinfo import NetworkInfo, NetworkInfoInterface
 from .networkstatus import NetworkStatus, NetworkStatusInterface
 from .nowplayingstatus import NowPlayingStatus
+from .performwirelesssitesurveyresponse import PerformWirelessSiteSurveyResponse, SurveyResultItem
 from .playinfo import PlayInfo
 from .powermanagement import PowerManagement
 from .presetlist import PresetList, Preset
@@ -28,7 +29,9 @@ from .rebroadcastlatencymode import RebroadcastLatencyMode
 from .recentlist import RecentList, Recent
 from .serviceAvailability import ServiceAvailability, Service
 from .simpleconfig import SimpleConfig
-from .soundTouchConfigurationStatus import SoundTouchConfigurationStatus
+from .softwareupdatecheckresponse import SoftwareUpdateCheckResponse
+from .softwareupdatequeryresponse import SoftwareUpdateQueryResponse
+from .soundtouchconfigurationstatus import SoundTouchConfigurationStatus
 from .sourcelist import SourceList, SourceItem
 from .systemtimeout import SystemTimeout
 from .volume import Volume
@@ -57,6 +60,7 @@ __all__ = [
     'NetworkInfo', 'NetworkInfoInterface',
     'NetworkStatus', 'NetworkStatusInterface',
     'NowPlayingStatus',
+    'PerformWirelessSiteSurveyResponse','SurveyResultItem',
     'PlayInfo',
     'PowerManagement',
     'PresetList', 'Preset',
@@ -66,6 +70,8 @@ __all__ = [
     'RecentList', 'Recent',
     'ServiceAvailability', 'Service',
     'SimpleConfig',
+    'SoftwareUpdateCheckResponse',
+    'SoftwareUpdateQueryResponse',
     'SoundTouchConfigurationStatus',
     'SourceList', 'SourceItem',
     'SystemTimeout',

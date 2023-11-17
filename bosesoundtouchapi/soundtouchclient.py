@@ -25,6 +25,7 @@ from .uri import *
 from .bstconst import (
     MSG_TRACE_ACTION_KEY,
     MSG_TRACE_DELAY_DEVICE,
+    MSG_TRACE_DEVICE_COMMAND,
     MSG_TRACE_FAVORITE_NOT_ENABLED,
     MSG_TRACE_GET_CONFIG_OBJECT,
     MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE
@@ -600,7 +601,7 @@ class SoundTouchClient:
 
         Raises:
             SoundTouchError:
-                If the device is not capable of supporting `AudioDspControls` functions,
+                If the device is not capable of supporting `audiodspcontrols` functions,
                 as determined by a query to the cached `supportedURLs` web-services api.  
 
         Note that some SoundTouch devices do not support this functionality.  For example,
@@ -641,7 +642,7 @@ class SoundTouchClient:
 
         Raises:
             SoundTouchError:
-                If the device is not capable of supporting `AudioProductLevelControls` functions,
+                If the device is not capable of supporting `audioproductlevelcontrols` functions,
                 as determined by a query to the cached `supportedURLs` web-services api.  
 
         Note that some SoundTouch devices do not support this functionality.  For example,
@@ -682,7 +683,7 @@ class SoundTouchClient:
 
         Raises:
             SoundTouchError:
-                If the device is not capable of supporting `AudioProductToneControls` functions,
+                If the device is not capable of supporting `audioproducttonecontrols` functions,
                 as determined by a query to the cached `supportedURLs` web-services api.  
 
         Note that some SoundTouch devices do not support this functionality.  For example,
@@ -723,7 +724,7 @@ class SoundTouchClient:
 
         Raises:
             SoundTouchError:
-                If the device is not capable of supporting `AudioSpeakerAttributeAndSetting` functions,
+                If the device is not capable of supporting `audiospeakerattributeandsetting` functions,
                 as determined by a query to the cached `supportedURLs` web-services api.  
 
         Note that some SoundTouch devices do not support this functionality.  For example,
@@ -1183,7 +1184,7 @@ class SoundTouchClient:
 
         Raises:
             SoundTouchError:
-                If the device is not capable of supporting `ProductCecHdmiControl` functions,
+                If the device is not capable of supporting `productcechdmicontrol` functions,
                 as determined by a query to the cached `supportedURLs` web-services api.  
 
         Note that some SoundTouch devices do not support this functionality.  For example,
@@ -1224,7 +1225,7 @@ class SoundTouchClient:
 
         Raises:
             SoundTouchError:
-                If the device is not capable of supporting `ProductHdmiAssignmentControls` functions,
+                If the device is not capable of supporting `producthdmiassignmentcontrols` functions,
                 as determined by a query to the cached `supportedURLs` web-services api.  
 
         Note that some SoundTouch devices do not support this functionality.  For example,
@@ -1295,7 +1296,7 @@ class SoundTouchClient:
             
         Raises:
             SoundTouchError:
-                If the device is not capable of supporting `RebroadcastLatencyMode` functions,
+                If the device is not capable of supporting `rebroadcastlatencymode` functions,
                 as determined by a query to the cached `supportedURLs` web-services api.  
 
         Note that some SoundTouch devices do not support this functionality.  For example,
@@ -1378,6 +1379,11 @@ class SoundTouchClient:
         Returns:
             A `ServiceAvailability` object that contains service availability configuration of the device.
 
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `serviceAvailability` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
         <details>
           <summary>Sample Code</summary>
         ```python 
@@ -1395,6 +1401,86 @@ class SoundTouchClient:
         return self.GetProperty(SoundTouchNodes.serviceAvailability, ServiceAvailability, refresh)
 
 
+    def GetSoftwareUpdateStatus(self, refresh=True) -> SoftwareUpdateQueryResponse:
+        """
+        Gets the status of a SoundTouch software update for the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `SoftwareUpdateQueryResponse` object that contains software update status
+            configuration of the device IF the device supports it; otherwise, None if the 
+            device does not support it.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `swUpdateQuery` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        Note that some SoundTouch devices do not support this functionality.  This method will 
+        first query the device supportedUris to determine if it supports the function; if so, 
+        then the request is made to the device; if not, then a `SoundTouchError` is raised.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetSoftwareUpdateStatus.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.swUpdateQuery.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("SoftwareUpdateQueryResponse", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.swUpdateQuery, SoftwareUpdateQueryResponse, refresh)
+
+
+    def GetSoftwareUpdateCheckInfo(self, refresh=True) -> SoftwareUpdateCheckResponse:
+        """
+        Gets the latest available software update release version information for the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `SoftwareUpdateCheckResponse` object that contains software release information
+            configuration of the device IF the device supports it; otherwise, None if the 
+            device does not support it.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `swUpdateCheck` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        Note that some SoundTouch devices do not support this functionality.  This method will 
+        first query the device supportedUris to determine if it supports the function; if so, 
+        then the request is made to the device; if not, then a `SoundTouchError` is raised.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetSoftwareUpdateCheckInfo.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.swUpdateCheck.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("SoftwareUpdateCheckResponse", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.swUpdateCheck, SoftwareUpdateCheckResponse, refresh)
+
+
     def GetSoundTouchConfigurationStatus(self, refresh=True) -> SoundTouchConfigurationStatus:
         """
         Gets the current SoundTouch configuration status configuration of the device.
@@ -1406,6 +1492,11 @@ class SoundTouchClient:
 
         Returns:
             A `SoundTouchConfigurationStatus` object that contains SoundTouch configuration status of the device.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `soundTouchConfigurationStatus` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
 
         <details>
           <summary>Sample Code</summary>
@@ -1516,6 +1607,46 @@ class SoundTouchClient:
         """
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("WirelessProfile", self._Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.getActiveWirelessProfile, WirelessProfile, refresh)
+
+
+    def GetWirelessSiteSurvey(self, refresh=True) -> PerformWirelessSiteSurveyResponse:
+        """
+        Gets a list of wireless networks that can be detected by the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `PerformWirelessSiteSurveyResponse` object that contains wireless survey
+            configuration of the device IF the device supports it (e.g. ST-300, etc); 
+            otherwise, None if the device does not support it.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `performWirelessSiteSurvey` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        Note that some SoundTouch devices do not support this functionality.  This method will 
+        first query the device supportedUris to determine if it supports the function; if so, 
+        then the request is made to the device; if not, then a `SoundTouchError` is raised.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetWirelessSiteSurvey.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.performWirelessSiteSurvey.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("PerformWirelessSiteSurveyResponse", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.performWirelessSiteSurvey, PerformWirelessSiteSurveyResponse, refresh)
 
 
     def GetZoneStatus(self, refresh=True) -> Zone:
@@ -1877,6 +2008,36 @@ class SoundTouchClient:
         """
         return self.SelectContentItem(item, delay)
 
+
+    def PlayNotificationBeep(self) -> SoundTouchMessage:
+        """
+        Plays a notification beep on the device.
+        
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `playNotification` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        Note that some SoundTouch devices do not support this functionality.  For example,
+        the ST-10 will support this, but the ST-300 will not.  This method will first query
+        the device supportedUris to determine if it supports the function; if so, then the
+        request is made to the device; if not, then a `SoundTouchError` is raised.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/PlayNotificationBeep.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.playNotification.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        return self.Get(SoundTouchNodes.playNotification)
+        
 
     def PlayNotificationTTS(self, sayText:str, ttsUrl:str=None, 
                             artist:str=None, album:str=None, track:str=None,  
@@ -2566,12 +2727,21 @@ class SoundTouchClient:
             delay (int):
                 time delay (in seconds) to wait AFTER selecting the source.  This delay
                 will give the SoundTouch device time to process the change before another 
-                command is accepted.
-                default is 3 seconds, and value range is 0 - 10.
+                command is accepted.  
+                Default is 3 seconds, and value range is 0 - 10.
                 
         Returns:
             A SoundTouchMessage response that indicates success or failure of the command.
             
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `selectLastSoundTouchSource` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        Note that some SoundTouch devices do not support this functionality.  This method will 
+        first query the device supportedUris to determine if it supports the function; if so, 
+        then the request is made to the device; if not, then a `SoundTouchError` is raised.
+        
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -2579,8 +2749,14 @@ class SoundTouchClient:
         ```
         </details>
         """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.selectLocalSource.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("selectLastSoundTouchSource", self._Device.DeviceName))
         delay = self._ValidateDelay(delay, 5, 10)
-        
         msg = self.Get(SoundTouchNodes.selectLastSoundTouchSource)
         
         if delay > 0:
@@ -2598,12 +2774,21 @@ class SoundTouchClient:
             delay (int):
                 time delay (in seconds) to wait AFTER selecting the source.  This delay
                 will give the SoundTouch device time to process the change before another 
-                command is accepted.
-                default is 3 seconds, and value range is 0 - 10.
+                command is accepted.  
+                Default is 3 seconds, and value range is 0 - 10.
                 
         Returns:
             A SoundTouchMessage response that indicates success or failure of the command.
             
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `selectLastSource` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        Note that some SoundTouch devices do not support this functionality.  This method will 
+        first query the device supportedUris to determine if it supports the function; if so, 
+        then the request is made to the device; if not, then a `SoundTouchError` is raised.
+        
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -2611,9 +2796,62 @@ class SoundTouchClient:
         ```
         </details>
         """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.selectLocalSource.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("selectLastSource", self._Device.DeviceName))
         delay = self._ValidateDelay(delay, 5, 10)
-        
         msg = self.Get(SoundTouchNodes.selectLastSource)
+        
+        if delay > 0:
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            time.sleep(delay)
+            
+        return msg
+
+
+    def SelectLastWifiSource(self, delay:int=3) -> SoundTouchMessage:
+        """
+        Selects the last wifi source that was selected.
+        
+        Args:
+            delay (int):
+                time delay (in seconds) to wait AFTER selecting the source.  This delay
+                will give the SoundTouch device time to process the change before another 
+                command is accepted.  
+                Default is 3 seconds, and value range is 0 - 10.
+                
+        Returns:
+            A SoundTouchMessage response that indicates success or failure of the command.
+            
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `selectLastWiFiSource` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        Note that some SoundTouch devices do not support this functionality.  This method will 
+        first query the device supportedUris to determine if it supports the function; if so, 
+        then the request is made to the device; if not, then a `SoundTouchError` is raised.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SelectLastWifiSource.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.selectLastWiFiSource.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("selectLastWiFiSource", self._Device.DeviceName))
+        delay = self._ValidateDelay(delay, 5, 10)
+        msg = self.Get(SoundTouchNodes.selectLastWiFiSource)
         
         if delay > 0:
             _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
@@ -2631,12 +2869,21 @@ class SoundTouchClient:
             delay (int):
                 time delay (in seconds) to wait AFTER selecting the source.  This delay
                 will give the SoundTouch device time to process the change before another 
-                command is accepted.
-                default is 3 seconds, and value range is 0 - 10.
+                command is accepted.  
+                Default is 3 seconds, and value range is 0 - 10.
                 
         Returns:
             A SoundTouchMessage response that indicates success or failure of the command.
             
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `selectLocalSource` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        Note that some SoundTouch devices do not support this functionality.  This method will 
+        first query the device supportedUris to determine if it supports the function; if so, 
+        then the request is made to the device; if not, then a `SoundTouchError` is raised.
+        
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -2644,8 +2891,14 @@ class SoundTouchClient:
         ```
         </details>
         """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.selectLocalSource.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("selectLocalSource", self._Device.DeviceName))
         delay = self._ValidateDelay(delay, 5, 10)
-        
         msg = self.Get(SoundTouchNodes.selectLocalSource)
         
         if delay > 0:
@@ -2950,7 +3203,7 @@ class SoundTouchClient:
 
         Raises:
             SoundTouchError:
-                If the device is not capable of supporting `AudioDspControls` functions,
+                If the device is not capable of supporting `audiodspcontrols` functions,
                 as determined by a query to the cached `supportedURLs` web-services api.  
 
         Note that some SoundTouch devices do not support this functionality.  For example,
@@ -2991,7 +3244,7 @@ class SoundTouchClient:
 
         Raises:
             SoundTouchError:
-                If the device is not capable of supporting `AudioProductLevelControls` functions,
+                If the device is not capable of supporting `audioproductlevelcontrols` functions,
                 as determined by a query to the cached `supportedURLs` web-services api.    
                 If the controls argument is None, or not of type `AudioProductLevelControls`.
                 
@@ -3033,7 +3286,7 @@ class SoundTouchClient:
 
         Raises:
             SoundTouchError:
-                If the device is not capable of supporting `AudioProductToneControls` functions,
+                If the device is not capable of supporting `audioproducttonecontrols` functions,
                 as determined by a query to the cached `supportedURLs` web-services api.    
                 If the controls argument is None, or not of type `AudioProductToneControls`.
                 
@@ -3075,7 +3328,7 @@ class SoundTouchClient:
 
         Raises:
             SoundTouchError:
-                If the device is not capable of supporting `ProductCecHdmiControl` functions,
+                If the device is not capable of supporting `productcechdmicontrol` functions,
                 as determined by a query to the cached `supportedURLs` web-services api.    
                 If the control argument is None, or not of type `ProductCecHdmiControl`.
                 

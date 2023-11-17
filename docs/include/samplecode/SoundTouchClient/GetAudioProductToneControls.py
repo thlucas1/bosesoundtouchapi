@@ -15,6 +15,9 @@ try:
     config:AudioProductToneControls = client.GetAudioProductToneControls()
     print(config.ToString())
 
+    print("\nBass Range values: %s" % config.Bass.ToMinMaxString())
+    print("Treble Range values: %s" % config.Treble.ToMinMaxString())
+
     # get cached configuration, refreshing from device if needed.
     config:AudioProductToneControls = client.GetAudioProductToneControls(False)
     print("\nCached configuration:\n%s" % config.ToString())

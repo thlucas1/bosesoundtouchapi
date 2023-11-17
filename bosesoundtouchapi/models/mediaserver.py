@@ -23,19 +23,31 @@ class MediaServer:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        # initialize storage.
+        self._ServerId:str = None
+        self._MacAddress:str = None
+        self._IpAddress:str = None
+        self._Manufacturer:str = None
+        self._ModelName:str = None
+        self._FriendlyName:str = None
+        self._ModelDescription:str = None
+        self._Location:str = None
+
         if (root is None):
+
             pass  # no other parms to process.
+
         else:
 
             # base fields.
-            self._ServerId:str = root.get('id')
-            self._MacAddress:str = root.get('mac')
-            self._IpAddress:str = root.get('ip')
-            self._Manufacturer:str = root.get('manufacturer')
-            self._ModelName:str = root.get('model_name')
-            self._FriendlyName:str = root.get('friendly_name')
-            self._ModelDescription:str = root.get('model_description')
-            self._Location:str = root.get('location')
+            self._ServerId = root.get('id')
+            self._MacAddress = root.get('mac')
+            self._IpAddress = root.get('ip')
+            self._Manufacturer = root.get('manufacturer')
+            self._ModelName = root.get('model_name')
+            self._FriendlyName = root.get('friendly_name')
+            self._ModelDescription = root.get('model_description')
+            self._Location = root.get('location')
 
 
     def __repr__(self) -> str:

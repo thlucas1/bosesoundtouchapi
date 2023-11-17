@@ -67,7 +67,7 @@ class AudioDspControls(SoundTouchModelRequest):
             self._AudioMode = root.get('audiomode', default=None)
             self._SupportedAudioModes = root.get('supportedaudiomodes', default=None)
             self._VideoSyncAudioDelay = int(root.get('videosyncaudiodelay', default=0))
-
+            
 
     def __repr__(self) -> str:
         return self.ToString()
@@ -149,12 +149,11 @@ class AudioDspControls(SoundTouchModelRequest):
         An empty list object is returned if the SupportedAudioModes property is None or empty;
         otherwise, a list of the supported audio modes is returned.
         """
-        # if supported audio modes is not set then we are done.
-        if self._SupportedAudioModes is None:
-            return []
-        
-        # load list of supported audio modes.
-        modesList:list[str] = self._SupportedAudioModes.split('|')
+        # build list of supported audio modes, and sort the values.
+        modesList:list[str] = []
+        if self._SupportedAudioModes is not None:
+            modesList = self._SupportedAudioModes.split('|')
+            modesList.sort()
         return modesList
 
 

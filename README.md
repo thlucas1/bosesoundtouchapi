@@ -19,8 +19,7 @@ The following features are supported by this API.
 - Multi-room Zone functions (create zone, add / remove zone members, syncronized play)
 - Power functions (smart power on / off, power toggle, power to standby)
 - Audio mode switching (Normal, Dialog, etc)
-- Audio Tone Controls for Bass Level (set, retrieve, supported min / max values)
-- Audio Tone Controls for Treble Level (set, retrieve, supported min / max values)
+- Audio Tone Controls for Bass and Treble Levels (set, retrieve, supported min / max values)
 - Audio Product CEC HDMI Control support (set, retrieve, supported values)
 - Presets (store, remove, remove all, select)
 - Recent Media History (list recent content that was played, select recent item for play)
@@ -29,6 +28,8 @@ The following features are supported by this API.
 - Change Device Name
 - Configuration data (clock time, clock, timezone, capabilities, bass capabilities)
 - Notifications (receive real-time status updates from the device)
+- Wireless configuration options (available networks in range, set last wifi source)
+- Firmware update configuration (query software update status, check configuration)
 - Zeroconf (aka MDNS) discovery of SoundTouch devices on the network
 - ID3 tag support for media content played from a url
 - ... and more

@@ -4,7 +4,7 @@
 # constants are placed in this file if they are used across multiple files.
 # the only exception to this is for the VERSION constant, which is placed here for convenience.
 
-VERSION:str = "1.0.17"
+VERSION:str = "1.0.18"
 """ 
 Current version of the Bose SoundTouch API Python3 Library. 
 """
@@ -58,6 +58,11 @@ Setting %s to '%s' on SoundTouch device: '%s'
 MSG_TRACE_GET_CONFIG_OBJECT:str = "Getting %s configuration for SoundTouch device: '%s'"
 """
 Getting %s configuration for SoundTouch device: '%s'
+"""
+
+MSG_TRACE_DEVICE_COMMAND:str = "Executing command '%s' on SoundTouch device: '%s'"
+"""
+Executing command '%s' on SoundTouch device: '%s'
 """
 
 MSG_TRACE_ACTION_KEY:str = "Sending '%s' key press and release action to SoundTouch device: '%s'"

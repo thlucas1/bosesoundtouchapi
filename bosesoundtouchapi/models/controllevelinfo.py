@@ -156,6 +156,18 @@ class ControlLevelInfo(SoundTouchModelRequest):
         return elm
 
         
+    def ToMinMaxString(self) -> str:
+        """
+        Returns a displayable string representation of the minimum and
+        maximum values.
+        
+        Returns:
+            A string in the form of "Min=%i, Max=%i".
+        """
+        msg:str = "Min=%i, Max=%i" % (self._MinValue, self._MaxValue)
+        return msg 
+
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.
