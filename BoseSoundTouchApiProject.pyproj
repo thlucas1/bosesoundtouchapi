@@ -218,6 +218,7 @@
     <Compile Include="docs\include\samplecode\SoundTouchFirmware\_ClassInit.py" />
     <Compile Include="docs\include\samplecode\SoundTouchWebSocket\_ClassInit.py" />
     <Compile Include="setup.py" />
+    <Compile Include="test\testVS_SoundTouchDiscovery.py" />
     <Compile Include="test\testVS_SoundTouchClient.py" />
     <Compile Include="test\test_Firmware.py" />
     <Compile Include="test\test_SampleCode.py" />

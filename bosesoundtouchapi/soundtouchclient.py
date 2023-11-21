@@ -372,8 +372,8 @@ class SoundTouchClient:
             to the source list.
 
         This method retrieves the list of available media servers, as well as the list of
-        sources defined to the device.  It will then compare the two lists, adding all media
-        servers to the source list if one is not present.
+        sources defined to the device.  It will then compare the two lists, adding any media
+        server(s) to the source list if they are not present.
         
         UPnP media server music service (e.g. "STORED_MUSIC") sources can only be added if the
         device has detected the UPnP media server.  The detected UPnP media servers will appear

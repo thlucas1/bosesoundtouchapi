@@ -17,6 +17,9 @@ from bosesoundtouchapi.models import *
 from bosesoundtouchapi.uri import *
 from bosesoundtouchapi.ws import *
 
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+# SoundTouchClient Tests - Single Device Environment
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class Test_SoundTouchClient_OneDevice(unittest.TestCase):
     """
@@ -121,23 +124,30 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
             print("*******************************************************************************")
                     
     
-    def _CreateApiClient(self) -> SoundTouchClient:
+    def _CreateApiClient(self, ipAddress:str=None) -> SoundTouchClient:
         """
         Creates a new SoundTouchClient instance, and sets all properties for executing these test cases.
 
+        Args:
+            ipAddress (str):
+                SoundTouch device IP Address to connect to; otherwise, None to use the default.
+        
         Returns:
             An SoundTouchClient instance.
         """
-        # set SmartInspect logger reference.        
         _logsi:SISession = SIAuto.Main            
 
         try:
 
+            # set ip address of SoundTouch device to connect to.
+            if ipAddress is None:
+                ipAddress = "192.168.1.131" # Bose SoundTouch 10
+                #ipAddress = "192.168.1.130" # Bose SoundTouch 300
+                #ipAddress = "192.168.1.133" # non-existant ip
+                #ipAddress = "x.168.1.133"   # invalid ip
+
             # create SoundTouchDevice instance.
-            device:SoundTouchDevice = SoundTouchDevice("192.168.1.131") # Bose SoundTouch 10
-            #device:SoundTouchDevice = SoundTouchDevice("192.168.1.130") # Bose SoundTouch 300
-            #device:SoundTouchDevice = SoundTouchDevice("192.168.1.133") # non-existant ip
-            #device:SoundTouchDevice = SoundTouchDevice("x.168.1.133") # invalid ip
+            device:SoundTouchDevice = SoundTouchDevice(ipAddress)
             
             # create SoundTouchClient instance from device.
             client:SoundTouchClient = SoundTouchClient(device)
@@ -153,7 +163,7 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
 
 
     def _OnSoundTouchUpdateEvent(self, args:Element) -> None:
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
 
         if (args != None):
@@ -163,7 +173,7 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def _OnSoundTouchInfoEvent(self, args:Element) -> None:
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
 
         if (args != None):
@@ -264,13 +274,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
     ###################################################################################################################################
 
     def test_Action(self):
-        """
-        Test Action method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_Action"
 
         try:
 
@@ -293,13 +299,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_AddFavorite(self):
-        """
-        Test AddFavorite method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_AddFavorite"
 
         try:
 
@@ -342,14 +344,52 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
             raise
         
 
+    def test_AddMusicServiceSources(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_AddMusicServiceSources"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get list of defined sources.
+            sourceList:SourceList = client.GetSourceList()
+            print("\nSource list before the change:\n%s" % sourceList.ToString(True))
+    
+            # get list of upnp media services detected by the device.
+            mediaServerList:MediaServerList = client.GetMediaServerList()
+            print("\nUPnP Media Server list before the change:\n%s" % mediaServerList.ToString(True))
+    
+            # ensure all upnp media servers are defined as sources.
+            print("\n\nVerifying UPnP media servers are defined as sources ...")
+            sourcesAdded:list[str] = client.AddMusicServiceSources()
+            if len(sourcesAdded) == 0:
+                print(" *** All UPnP media servers are already defined as sources")
+            else:
+                print("Sources added:\n%s" % str(sourcesAdded))
+
+                # get list of defined sources.
+                sourceList:SourceList = client.GetSourceList()
+                print("\nSource list after the change:\n%s" % sourceList.ToString(True))
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
     # def test_Bookmark(self):
-    #     """
-    #     Test Bookmark method scenarios.
-    #     """
-    #     # set SmartInspect logger reference.        
+
     #     _logsi:SISession = SIAuto.Main            
-    #     # set method name for console output.
-    #     methodName:str = SISession.GetMethodName()
+    #     methodName:str = "test_Bookmark"
 
     #     try:
 
@@ -384,14 +424,216 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
     #         raise
         
 
-    def test_GetBalance(self):
-        """
-        Test GetBalance method scenarios.
-        """
-        # set SmartInspect logger reference.        
+    def test_Get(self):
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_Get"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get configuration for specified node.
+            msg:SoundTouchMessage = client.Get(SoundTouchNodes.volume)
+    
+            if msg != None:
+                ElementTree.indent(msg.Response)  # for pretty printing
+                responseEncoded = ElementTree.tostring(msg.Response, encoding="unicode")
+                print("Get Response Message:\n%s" %  responseEncoded)
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_GetAudioDspControls(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_GetAudioDspControls"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient("192.168.1.130") # SoundTouch 300
+
+            # get real-time configuration from the device.
+            # note that not all devices support retrieval of this information.
+            config:AudioDspControls = client.GetAudioDspControls()
+            print(config.ToString())
+            print("\nCurrent Audio DSP Controls Supported Audio Modes array: %s" % (config.ToSupportedAudioModesArray()))
+
+            # get cached configuration, refreshing from device if needed.
+            config:AudioDspControls = client.GetAudioDspControls(False)
+            print("\nCached configuration:\n%s" % config.ToString())
+
+            # get cached configuration directly from the configuration manager dictionary.
+            if SoundTouchNodes.audiodspcontrols.Path in client.ConfigurationCache:
+                config:AudioDspControls = client.ConfigurationCache[SoundTouchNodes.audiodspcontrols.Path]
+                print("\nCached configuration, direct:\n%s" % config.ToString())
+
+            # test function not supported by device.
+            with self.assertRaises(SoundTouchError, msg="\nShould have raised SoundTouchError for function not supported by device"):
+                client:SoundTouchClient = self._CreateApiClient("192.168.1.131") # SoundTouch 10
+                _logsi.LogMessage("Testing for function not supported by device ...", colorValue=SIColors.LightGreen)
+                print("\nTesting for function not supported by device ...")
+                config:AudioDspControls = client.GetAudioDspControls()
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_GetAudioProductLevelControls(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_GetAudioProductLevelControls"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient("192.168.1.130") # SoundTouch 300
+
+            # get real-time configuration from the device.
+            # note that not all devices support retrieval of this information.
+            config:AudioProductLevelControls = client.GetAudioProductLevelControls()
+            print(config.ToString())
+
+            # get cached configuration, refreshing from device if needed.
+            config:AudioProductLevelControls = client.GetAudioProductLevelControls(False)
+            print("\nCached configuration:\n%s" % config.ToString())
+
+            # get cached configuration directly from the configuration manager dictionary.
+            if SoundTouchNodes.audioproductlevelcontrols.Path in client.ConfigurationCache:
+                config:AudioProductLevelControls = client.ConfigurationCache[SoundTouchNodes.audioproductlevelcontrols.Path]
+                print("\nCached configuration, direct:\n%s" % config.ToString())
+
+            # test function not supported by device.
+            with self.assertRaises(SoundTouchError, msg="\nShould have raised SoundTouchError for function not supported by device"):
+                client:SoundTouchClient = self._CreateApiClient("192.168.1.131") # SoundTouch 10
+                _logsi.LogMessage("Testing for function not supported by device ...", colorValue=SIColors.LightGreen)
+                print("\nTesting for function not supported by device ...")
+                config:AudioProductLevelControls = client.GetAudioProductLevelControls()
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_GetAudioProductToneControls(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_GetAudioProductToneControls"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient("192.168.1.130") # SoundTouch 300
+
+            # get real-time configuration from the device.
+            # note that not all devices support retrieval of this information.
+            config:AudioProductToneControls = client.GetAudioProductToneControls()
+            print(config.ToString())
+
+            print("\nBass Range values: %s" % config.Bass.ToMinMaxString())
+            print("Treble Range values: %s" % config.Treble.ToMinMaxString())
+
+            # get cached configuration, refreshing from device if needed.
+            config:AudioProductToneControls = client.GetAudioProductToneControls(False)
+            print("\nCached configuration:\n%s" % config.ToString())
+
+            # get cached configuration directly from the configuration manager dictionary.
+            if SoundTouchNodes.audioproducttonecontrols.Path in client.ConfigurationCache:
+                config:AudioProductToneControls = client.ConfigurationCache[SoundTouchNodes.audioproducttonecontrols.Path]
+                print("\nCached configuration, direct:\n%s" % config.ToString())
+
+            # test function not supported by device.
+            with self.assertRaises(SoundTouchError, msg="\nShould have raised SoundTouchError for function not supported by device"):
+                client:SoundTouchClient = self._CreateApiClient("192.168.1.131") # SoundTouch 10
+                _logsi.LogMessage("Testing for function not supported by device ...", colorValue=SIColors.LightGreen)
+                print("\nTesting for function not supported by device ...")
+                config:AudioProductToneControls = client.GetAudioProductToneControls()
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_GetAudioSpeakerAttributeAndSetting(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_GetAudioSpeakerAttributeAndSetting"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient("192.168.1.130") # SoundTouch 300
+
+            # get real-time configuration from the device.
+            # note that not all devices support retrieval of this information.
+            config:AudioSpeakerAttributeAndSetting = client.GetAudioSpeakerAttributeAndSetting()
+            print(config.ToString())
+
+            # get cached configuration, refreshing from device if needed.
+            config:AudioSpeakerAttributeAndSetting = client.GetAudioSpeakerAttributeAndSetting(False)
+            print("\nCached configuration:\n%s" % config.ToString())
+
+            # get cached configuration directly from the configuration manager dictionary.
+            if SoundTouchNodes.audiospeakerattributeandsetting.Path in client.ConfigurationCache:
+                config:AudioSpeakerAttributeAndSetting = client.ConfigurationCache[SoundTouchNodes.audiospeakerattributeandsetting.Path]
+                print("\nCached configuration, direct:\n%s" % config.ToString())
+
+            # test function not supported by device.
+            with self.assertRaises(SoundTouchError, msg="\nShould have raised SoundTouchError for function not supported by device"):
+                client:SoundTouchClient = self._CreateApiClient("192.168.1.131") # SoundTouch 10
+                _logsi.LogMessage("Testing for function not supported by device ...", colorValue=SIColors.LightGreen)
+                print("\nTesting for function not supported by device ...")
+                config:AudioSpeakerAttributeAndSetting = client.GetAudioSpeakerAttributeAndSetting()
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_GetBalance(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_GetBalance"
 
         try:
 
@@ -430,13 +672,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetBass(self):
-        """
-        Test GetBass method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetBass"
 
         try:
 
@@ -466,13 +704,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetBassCapabilities(self):
-        """
-        Test GetBassCapabilities method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetBassCapabilities"
 
         try:
 
@@ -501,14 +735,45 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
             raise
         
 
-    def test_GetCapabilities(self):
-        """
-        Test GetCapabilities method scenarios.
-        """
-        # set SmartInspect logger reference.        
+    def test_GetBlueToothInfo(self):
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetBlueToothInfo"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+            
+            # get real-time configuration from the device.
+            config:BlueToothInfo = client.GetBlueToothInfo()
+            print(config.ToString())
+
+            # get cached configuration, refreshing from device if needed.
+            config:BlueToothInfo = client.GetBlueToothInfo(False)
+            print("\nCached configuration:\n%s" % config.ToString())
+
+            # get cached configuration directly from the configuration manager dictionary.
+            if SoundTouchNodes.bluetoothInfo.Path in client.ConfigurationCache:
+                config:BlueToothInfo = client.ConfigurationCache[SoundTouchNodes.bluetoothInfo.Path]
+                print("\nCached configuration, direct:\n%s" % config.ToString())
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_GetCapabilities(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_GetCapabilities"
 
         try:
 
@@ -544,13 +809,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetClockConfig(self):
-        """
-        Test GetClockConfig method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetClockConfig"
 
         try:
 
@@ -579,13 +840,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetClockTime(self):
-        """
-        Test GetClockTime method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetClockTime"
 
         try:
 
@@ -614,13 +871,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetDspMono(self):
-        """
-        Test GetDspMono method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetDspMono"
 
         try:
 
@@ -649,13 +902,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetLanguage(self):
-        """
-        Test GetLanguage method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetLanguage"
 
         try:
 
@@ -683,13 +932,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetMediaServerList(self):
-        """
-        Test GetMediaServerList method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetMediaServerList"
 
         try:
 
@@ -731,13 +976,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetName(self):
-        """
-        Test GetName method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetName"
 
         try:
 
@@ -765,13 +1006,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetNetworkInfo(self):
-        """
-        Test GetNetworkInfo method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetNetworkInfo"
 
         try:
 
@@ -812,13 +1049,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetNetworkStatus(self):
-        """
-        Test GetNetworkStatus method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetNetworkStatus"
 
         try:
 
@@ -858,13 +1091,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetNowPlayingStatus(self):
-        """
-        Test GetNowPlayingStatus method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetNowPlayingStatus"
 
         try:
 
@@ -892,13 +1121,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetOptions(self):
-        """
-        Test GetOptions method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetOptions"
 
         try:
 
@@ -926,13 +1151,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetPowerManagement(self):
-        """
-        Test GetPowerManagement method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetPowerManagement"
 
         try:
 
@@ -962,13 +1183,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetPresetList(self):
-        """
-        Test GetPresetList method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetPresetList"
 
         try:
 
@@ -1003,14 +1220,132 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
             raise
         
 
-    def test_GetRecentList(self):
-        """
-        Test GetRecentList method scenarios.
-        """
-        # set SmartInspect logger reference.        
+    def test_GetProductCecHdmiControl(self):
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetProductCecHdmiControl"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient("192.168.1.130") # SoundTouch 300
+
+            # get real-time configuration from the device.
+            # note that not all devices support retrieval of this information.
+            config:ProductCecHdmiControl = client.GetProductCecHdmiControl()
+            print(config.ToString())
+
+            # get cached configuration, refreshing from device if needed.
+            config:ProductCecHdmiControl = client.GetProductCecHdmiControl(False)
+            print("\nCached configuration:\n%s" % config.ToString())
+
+            # get cached configuration directly from the configuration manager dictionary.
+            if SoundTouchNodes.productcechdmicontrol.Path in client.ConfigurationCache:
+                config:ProductCecHdmiControl = client.ConfigurationCache[SoundTouchNodes.productcechdmicontrol.Path]
+                print("\nCached configuration, direct:\n%s" % config.ToString())
+
+            # test function not supported by device.
+            with self.assertRaises(SoundTouchError, msg="\nShould have raised SoundTouchError for function not supported by device"):
+                client:SoundTouchClient = self._CreateApiClient("192.168.1.131") # SoundTouch 10
+                _logsi.LogMessage("Testing for function not supported by device ...", colorValue=SIColors.LightGreen)
+                print("\nTesting for function not supported by device ...")
+                config:ProductCecHdmiControl = client.GetProductCecHdmiControl()
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_GetProductHdmiAssignmentControls(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_GetProductHdmiAssignmentControls"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient("192.168.1.130") # SoundTouch 300
+
+            # get real-time configuration from the device.
+            # note that not all devices support retrieval of this information.
+            config:ProductHdmiAssignmentControls = client.GetProductHdmiAssignmentControls()
+            print(config.ToString())
+
+            # get cached configuration, refreshing from device if needed.
+            config:ProductHdmiAssignmentControls = client.GetProductHdmiAssignmentControls(False)
+            print("\nCached configuration:\n%s" % config.ToString())
+
+            # get cached configuration directly from the configuration manager dictionary.
+            if SoundTouchNodes.producthdmiassignmentcontrols.Path in client.ConfigurationCache:
+                config:ProductHdmiAssignmentControls = client.ConfigurationCache[SoundTouchNodes.producthdmiassignmentcontrols.Path]
+                print("\nCached configuration, direct:\n%s" % config.ToString())
+
+            # test function not supported by device.
+            with self.assertRaises(SoundTouchError, msg="\nShould have raised SoundTouchError for function not supported by device"):
+                client:SoundTouchClient = self._CreateApiClient("192.168.1.131") # SoundTouch 10
+                _logsi.LogMessage("Testing for function not supported by device ...", colorValue=SIColors.LightGreen)
+                print("\nTesting for function not supported by device ...")
+                config:ProductHdmiAssignmentControls = client.GetProductHdmiAssignmentControls()
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_GetReBroadcastLatencyMode(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_GetReBroadcastLatencyMode"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get real-time configuration from the device.
+            # note that not all devices support retrieval of this information.
+            config:RebroadcastLatencyMode = client.GetReBroadcastLatencyMode()
+            print(config.ToString())
+
+            # get cached configuration, refreshing from device if needed.
+            config:RebroadcastLatencyMode = client.GetReBroadcastLatencyMode(False)
+            print("\nCached configuration:\n%s" % config.ToString())
+
+            # get cached configuration directly from the configuration manager dictionary.
+            if SoundTouchNodes.rebroadcastlatencymode.Path in client.ConfigurationCache:
+                config:RebroadcastLatencyMode = client.ConfigurationCache[SoundTouchNodes.rebroadcastlatencymode.Path]
+                print("\nCached configuration, direct:\n%s" % config.ToString())
+                    
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_GetRecentList(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_GetRecentList"
 
         try:
 
@@ -1046,13 +1381,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetRequestToken(self):
-        """
-        Test GetRequestToken method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetRequestToken"
 
         try:
 
@@ -1083,14 +1414,158 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
             raise
         
 
-    def test_GetSourceList(self):
-        """
-        Test GetSourceList method scenarios.
-        """
-        # set SmartInspect logger reference.        
+    def test_GetServiceAvailability(self):
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetServiceAvailability"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get real-time configuration from the device.
+            config:ServiceAvailability = client.GetServiceAvailability()
+            print(config.ToString(True))
+
+            # get cached configuration, refreshing from device if needed.
+            config:ServiceAvailability = client.GetServiceAvailability(False)
+            print("\nCached configuration:\n%s" % config.ToString(True))
+
+            # get cached configuration directly from the configuration manager dictionary.
+            if SoundTouchNodes.serviceAvailability.Path in client.ConfigurationCache:
+                config:ServiceAvailability = client.ConfigurationCache[SoundTouchNodes.serviceAvailability.Path]
+                print("\nCached configuration, direct:\n%s" % config.ToString(True))
+        
+            # sort the list (in place) by ServiceType, ascending order.
+            config.Services.sort(key=lambda x: x.ServiceType or "", reverse=False)
+            print("\nList sorted by ServiceType:\n%s" % config.ToString(True))
+           
+            # sort the list (in place) by IsAvailable, ascending order.
+            config.Services.sort(key=lambda x: x.IsAvailable or False, reverse=False)
+            print("\nList sorted by IsAvailable:\n%s" % config.ToString(True))
+                    
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_GetSoftwareUpdateCheckInfo(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_GetSoftwareUpdateCheckInfo"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get real-time configuration from the device.
+            config:SoftwareUpdateCheckResponse = client.GetSoftwareUpdateCheckInfo()
+            print(config.ToString())
+
+            # get cached configuration, refreshing from device if needed.
+            config:SoftwareUpdateCheckResponse = client.GetSoftwareUpdateCheckInfo(False)
+            print("\nCached configuration:\n%s" % config.ToString())
+
+            # get cached configuration directly from the configuration manager dictionary.
+            if SoundTouchNodes.swUpdateCheck.Path in client.ConfigurationCache:
+                config:SoftwareUpdateCheckResponse = client.ConfigurationCache[SoundTouchNodes.swUpdateCheck.Path]
+                print("\nCached configuration, direct:\n%s" % config.ToString())
+                    
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_GetSoftwareUpdateStatus(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_GetSoftwareUpdateStatus"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get real-time configuration from the device.
+            config:SoftwareUpdateQueryResponse = client.GetSoftwareUpdateStatus()
+            print(config.ToString())
+
+            # get cached configuration, refreshing from device if needed.
+            config:SoftwareUpdateQueryResponse = client.GetSoftwareUpdateStatus(False)
+            print("\nCached configuration:\n%s" % config.ToString())
+
+            # get cached configuration directly from the configuration manager dictionary.
+            if SoundTouchNodes.swUpdateQuery.Path in client.ConfigurationCache:
+                config:SoftwareUpdateQueryResponse = client.ConfigurationCache[SoundTouchNodes.swUpdateQuery.Path]
+                print("\nCached configuration, direct:\n%s" % config.ToString())
+                    
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_GetSoundTouchConfigurationStatus(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_GetSoundTouchConfigurationStatus"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get real-time configuration from the device.
+            config:SoundTouchConfigurationStatus = client.GetSoundTouchConfigurationStatus()
+            print(config.ToString())
+
+            # get cached configuration, refreshing from device if needed.
+            config:SoundTouchConfigurationStatus = client.GetSoundTouchConfigurationStatus(False)
+            print("\nCached configuration:\n%s" % config.ToString())
+
+            # get cached configuration directly from the configuration manager dictionary.
+            if SoundTouchNodes.soundTouchConfigurationStatus.Path in client.ConfigurationCache:
+                config:SoundTouchConfigurationStatus = client.ConfigurationCache[SoundTouchNodes.soundTouchConfigurationStatus.Path]
+                print("\nCached configuration, direct:\n%s" % config.ToString())
+                    
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_GetSourceList(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_GetSourceList"
 
         try:
 
@@ -1153,13 +1628,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetSystemTimeout(self):
-        """
-        Test GetSystemTimeout method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetSystemTimeout"
 
         try:
 
@@ -1188,13 +1659,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetVolume(self):
-        """
-        Test GetVolume method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetVolume"
 
         try:
 
@@ -1222,13 +1689,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_GetWirelessProfile(self):
-        """
-        Test GetWirelessProfile method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetWirelessProfile"
 
         try:
 
@@ -1255,14 +1718,49 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
             raise
         
 
-    def test_MakeRequest(self):
-        """
-        Test MakeRequest method scenarios.
-        """
-        # set SmartInspect logger reference.        
+    def test_GetWirelessSiteSurvey(self):
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetWirelessSiteSurvey"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get real-time configuration from the device.
+            config:PerformWirelessSiteSurveyResponse = client.GetWirelessSiteSurvey()
+            print(config.ToString(True))
+
+            # get cached configuration, refreshing from device if needed.
+            config:PerformWirelessSiteSurveyResponse = client.GetWirelessSiteSurvey(False)
+            print("\nCached configuration:\n%s" % config.ToString(True))
+
+            # get cached configuration directly from the configuration manager dictionary.
+            if SoundTouchNodes.performWirelessSiteSurvey.Path in client.ConfigurationCache:
+                config:PerformWirelessSiteSurveyResponse = client.ConfigurationCache[SoundTouchNodes.performWirelessSiteSurvey.Path]
+                print("\nCached configuration, direct:\n%s" % config.ToString(True))
+           
+            # sort the list (in place) by SignalStrength, ascending order.
+            config.SurveyResultItems.sort(key=lambda x: x.SignalStrength or 0, reverse=False)
+            print("\nList sorted by SignalStrength:\n%s" % config.ToString(True))
+                    
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_MakeRequest(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_MakeRequest"
 
         try:
 
@@ -1290,13 +1788,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_MediaNextTrack(self):
-        """
-        Test MediaNextTrack method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_MediaNextTrack"
 
         try:
 
@@ -1332,13 +1826,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_MediaPause(self):
-        """
-        Test MediaPause method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_MediaPause"
 
         try:
 
@@ -1371,13 +1861,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_MediaPlay(self):
-        """
-        Test MediaPlay method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_MediaPlay"
 
         try:
 
@@ -1413,13 +1899,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_MediaPlayPause(self):
-        """
-        Test MediaPlayPause method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_MediaPlayPause"
 
         try:
 
@@ -1455,13 +1937,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_MediaPreviousTrack(self):
-        """
-        Test MediaPreviousTrack method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_MediaPreviousTrack"
 
         try:
 
@@ -1497,13 +1975,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_MediaRepeatAll(self):
-        """
-        Test MediaRepeatAll method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_MediaRepeatAll"
 
         try:
 
@@ -1536,13 +2010,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_MediaRepeatOff(self):
-        """
-        Test MediaRepeatOff method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_MediaRepeatOff"
 
         try:
 
@@ -1575,13 +2045,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_MediaRepeatOne(self):
-        """
-        Test MediaRepeatOne method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_MediaRepeatOne"
 
         try:
 
@@ -1614,13 +2080,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_MediaResume(self):
-        """
-        Test MediaResume method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_MediaResume"
 
         try:
 
@@ -1656,13 +2118,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_MediaShuffleOff(self):
-        """
-        Test MediaShuffleOff method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_MediaShuffleOff"
 
         try:
 
@@ -1698,13 +2156,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_MediaShuffleOn(self):
-        """
-        Test MediaShuffleOn method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_MediaShuffleOn"
 
         try:
 
@@ -1740,13 +2194,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_MediaStop(self):
-        """
-        Test MediaStop method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_MediaStop"
 
         try:
 
@@ -1781,13 +2231,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_Mute(self):
-        """
-        Test mute method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_Mute"
 
         try:
 
@@ -1820,13 +2266,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_MuteOff(self):
-        """
-        Test MuteOff method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_MuteOff"
 
         try:
 
@@ -1862,13 +2304,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_MuteOn(self):
-        """
-        Test MuteOn method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_MuteOn"
 
         try:
 
@@ -1904,13 +2342,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_PlayContentItem(self):
-        """
-        Test PlayContentItem method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_PlayContentItem"
 
         try:
 
@@ -1958,14 +2392,36 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
             raise
         
 
-    def test_PlayNotificationTTS(self):
-        """
-        Test PlayNotificationTTS method scenarios.
-        """
-        # set SmartInspect logger reference.        
+    def test_PlayNotificationBeep(self):
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_PlayNotificationBeep"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # play a notification beep.
+            print("\nPlaying notification beep ...")
+            client.PlayNotificationBeep()
+                    
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_PlayNotificationTTS(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_PlayNotificationTTS"
 
         try:
 
@@ -2036,13 +2492,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_PlayUrl(self):
-        """
-        Test PlayUrl method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_PlayUrl"
 
         try:
 
@@ -2084,13 +2536,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_Power(self):
-        """
-        Test Power method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_Power"
 
         try:
 
@@ -2126,13 +2574,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_PowerOff(self):
-        """
-        Test PowerOff method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_PowerOff"
 
         try:
 
@@ -2168,13 +2612,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_PowerOn(self):
-        """
-        Test PowerOn method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_PowerOn"
 
         try:
 
@@ -2209,14 +2649,77 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
             raise
         
 
-    def test_RemoveAllPresets(self):
-        """
-        Test RemoveAllPresets method scenarios.
-        """
-        # set SmartInspect logger reference.        
+    def test_PowerStandby(self):
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_PowerStandby"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get current nowPlaying status.
+            nowPlaying:NowPlayingStatus = client.GetNowPlayingStatus(True)
+            print("(before): '%s' - '%s'" % (nowPlaying.Source, nowPlaying.ContentItem.Name))
+    
+            # power standby (off) the device.
+            client.PowerStandby()
+
+            # get current nowPlaying status.
+            statAfter:NowPlayingStatus = client.GetNowPlayingStatus(True)
+            print("(after):  '%s' - '%s'" % (statAfter.Source, statAfter.ContentItem.Name))
+
+            # test assertions.
+            self.assertIsInstance(statAfter, (NowPlayingStatus), "Returned status object should be of type NowPlayingStatus")
+            self.assertEqual(statAfter.Source, "STANDBY", "NowPlayingStatus should be STANDBY after PowerStandby()")
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_Put(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_Put"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # update configuration for specified node.
+            msg:SoundTouchMessage = client.Put(SoundTouchNodes.volume, '<volume>10</volume>')
+    
+            if msg != None:
+                ElementTree.indent(msg.Response)  # for pretty printing
+                responseEncoded = ElementTree.tostring(msg.Response, encoding="unicode")
+                print("Put Response Message:\n%s" %  responseEncoded)
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_RemoveAllPresets(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_RemoveAllPresets"
 
         try:
 
@@ -2260,13 +2763,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_RemoveFavorite(self):
-        """
-        Test RemoveFavorite method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_RemoveFavorite"
 
         try:
 
@@ -2309,14 +2808,44 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
             raise
         
 
-    def test_RemovePreset(self):
-        """
-        Test RemovePreset method scenarios.
-        """
-        # set SmartInspect logger reference.        
+    def test_RemoveMusicServiceAccount(self):
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_RemoveMusicServiceAccount"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get list of defined sources.
+            sourceList:SourceList = client.GetSourceList()
+            print("\nSource list before the change:\n%s" % sourceList.ToString(True))
+    
+            # remove music service account source.
+            print("\n\nRemoving music service source: Source='STORED_MUSIC', Account='d09708a1-5953-44bc-a413-7d516e04b819' ...")
+            client.RemoveMusicServiceAccount("STORED_MUSIC", "THLUCASI9: THLUCASI9 Media Library", "d09708a1-5953-44bc-a413-7d516e04b819/0", None)
+               
+            # get list of defined sources.
+            sourceList:SourceList = client.GetSourceList()
+            print("\nSource list after the set:\n%s" % sourceList.ToString(True))
+                
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_RemovePreset(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_RemovePreset"
 
         try:
 
@@ -2347,13 +2876,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_SelectContentItem(self):
-        """
-        Test SelectContentItem method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_SelectContentItem"
 
         try:
 
@@ -2413,14 +2938,142 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
             raise
         
 
-    def test_SelectPreset(self):
-        """
-        Test SelectPreset method scenarios.
-        """
-        # set SmartInspect logger reference.        
+    def test_SelectLastSoundTouchSource(self):
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_SelectLastSoundTouchSource"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get current nowPlaying status.
+            nowPlayingBefore:NowPlayingStatus = client.GetNowPlayingStatus(True)
+            print("\n** Current Now Playing Status:\n%s" % nowPlayingBefore.ToString())
+
+            # select last soundtouch source.
+            client.SelectLastSoundTouchSource()
+
+            # get current nowPlaying status.
+            nowPlaying:NowPlayingStatus = client.GetNowPlayingStatus(True)
+            print("\n** Updated Now Playing Status:\n%s" % nowPlaying.ToString())
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_SelectLastSource(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_SelectLastSource"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get current nowPlaying status.
+            nowPlayingBefore:NowPlayingStatus = client.GetNowPlayingStatus(True)
+            print("\n** Current Now Playing Status:\n%s" % nowPlayingBefore.ToString())
+
+            # select last source.
+            client.SelectLastSource()
+
+            # get current nowPlaying status.
+            nowPlaying:NowPlayingStatus = client.GetNowPlayingStatus(True)
+            print("\n** Updated Now Playing Status:\n%s" % nowPlaying.ToString())
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_SelectLastWifiSource(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_SelectLastWifiSource"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get current nowPlaying status.
+            nowPlayingBefore:NowPlayingStatus = client.GetNowPlayingStatus(True)
+            print("\n** Current Now Playing Status:\n%s" % nowPlayingBefore.ToString())
+
+            # select last wifi source.
+            client.SelectLastWifiSource()
+
+            # get current nowPlaying status.
+            nowPlaying:NowPlayingStatus = client.GetNowPlayingStatus(True)
+            print("\n** Updated Now Playing Status:\n%s" % nowPlaying.ToString())
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_SelectLocalSource(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_SelectLocalSource"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get current nowPlaying status.
+            nowPlayingBefore:NowPlayingStatus = client.GetNowPlayingStatus(True)
+            print("\n** Current Now Playing Status:\n%s" % nowPlayingBefore.ToString())
+
+            # select local source.
+            client.SelectLocalSource()
+
+            # get current nowPlaying status.
+            nowPlaying:NowPlayingStatus = client.GetNowPlayingStatus(True)
+            print("\n** Updated Now Playing Status:\n%s" % nowPlaying.ToString())
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_SelectPreset(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_SelectPreset"
 
         try:
 
@@ -2463,13 +3116,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_SelectPreset1(self):
-        """
-        Test SelectPreset1 method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_SelectPreset1"
 
         try:
 
@@ -2501,13 +3150,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_SelectPreset2(self):
-        """
-        Test SelectPreset2 method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_SelectPreset2"
 
         try:
 
@@ -2539,13 +3184,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_SelectPreset3(self):
-        """
-        Test SelectPreset3 method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_SelectPreset3"
 
         try:
 
@@ -2577,13 +3218,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_SelectPreset4(self):
-        """
-        Test SelectPreset4 method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_SelectPreset4"
 
         try:
 
@@ -2615,13 +3252,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_SelectPreset5(self):
-        """
-        Test SelectPreset5 method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_SelectPreset5"
 
         try:
 
@@ -2653,13 +3286,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_SelectPreset6(self):
-        """
-        Test SelectPreset6 method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_SelectPreset6"
 
         try:
 
@@ -2691,13 +3320,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_SelectRecent(self):
-        """
-        Test SelectRecent method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_SelectRecent"
 
         try:
 
@@ -2744,13 +3369,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_SelectSource(self):
-        """
-        Test SelectSource method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_SelectSource"
 
         try:
 
@@ -2817,10 +3438,8 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         """
         Test SelectSource method scenarios for ALL sources.
         """
-        # set SmartInspect logger reference.        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_SelectSource_allSources"
 
         try:
 
@@ -2857,14 +3476,206 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
             raise
         
 
-    def test_SetBassLevel(self):
-        """
-        Test SetBassLevel method scenarios.
-        """
-        # set SmartInspect logger reference.        
+    def test_SetAudioDspControls(self):
+        
         _logsi:SISession = SIAuto.Main
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_SetAudioDspControls"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient("192.168.1.130") # SoundTouch 300
+
+            # get current audio dsp controls.
+            # note that not all devices support retrieval of this information.
+            cfgBefore:AudioDspControls = None
+            cfgBefore = client.GetAudioDspControls(True)
+            print("\nCurrent audio dsp controls: \n%s" % (cfgBefore.ToString()))
+            print("Supported Audio Modes array: %s" % (cfgBefore.ToSupportedAudioModesArray()))
+            
+            # create new audio dsp controls object.
+            cfgUpdate:AudioDspControls = AudioDspControls()
+            cfgUpdate.VideoSyncAudioDelay = cfgBefore.VideoSyncAudioDelay
+
+            # for testing purposes, toggle the audio mode.
+            # if the mode is currently "AUDIO_MODE_NORMAL" then we will use "AUDIO_MODE_DIALOG", or vice versa.
+            cfgUpdate.AudioMode = SoundTouchAudioModes.NORMAL
+            if cfgUpdate.AudioMode == cfgBefore.AudioMode:
+                cfgUpdate.AudioMode = SoundTouchAudioModes.DIALOG
+            print("\nSetting audio dsp controls AudioMode to '%s' (from '%s') ..." % (cfgUpdate.AudioMode, cfgBefore.AudioMode))
+
+            # set audio dsp controls to specific audio mode.
+            client.SetAudioDspControls(cfgUpdate)
+            
+            # get current audio dsp controls.
+            cfgAfter:AudioDspControls = client.GetAudioDspControls(True)
+            print("\nChanged audio dsp controls: \n%s" % (cfgAfter.ToString()))
+
+            # restore audio dsp controls to original values.
+            print("\nRestoring audio dsp controls to original values ...")
+            client.SetAudioDspControls(cfgBefore)            
+
+            # get current audio dsp controls.
+            cfgAfter:AudioProductLevelControls = client.GetAudioDspControls(True)
+            print("Restored audio dsp controls: \n%s" % (cfgAfter.ToString()))
+
+            # test function not supported by device.
+            with self.assertRaises(SoundTouchError, msg="\nShould have raised SoundTouchError for function not supported by device"):
+                client:SoundTouchClient = self._CreateApiClient("192.168.1.131") # SoundTouch 10
+                _logsi.LogMessage("Testing for function not supported by device ...", colorValue=SIColors.LightGreen)
+                print("\nTesting for function not supported by device ...")
+                client.SetAudioDspControls(cfgBefore)
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_SetAudioProductLevelControls(self):
+        
+        _logsi:SISession = SIAuto.Main
+        methodName:str = "test_SetAudioProductLevelControls"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient("192.168.1.130") # SoundTouch 300
+
+            # get current audio product level controls.
+            # note that not all devices support retrieval of this information.
+            cfgBefore:AudioProductLevelControls = None
+            cfgBefore = client.GetAudioProductLevelControls()
+            print("\nCurrent audio product level controls: \n%s" % cfgBefore.ToString())
+        
+            # create new audio product level controls object.
+            cfgUpdate:AudioProductLevelControls = AudioProductLevelControls()
+
+            # for testing purposes, toggle the FrontCenterSpeakerLevel level.  
+            # if the level is currently minValue, then we will set to maxValue.
+            cfgUpdate.FrontCenterSpeakerLevel.Value = cfgBefore.FrontCenterSpeakerLevel.MinValue
+            if cfgUpdate.FrontCenterSpeakerLevel.Value == cfgBefore.FrontCenterSpeakerLevel.Value:
+                cfgUpdate.FrontCenterSpeakerLevel.Value = cfgBefore.FrontCenterSpeakerLevel.MaxValue
+            print("\nSetting audio product level controls FrontCenterSpeakerLevel to '%s' (from '%s') ..." % (cfgUpdate.FrontCenterSpeakerLevel.Value, cfgBefore.FrontCenterSpeakerLevel.Value))
+                
+            # for testing purposes, toggle the RearSurroundSpeakersLevel level.  
+            # if the level is currently minValue, then we will set to maxValue.
+            cfgUpdate.RearSurroundSpeakersLevel.Value = cfgBefore.RearSurroundSpeakersLevel.MinValue
+            if cfgUpdate.RearSurroundSpeakersLevel.Value == cfgBefore.RearSurroundSpeakersLevel.Value:
+                cfgUpdate.RearSurroundSpeakersLevel.Value = cfgBefore.RearSurroundSpeakersLevel.MaxValue
+            print("Setting audio product level controls RearSurroundSpeakersLevel to '%s' (from '%s') ..." % (cfgUpdate.RearSurroundSpeakersLevel.Value, cfgBefore.RearSurroundSpeakersLevel.Value))
+                
+            # update audio product level controls.
+            client.SetAudioProductLevelControls(cfgUpdate)
+            
+            # get current audio product level controls.
+            cfgAfter:AudioProductLevelControls = client.GetAudioProductLevelControls(True)
+            print("\nChanged audio product level controls: \n%s" % (cfgAfter.ToString()))
+
+            # restore audio product level controls to original values.
+            print("\nRestoring audio product level controls to original values ...")
+            client.SetAudioProductLevelControls(cfgBefore)            
+
+            # get current audio product level controls.
+            cfgAfter:AudioProductLevelControls = client.GetAudioProductLevelControls(True)
+            print("Restored audio product level controls: \n%s" % (cfgAfter.ToString()))
+
+            # test function not supported by device.
+            with self.assertRaises(SoundTouchError, msg="\nShould have raised SoundTouchError for function not supported by device"):
+                client:SoundTouchClient = self._CreateApiClient("192.168.1.131") # SoundTouch 10
+                _logsi.LogMessage("Testing for function not supported by device ...", colorValue=SIColors.LightGreen)
+                print("\nTesting for function not supported by device ...")
+                client.SetAudioProductLevelControls(cfgUpdate)
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_SetAudioProductToneControls(self):
+        
+        _logsi:SISession = SIAuto.Main
+        methodName:str = "test_SetAudioProductToneControls"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient("192.168.1.130") # SoundTouch 300
+
+            # get current audio product tone controls.
+            # note that not all devices support retrieval of this information.
+            cfgBefore:AudioProductToneControls = None
+            cfgBefore = client.GetAudioProductToneControls()
+            print("\nCurrent audio product tone controls: \n%s" % cfgBefore.ToString())
+        
+            # create new audio product tone controls object.
+            cfgUpdate:AudioProductToneControls = AudioProductToneControls()
+
+            # for testing purposes, toggle the Bass level.  
+            # if the level is currently minValue, then we will set to maxValue.
+            cfgUpdate.Bass.Value = cfgBefore.Bass.MinValue
+            if cfgUpdate.Bass.Value == cfgBefore.Bass.Value:
+                cfgUpdate.Bass.Value = cfgBefore.Bass.MaxValue
+            print("\nSetting audio product tone controls Bass Level to '%s' (from '%s') ..." % (cfgUpdate.Bass.Value, cfgBefore.Bass.Value))
+                
+            # for testing purposes, toggle the Treble level.  
+            # if the level is currently minValue, then we will set to maxValue.
+            cfgUpdate.Treble.Value = cfgBefore.Treble.MinValue
+            if cfgUpdate.Treble.Value == cfgBefore.Treble.Value:
+                cfgUpdate.Treble.Value = cfgBefore.Treble.MaxValue
+            print("Setting audio product tone controls Treble Level to '%s' (from '%s') ..." % (cfgUpdate.Treble.Value, cfgBefore.Treble.Value))
+                
+            # update audio product tone controls.
+            client.SetAudioProductToneControls(cfgUpdate)
+            
+            # get current audio product tone controls.
+            cfgAfter:AudioProductToneControls = client.GetAudioProductToneControls(True)
+            print("\nChanged audio product tone controls: \n%s" % (cfgAfter.ToString()))
+
+            # restore audio product tone controls to original values.
+            print("\nRestoring audio product tone controls to original values ...")
+            client.SetAudioProductToneControls(cfgBefore)            
+
+            # get current audio product tone controls.
+            cfgAfter:AudioProductToneControls = client.GetAudioProductToneControls(True)
+            print("Restored audio product tone controls: \n%s" % (cfgAfter.ToString()))
+
+            # test function not supported by device.
+            with self.assertRaises(SoundTouchError, msg="\nShould have raised SoundTouchError for function not supported by device"):
+                client:SoundTouchClient = self._CreateApiClient("192.168.1.131") # SoundTouch 10
+                _logsi.LogMessage("Testing for function not supported by device ...", colorValue=SIColors.LightGreen)
+                print("\nTesting for function not supported by device ...")
+                client.SetAudioProductToneControls(cfgUpdate)
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_SetBassLevel(self):
+        
+        _logsi:SISession = SIAuto.Main
+        methodName:str = "test_SetBassLevel"
 
         try:
 
@@ -2911,14 +3722,44 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
             raise
         
 
+    def test_SetMusicServiceAccount(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_SetMusicServiceAccount"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get list of defined sources.
+            sourceList:SourceList = client.GetSourceList()
+            print("\nSource list before the change:\n%s" % sourceList.ToString(True))
+    
+            # set music service account source.
+            print("\n\nAdding music service source: Source='STORED_MUSIC', Account='d09708a1-5953-44bc-a413-7d516e04b819' ...")
+            client.SetMusicServiceAccount("STORED_MUSIC", "THLUCASI9: THLUCASI9 Media Library", "d09708a1-5953-44bc-a413-7d516e04b819/0", None)
+                
+            # get list of defined sources.
+            sourceList:SourceList = client.GetSourceList()
+            print("\nSource list after the set:\n%s" % sourceList.ToString(True))
+                
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
     def test_SetName(self):
-        """
-        Test SetName method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_SetName"
 
         try:
 
@@ -2948,14 +3789,69 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
             raise
         
 
+    def test_SetProductCecHdmiControl(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_SetProductCecHdmiControl"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient("192.168.1.130") # SoundTouch 300
+
+            # get current product cec hdmi control.
+            # note that not all devices support retrieval of this information.
+            cfgBefore:ProductCecHdmiControl = None
+            cfgBefore = client.GetProductCecHdmiControl()
+            print("\nCurrent product cec hdmi control value: \n%s" % cfgBefore.ToString())
+        
+            # create new tone controls object.
+            cfgUpdate:ProductCecHdmiControl = ProductCecHdmiControl()
+
+            # for testing purposes, toggle the value from OFF to ON or vice versa.
+            # if the level is currently ON, then we will set to OFF.
+            cfgUpdate.CecMode = SoundTouchHdmiCecModes.OFF
+            if cfgUpdate.CecMode == cfgBefore.CecMode:
+                cfgUpdate.CecMode = SoundTouchHdmiCecModes.ON
+            print("\nSetting product cec hdmi control to '%s' (from '%s') ..." % (cfgUpdate.CecMode, cfgBefore.CecMode))
+                
+            # update product cec hdmi control.
+            client.SetProductCecHdmiControl(cfgUpdate)
+            
+            # get current product cec hdmi control.
+            cfgAfter:ProductCecHdmiControl = client.GetProductCecHdmiControl(True)
+            print("\nChanged product cec hdmi control: \n%s" % (cfgAfter.ToString()))
+
+            # restore product cec hdmi control to original values.
+            client.SetProductCecHdmiControl(cfgBefore)            
+
+            # get current product cec hdmi control.
+            cfgAfter:ProductCecHdmiControl = client.GetProductCecHdmiControl(True)
+            print("\nRestored product cec hdmi control: \n%s" % (cfgAfter.ToString()))
+
+            # test function not supported by device.
+            with self.assertRaises(SoundTouchError, msg="\nShould have raised SoundTouchError for function not supported by device"):
+                client:SoundTouchClient = self._CreateApiClient("192.168.1.131") # SoundTouch 10
+                _logsi.LogMessage("Testing for function not supported by device ...", colorValue=SIColors.LightGreen)
+                print("\nTesting for function not supported by device ...")
+                client.SetProductCecHdmiControl(cfgUpdate)
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
     def test_SetVolumeLevel(self):
-        """
-        Test SetVolumeLevel method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_SetVolumeLevel"
 
         try:
 
@@ -2994,13 +3890,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_StorePreset(self):
-        """
-        Test StorePreset method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_StorePreset"
 
         try:
 
@@ -3052,13 +3944,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_StoreSnapshot(self):
-        """
-        Test StoreSnapshot method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_StoreSnapshot"
 
         try:
 
@@ -3116,13 +4004,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_ThumbsDown(self):
-        """
-        Test ThumbsDown method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_ThumbsDown"
 
         try:
 
@@ -3166,13 +4050,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_ThumbsUp(self):
-        """
-        Test ThumbsUp method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_ThumbsUp"
 
         try:
 
@@ -3216,13 +4096,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_VolumeDown(self):
-        """
-        Test VolumeDown method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_VolumeDown"
 
         try:
 
@@ -3255,13 +4131,9 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
         
 
     def test_VolumeUp(self):
-        """
-        Test VolumeUp method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_VolumeUp"
 
         try:
 
@@ -3292,6 +4164,10 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
             print("** Exception: %s" % str(ex))
             raise
         
+
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+# SoundTouchClient Tests - Multi-Room Environment
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class Test_SoundTouchClient_MultiRoom(unittest.TestCase):
     """
@@ -3396,23 +4272,30 @@ class Test_SoundTouchClient_MultiRoom(unittest.TestCase):
             print("*******************************************************************************")
                     
     
-    def _CreateApiClient(self) -> SoundTouchClient:
+    def _CreateApiClient(self, ipAddress:str=None) -> SoundTouchClient:
         """
         Creates a new SoundTouchClient instance, and sets all properties for executing these test cases.
 
+        Args:
+            ipAddress (str):
+                SoundTouch device IP Address to connect to; otherwise, None to use the default.
+        
         Returns:
             An SoundTouchClient instance.
         """
-        # set SmartInspect logger reference.        
         _logsi:SISession = SIAuto.Main            
 
         try:
 
+            # set ip address of SoundTouch device to connect to.
+            if ipAddress is None:
+                ipAddress = "192.168.1.131" # Bose SoundTouch 10
+                #ipAddress = "192.168.1.130" # Bose SoundTouch 300
+                #ipAddress = "192.168.1.133" # non-existant ip
+                #ipAddress = "x.168.1.133"   # invalid ip
+
             # create SoundTouchDevice instance.
-            device:SoundTouchDevice = SoundTouchDevice("192.168.1.131") # Bose SoundTouch 10
-            #device:SoundTouchDevice = SoundTouchDevice("192.168.1.130") # Bose SoundTouch 300
-            #device:SoundTouchDevice = SoundTouchDevice("192.168.1.133") # non-existant ip
-            #device:SoundTouchDevice = SoundTouchDevice("x.168.1.133") # invalid ip
+            device:SoundTouchDevice = SoundTouchDevice(ipAddress)
             
             # create SoundTouchClient instance from device.
             client:SoundTouchClient = SoundTouchClient(device)
@@ -3428,7 +4311,6 @@ class Test_SoundTouchClient_MultiRoom(unittest.TestCase):
 
 
     def _OnSoundTouchUpdateEvent(self, args:Element) -> None:
-        # set SmartInspect logger reference.        
         _logsi:SISession = SIAuto.Main            
 
         if (args != None):
@@ -3438,7 +4320,6 @@ class Test_SoundTouchClient_MultiRoom(unittest.TestCase):
         
 
     def _OnSoundTouchInfoEvent(self, args:Element) -> None:
-        # set SmartInspect logger reference.        
         _logsi:SISession = SIAuto.Main            
 
         if (args != None):
@@ -3539,13 +4420,9 @@ class Test_SoundTouchClient_MultiRoom(unittest.TestCase):
     ###################################################################################################################################
 
     def test_AddZoneMembers(self):
-        """ 
-        Test AddZoneMembers method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_AddZoneMembers"
 
         try:
 
@@ -3601,13 +4478,9 @@ class Test_SoundTouchClient_MultiRoom(unittest.TestCase):
         
 
     def test_CreateZone(self):
-        """
-        Test CreateZone method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_CreateZone"
 
         try:
 
@@ -3691,13 +4564,9 @@ class Test_SoundTouchClient_MultiRoom(unittest.TestCase):
         
 
     def test_CreateZoneFromDevices(self):
-        """
-        Test CreateZoneFromDevices method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_CreateZoneFromDevices"
 
         try:
 
@@ -3731,13 +4600,9 @@ class Test_SoundTouchClient_MultiRoom(unittest.TestCase):
         
 
     def test_GetZoneStatus(self):
-        """
-        Test GetZoneStatus method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_GetZoneStatus"
 
         try:
 
@@ -3778,13 +4643,9 @@ class Test_SoundTouchClient_MultiRoom(unittest.TestCase):
 
 
     def test_RemoveZone(self):
-        """ 
-        Test RemoveZone method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_RemoveZone"
 
         try:
 
@@ -3831,13 +4692,9 @@ class Test_SoundTouchClient_MultiRoom(unittest.TestCase):
         
 
     def test_RemoveZoneMembers(self):
-        """ 
-        Test RemoveZoneMembers method scenarios.
-        """
-        # set SmartInspect logger reference.        
+        
         _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
+        methodName:str = "test_RemoveZoneMembers"
 
         try:
 
