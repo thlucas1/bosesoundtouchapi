@@ -6,12 +6,12 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
-###### [ 1.0.18 ] - 2023/11/15
+###### [ 1.0.19 ] - 2023/11/21
 
   *  Added VS test class `testVS_SoundTouchDiscovery.py` to test Zeroconf discovery scenarios.
   *  Updated VS test class `testVS_SoundTouchClient` with missing testing scenarios.
 
-###### [ 1.0.18 ] - 2023/11/15
+###### [ 1.0.19 ] - 2023/11/21
 
   *  Added method to `SoundTouchClient`: AddMusicServiceSources - Adds any servers in the `MediaServerList` to the sources list if they do not exist in the sources list as a "STORED_MUSIC" source.
   *  Added method to `SoundTouchClient`: RemoveMusicServiceAccount - Removes an existing music service account from the sources list.
