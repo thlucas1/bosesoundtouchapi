@@ -31,6 +31,10 @@ class ZoneMember:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._DeviceId:str = None
+        self._DeviceRole:str = None
+        self._IpAddress:str = None
+
         if (root is None):
             
             self._IpAddress = ipAddress
@@ -45,6 +49,10 @@ class ZoneMember:
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

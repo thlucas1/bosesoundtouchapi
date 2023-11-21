@@ -23,35 +23,58 @@ class ClockTime:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        # base fields.
+        self._UtcTime:int = None
+        self._CueMusic:int = None
+        self._TimeFormat:str = None
+        self._Brightness:int = None
+        self._ClockError:int = None
+        self._UtcSyncTime:int = None
+
+        # localtime node fields.
+        self._Year:int = None
+        self._Month:int = None
+        self._Day:int = None
+        self._DayOfWeek:int = None
+        self._Hour:int = None
+        self._Minute:int = None
+        self._Second:int = None
+
         if (root is None):
-            pass  # no other parms to process.
+
+            pass
+
         else:
 
             # base fields.
-            self._UtcTime:int = int(root.get('utcTime', default='0'))
-            self._CueMusic:int = int(root.get('cueMusic', default='0'))
-            self._TimeFormat:str = root.get('timeFormat')
-            self._Brightness:int = int(root.get('brightness', default='0'))
-            self._ClockError:int = int(root.get('clockError', default='0'))
-            self._UtcSyncTime:int = int(root.get('utcSyncTime', default='0'))
+            self._UtcTime = int(root.get('utcTime', default='0'))
+            self._CueMusic = int(root.get('cueMusic', default='0'))
+            self._TimeFormat = root.get('timeFormat')
+            self._Brightness = int(root.get('brightness', default='0'))
+            self._ClockError = int(root.get('clockError', default='0'))
+            self._UtcSyncTime = int(root.get('utcSyncTime', default='0'))
 
             # localtime node fields.
-            self._Year:int = int(_xmlFindAttr(root, 'localTime', 'year', default='0'))
-            self._Month:int = int(_xmlFindAttr(root, 'localTime', 'month', default='0'))
-            self._Day:int = int(_xmlFindAttr(root, 'localTime', 'dayOfMonth', default='0'))
-            self._DayOfWeek:int =int( _xmlFindAttr(root, 'localTime', 'dayOfWeek', default='0'))
-            self._Hour:int = int(_xmlFindAttr(root, 'localTime', 'hour', default='0'))
-            self._Minute:int = int(_xmlFindAttr(root, 'localTime', 'minute', default='0'))
-            self._Second:int = int(_xmlFindAttr(root, 'localTime', 'second', default='0'))
+            self._Year = int(_xmlFindAttr(root, 'localTime', 'year', default='0'))
+            self._Month = int(_xmlFindAttr(root, 'localTime', 'month', default='0'))
+            self._Day = int(_xmlFindAttr(root, 'localTime', 'dayOfMonth', default='0'))
+            self._DayOfWeek = int( _xmlFindAttr(root, 'localTime', 'dayOfWeek', default='0'))
+            self._Hour = int(_xmlFindAttr(root, 'localTime', 'hour', default='0'))
+            self._Minute = int(_xmlFindAttr(root, 'localTime', 'minute', default='0'))
+            self._Second = int(_xmlFindAttr(root, 'localTime', 'second', default='0'))
 
 
     def __repr__(self) -> str:
         return self.ToString()
 
 
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
     def Brightness(self) -> int:
-        """ The brightness level of the clock display. """
+        """ Brightness level of the clock display. """
         return self._Brightness
 
 
@@ -69,44 +92,44 @@ class ClockTime:
 
     @property
     def Day(self) -> int:
-        """ The day (of month) portion of the local time value. """
+        """ Day (of month) portion of the local time value. """
         return self._Day
 
 
     @property
     def DayOfWeek(self) -> int:
-        """ The day of week portion of the local time value. """
+        """ Day of week portion of the local time value. """
         return self._DayOfWeek
 
 
     @property
     def Hour(self) -> int:
-        """ The hour portion of the local time value. """
+        """ Hour portion of the local time value. """
         return self._Hour
 
 
     @property
     def Minute(self) -> int:
-        """ The minute portion of the local time value. """
+        """ Minute portion of the local time value. """
         return self._Minute
 
 
     @property
     def Month(self) -> int:
-        """ The month portion of the local time value. """
+        """ Month portion of the local time value. """
         return self._Month
 
 
     @property
     def Second(self) -> int:
-        """ The second portion of the local time value. """
+        """ Second portion of the local time value. """
         return self._Second
 
 
     @property
     def TimeFormat(self) -> str:
         """ 
-        The time format with the following form: `TIME_FORMAT_xxHOUR_ID` (e.g.  
+        Time format with the following form: `TIME_FORMAT_xxHOUR_ID` (e.g.  
         "TIME_FORMAT_12HOUR_ID", "TIME_FORMAT_24HOUR_ID", etc).
         """       
         return self._TimeFormat
@@ -126,7 +149,7 @@ class ClockTime:
 
     @property
     def Year(self) -> int:
-        """ The year portion of the local time value. """
+        """ Year portion of the local time value. """
         return self._Year
 
 

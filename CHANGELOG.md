@@ -8,6 +8,17 @@ Change are listed in reverse chronological order (newest to oldest).
 
 ###### [ 1.0.18 ] - 2023/11/15
 
+  *  Added method to `SoundTouchClient`: AddMusicServiceSources - Adds any servers in the `MediaServerList` to the sources list if they do not exist in the sources list as a "STORED_MUSIC" source.
+  *  Added method to `SoundTouchClient`: RemoveMusicServiceAccount - Removes an existing music service account from the sources list.
+  *  Added method to `SoundTouchClient`: SetMusicServiceAccount - Adds a music service account to the sources list.
+  *  Updated model `PlayInfo`: ToXmlRequestBody method - changed default encoding value from 'unicode' to 'utf-8', which is what the ST webservices API expects.
+  *  Updated model `SourceItem`: UserName property - changed to `FriendlyName`, as the value is a display name.
+  *  Updated model `MusicServiceAccount`: UserName property - changed to `UserAccount`, as the value is an account name and not a user name.
+  *  Updated model `MusicServiceAccount`: DisplayName property - changed to `FriendlyName`, to use the same naming standards for UI display fields.
+  *  Updated any classes that did not have a `__str__` or `__repr__` method to call their `ToString` method.
+
+###### [ 1.0.18 ] - 2023/11/15
+
   *  Updated model `AudioDspControls`.`ToSupportedAudioModesArray` method to return a sorted list of supported audio modes.
   *  Added method `ToMinMaxString` to model `ControlLevelInfo` to retrieve a description of the allowed Min / Max range values.
   *  Added new method to `SoundTouchClient`: PlayNotificationBeep - Plays a quick beep notification sound on devices that support it.

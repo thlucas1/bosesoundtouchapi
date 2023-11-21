@@ -22,8 +22,12 @@ class SoundTouchConfigurationStatus:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._Status:str = None
+
         if (root is None):
-            pass  # no other parms to process.
+            
+            pass
+        
         else:
 
             # base fields.
@@ -31,6 +35,10 @@ class SoundTouchConfigurationStatus:
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

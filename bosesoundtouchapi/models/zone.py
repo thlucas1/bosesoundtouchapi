@@ -40,13 +40,16 @@ class Zone:
                 If any zone member specified by the members argument is not a `ZoneMember`
                 object, or if a device id was not supplied for each member.
         """
-        self._Members = []
+        self._IsZoneMaster:bool = None
+        self._MasterDeviceId:str = None
+        self._MasterIpAddress:str = None
+        self._Members:list[ZoneMember] = []
         
         if (root is None):
             
-            self._MasterDeviceId:str = masterDeviceId
-            self._MasterIpAddress:str = masterIpAddress
-            self._IsZoneMaster:bool = isZoneMaster
+            self._MasterDeviceId = masterDeviceId
+            self._MasterIpAddress = masterIpAddress
+            self._IsZoneMaster = isZoneMaster
             
             if masterIpAddress is None:
                 self._IsZoneMaster = False
@@ -60,17 +63,13 @@ class Zone:
 
         else:
             
-            self._MasterDeviceId:str = root.get('master')
-            self._MasterIpAddress:str = root.get('senderIPAddress')
-            self._IsZoneMaster:bool = bool(root.get('senderIsMaster', default='false') == 'true')
+            self._MasterDeviceId = root.get('master')
+            self._MasterIpAddress = root.get('senderIPAddress')
+            self._IsZoneMaster = bool(root.get('senderIsMaster', default='false') == 'true')
             
             for member in root.findall('member'):
                 self._Members.append(ZoneMember(root=member))
         
-
-    def __repr__(self) -> str:
-        return self.ToString()
-
 
     def __iter__(self) -> Iterator:
         return iter(self._Members)
@@ -88,6 +87,14 @@ class Zone:
     def __setitem__(self, key, value):
         if isinstance(key, int) and 0 <= key < len(self):
             self._Members[key] = value
+
+
+    def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
+        return self.ToString()
 
 
     @property
@@ -109,7 +116,7 @@ class Zone:
 
 
     @property
-    def Members(self) -> list:
+    def Members(self) -> list[ZoneMember]:
         """ The list of `ZoneMember` objects that are members of this Zone. """
         return self._Members
 

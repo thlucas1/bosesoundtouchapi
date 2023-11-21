@@ -11,6 +11,7 @@ from .soundtoucherror import SoundTouchError
 from .soundtouchexception import SoundTouchException
 from .models import InfoNetworkConfig
 from .uri.soundtouchnodes import SoundTouchNodes
+from .uri.soundtouchuri import SoundTouchUri
 
 # get smartinspect logger reference; create a new session for this module name.
 from smartinspectpython.siauto import SIAuto, SILevel, SISession
@@ -78,8 +79,7 @@ class SoundTouchDevice:
         ```
         </details>
         """
-        # initialize instance properties.
-        self._Components = []
+        self._Components:list[SoundTouchDeviceComponent] = []
         self._CountryCode:str = None
         self._DeviceId:str = None
         self._DeviceName:str = None
@@ -87,12 +87,12 @@ class SoundTouchDevice:
         self._Host:str = host
         self._MacAddress:str = None
         self._ModuleType:str = None
-        self._NetworkInfo = []
+        self._NetworkInfo:list[InfoNetworkConfig] = []
         self._Port:int = int(port)
         self._RegionCode:str = None
         self._StreamingAccountUUID:str = None
         self._StreamingUrl:str = None
-        self._SupportedUris = []
+        self._SupportedUris:list[SoundTouchUri] = []
         self._Variant:str = None
         self._VariantMode:str = None
 
@@ -139,12 +139,23 @@ class SoundTouchDevice:
             # default MAC address to the device id.
             self._MacAddress = self._DeviceId
          
-            # load device details - compponents list.
+            # load device details - components list.
             component:Element
             for component in root.find('components'):
-                obj = SoundTouchDeviceComponent(component.find('componentCategory').text,
-                                                component.find('serialNumber').text,
-                                                component.find('softwareVersion').text)
+
+                componentCategory:str = None
+                elm:Element = component.find('componentCategory')
+                if elm is not None: componentCategory = elm.text
+
+                softwareVersion:str = None
+                elm:Element = component.find('softwareVersion')
+                if elm is not None: softwareVersion = elm.text
+
+                serialNumber:str = None
+                elm:Element = component.find('serialNumber')
+                if elm is not None: serialNumber = elm.text
+
+                obj = SoundTouchDeviceComponent(componentCategory, softwareVersion, serialNumber)
                 self._Components.append(obj)
 
             # load device details - network info list.
@@ -167,8 +178,8 @@ class SoundTouchDevice:
             # it could be everything in the ALL supported uri's list, but probably not as
             # SoundTouch devices can support different features.
             for url_element in fromstring(response.data).findall('URL'):
-                name = url_element.get('location', default='/')[1:]
-                if name and name in allUris:
+                name:str = url_element.get('location', default='/')[1:]  # drop the forward slash prefix.
+                if name is not None and name in allUris:
                     self._SupportedUris.append(allUris[name])
 
             response.close()
@@ -184,6 +195,10 @@ class SoundTouchDevice:
             raise SoundTouchException(BSTAppMessages.UNHANDLED_EXCEPTION.format("__init__", str(ex)), ex, _logsi)
 
 
+    def __repr__(self) -> str:
+        return self.ToString()
+
+
     def __str__(self) -> str:
         return self.ToString()
 
@@ -193,9 +208,9 @@ class SoundTouchDevice:
 
 
     @property
-    def Components(self) -> list:
+    def Components(self) -> list[SoundTouchDeviceComponent]:
         """
-        A list of `SoundTouchDeviceComponent` objects containing various information about the 
+        List of `SoundTouchDeviceComponent` objects containing various information about the 
         device's components (e.g. SCM, LPM, BASS, etc).
         """
         return self._Components
@@ -204,7 +219,7 @@ class SoundTouchDevice:
     @property
     def CountryCode(self) -> str:
         """
-        The country code of the device as assigned by the manufacturer (e.g. 'US', etc). 
+        Country code of the device as assigned by the manufacturer (e.g. 'US', etc). 
         """
         return self._CountryCode
 
@@ -212,21 +227,21 @@ class SoundTouchDevice:
     @property
     def DeviceId(self) -> str:
         """
-        The unique device identifier as assigned by the manufacturer (e.g. '9070658C9D4A', etc).
+        Unique device identifier as assigned by the manufacturer (e.g. '9070658C9D4A', etc).
         """
         return self._DeviceId
 
     @property
     def DeviceName(self) -> str:
         """ 
-        The friendly name assigned to the SoundTouch device (e.g. 'Home Theater SoundBar', etc). 
+        Friendly name assigned to the SoundTouch device (e.g. 'Home Theater SoundBar', etc). 
         """
         return self._DeviceName
 
     @property
     def DeviceType(self) -> str:
         """ 
-        The type of device as assigned by the manufacturer (e.g. 'SoundTouch 10', 'SoundTouch 300', etc). 
+        Type of device as assigned by the manufacturer (e.g. 'SoundTouch 10', 'SoundTouch 300', etc). 
         """
         return self._DeviceType
 
@@ -234,7 +249,7 @@ class SoundTouchDevice:
     @property
     def Host(self) -> str:
         """ 
-        An Ipv4 address of the SoundTouch device. 
+        Ipv4 address of the SoundTouch device. 
         This property is read-only, and supplied by the class constructor.
         """
         return self._Host
@@ -243,7 +258,7 @@ class SoundTouchDevice:
     @property
     def LogReadUrl(self) -> str:
         """
-        The URL to download a logread file from this device.
+        URL to download a logread file from this device.
 
         The format of the returned url is:  
         `http://{Host}:8091/logread.dat`
@@ -256,22 +271,22 @@ class SoundTouchDevice:
 
     @property
     def MacAddress(self) -> str:
-        """ The MAC address (media access control address) assigned to the device. """
+        """ MAC address (media access control address) assigned to the device. """
         return self._MacAddress
 
 
     @property
     def ModuleType(self) -> str:
         """ 
-        The Radio module type used in the device, as assigned by the manufacturer (e.g. 'SM2', etc). 
+        Radio module type used in the device, as assigned by the manufacturer (e.g. 'SM2', etc). 
         """
         return self._ModuleType
 
 
     @property
-    def NetworkInfo(self) -> list:
+    def NetworkInfo(self) -> list[InfoNetworkConfig]:
         """
-        A list of SoundTouchNetworkConfig objects containing the current network configuration 
+        List of `SoundTouchNetworkConfig` objects containing the current network configuration 
         of the device.
         """
         return self._NetworkInfo
@@ -280,7 +295,7 @@ class SoundTouchDevice:
     @property
     def Port(self) -> str:
         """ 
-        An Ipv4 address of the SoundTouch device. 
+        Ipv4 address of the SoundTouch device. 
         This property is read-only, and supplied by the class constructor.
         """
         return self._Port
@@ -289,7 +304,7 @@ class SoundTouchDevice:
     @property
     def RegionCode(self) -> str:
         """ 
-        The region code of the device as assigned by the manufacturer (e.g. 'US', etc). 
+        Region code of the device as assigned by the manufacturer (e.g. 'US', etc). 
         """
         return self._RegionCode
 
@@ -311,9 +326,9 @@ class SoundTouchDevice:
 
 
     @property
-    def SupportedUris(self) -> list:
+    def SupportedUris(self) -> list[SoundTouchUri]:
         """
-        A list of SoundTouchUri objects that the device supports.
+        List of `SoundTouchUri` objects that the device supports.
         
         These URI's are used by the SoundTouchClient class to obtain information from the 
         device (e.g. info, nowPlaying, etc).
@@ -324,7 +339,7 @@ class SoundTouchDevice:
     @property
     def PtsUrl(self) -> str: # str | None
         """
-        The URL to download a logread file.
+        URL to download a logread file.
 
         The format of the returned url is:  
         http://{Host}:8091/pts.dat
@@ -338,7 +353,7 @@ class SoundTouchDevice:
     @property
     def UpnpUrl(self) -> str:
         """ 
-        The Universal Plug and Play (UPnP) root URL for this device.
+        Universal Plug and Play (UPnP) root URL for this device.
 
         The document located at the returned URL contains additional information about
         methods and properties that can be used with UPnP.
@@ -355,7 +370,7 @@ class SoundTouchDevice:
     @property
     def Variant(self) -> str:
         """ 
-        The variant node value (e.g. 'ginger', etc). 
+        Variant value (e.g. 'ginger', etc). 
         """
         return self._Variant
 
@@ -363,7 +378,7 @@ class SoundTouchDevice:
     @property
     def VariantMode(self) -> str:
         """ 
-        The variant node value (e.g. 'noap', etc). 
+        Variant mode value (e.g. 'noap', etc). 
         """
         return self._VariantMode
 

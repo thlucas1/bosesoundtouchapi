@@ -43,7 +43,6 @@ class SpeakerAttributeAndSetting(SoundTouchModelRequest):
             SoundTouchError:
                 controlType argument was not of type str or was not supplied.  
         """
-        # initialize storage.
         self._ControlType:str = None
         self._Available:bool = None
         self._Active:bool = None
@@ -56,12 +55,10 @@ class SpeakerAttributeAndSetting(SoundTouchModelRequest):
             if (controlType is None) or (not isinstance(controlType, str)):
                 raise SoundTouchError(BSTAppMessages.ARGUMENT_TYPE_ERROR % ("controlType","str",str(type(controlType).__name__)), logsi=_logsi)
 
-            # base fields.
             self._ControlType = controlType
         
         else:
 
-            # base fields.
             self._ControlType = str(root.tag)
             self._Active = bool(root.get('active', default='false') == 'true')
             self._Available = bool(root.get('available', default='false') == 'true')
@@ -70,6 +67,10 @@ class SpeakerAttributeAndSetting(SoundTouchModelRequest):
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

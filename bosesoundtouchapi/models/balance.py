@@ -28,6 +28,14 @@ class Balance(SoundTouchModelRequest):
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._Actual:int = None
+        self._Default:int = None
+        self._DeviceId:str = None
+        self._IsAvailable:bool = None
+        self._Maximum:int = None
+        self._Minimum:int = None
+        self._Target:int = None
+
         if (root is None):
 
             self._Actual = int(actual) if actual else 0
@@ -47,21 +55,25 @@ class Balance(SoundTouchModelRequest):
         return self.ToString()
 
 
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
     def Actual(self) -> int:
-        """ The actual value of the balance level. """
+        """ Actual value of the balance level. """
         return self._Actual
 
 
     @property
     def Default(self) -> int:
-        """ The default value of the balance level. """
+        """ Default value of the balance level. """
         return self._Default
 
 
     @property
     def DeviceId(self):
-        """ The Device identifier. """
+        """ Device identifier. """
         return self._DeviceId
 
     
@@ -73,19 +85,19 @@ class Balance(SoundTouchModelRequest):
 
     @property
     def Maximum(self) -> int:
-        """ The maximum allowed value of the balance level. """
+        """ Maximum allowed value of the balance level. """
         return self._Maximum
 
 
     @property
     def Minimum(self) -> int:
-        """ The minimum allowed value of the balance level. """
+        """ Minimum allowed value of the balance level. """
         return self._Minimum
 
 
     @property
     def Target(self) -> int:
-        """ The targeted value of the balance level. """
+        """ Targeted value of the balance level. """
         return self._Target
 
 

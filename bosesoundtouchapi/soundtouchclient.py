@@ -26,6 +26,7 @@ from .bstconst import (
     MSG_TRACE_ACTION_KEY,
     MSG_TRACE_DELAY_DEVICE,
     MSG_TRACE_DEVICE_COMMAND,
+    MSG_TRACE_DEVICE_COMMAND_WITH_PARM,
     MSG_TRACE_FAVORITE_NOT_ENABLED,
     MSG_TRACE_GET_CONFIG_OBJECT,
     MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE
@@ -101,6 +102,10 @@ class SoundTouchClient:
 
     def __iter__(self):
         return iter(self._ConfigurationCache)
+
+
+    def __repr__(self) -> str:
+        return self.ToString()
 
 
     def __str__(self) -> str:
@@ -356,6 +361,69 @@ class SoundTouchClient:
         else:
             _logsi.LogVerbose(MSG_TRACE_FAVORITE_NOT_ENABLED % nowPlaying.ToString())
 
+
+    def AddMusicServiceSources(self) -> list[str]:
+        """
+        Adds any servers in the `MediaServerList` to the sources list if they do not exist
+        in the sources list as a "STORED_MUSIC" source.
+        
+        Returns:
+            A list of descriptions (e.g. "Friendly Name (sourceAccount)") that were added
+            to the source list.
+
+        This method retrieves the list of available media servers, as well as the list of
+        sources defined to the device.  It will then compare the two lists, adding all media
+        servers to the source list if one is not present.
+        
+        UPnP media server music service (e.g. "STORED_MUSIC") sources can only be added if the
+        device has detected the UPnP media server.  The detected UPnP media servers will appear
+        in the `MediaServerList` of items obtained using a call to `GetMediaServerList` method.
+                
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/AddMusicServiceSources.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.setMusicServiceAccount.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        result:list[str] = []
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("AddMusicServiceSources", self._Device.DeviceName))
+        
+        # get list of defined sources.
+        sourceList:SourceList = self.GetSourceList()
+    
+        # get list of upnp media services detected by the device.
+        mediaServerList:MediaServerList = self.GetMediaServerList()
+    
+        # add music service account sources for upnp media servers not in the source list.
+        # remove all music service account sources for upnp media servers.
+        mediaServer:MediaServer
+        for mediaServer in mediaServerList:
+            sourceAccount:str = "%s%s" % (mediaServer.ServerId, "/0")
+            
+            # see if media server is defined in the source list.
+            found:bool = False
+            sourceItem:SourceItem
+            for sourceItem in sourceList:
+                if sourceItem.SourceAccount == mediaServer.ServerId:
+                    found = True
+                    break
+                elif sourceItem.SourceAccount == sourceAccount:
+                    found = True
+                    
+            # is media server defined in the source list?  if not, then add it.
+            if found == False:
+                self.SetMusicServiceAccount("STORED_MUSIC", mediaServer.FriendlyName, sourceAccount, None)
+                result.append("%s (%s)" % (mediaServer.FriendlyName, sourceAccount))
+                
+        return result   
 
     def AddZoneMembers(self, members:list[ZoneMember], delay:int=3) -> SoundTouchMessage:
         """
@@ -961,7 +1029,7 @@ class SoundTouchClient:
 
     def GetMediaServerList(self, refresh=True) -> MediaServerList:
         """
-        Gets the list of UPnP Media servers found by the device.
+        Gets the list of UPnP media servers found by the device.
 
         Args:
             refresh (bool):
@@ -2103,6 +2171,11 @@ class SoundTouchClient:
         If the device is the master controller of a zone, then the notification message will 
         be played on all devices that are members of the zone.
         
+        A small delay can be inserted at the start of the message by prefixing the `sayText`
+        argument value with "a!".  Example: "a!This is a test message".  It's not a perfect
+        solution, but works for me since my SoundTouch speaker takes a second or two to switch
+        into active mode, and the first second of the played message is lost.
+        
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -2131,10 +2204,11 @@ class SoundTouchClient:
         if volumeLevel is None or volumeLevel < 0 or volumeLevel > 100:
             volumeLevel = 30
             
+        # SoundTouch will fail the request if volume level is less than 10 or greater than 70.
         if volumeLevel > 0 and volumeLevel < 10:
-            volumeLevel = 10  # SoundTouch will fail the request if volume level is less than 10.
+            volumeLevel = 10  
         if volumeLevel > 70:
-            volumeLevel = 70  # SoundTouch will fail the request if volume level is greater than 70.
+            volumeLevel = 70
         
         # replace sayText in the TTS url.
         ttsUrl = ttsUrl.format(saytext=urllib.parse.quote(sayText))
@@ -2515,6 +2589,41 @@ class SoundTouchClient:
             _logsi.LogVerbose(MSG_TRACE_FAVORITE_NOT_ENABLED % nowPlaying.ToString())
 
 
+    def RemoveMusicServiceAccount(self, source:str, displayName:str, userAccount:str, password:str=None
+                                 ) -> SoundTouchMessage:
+        """
+        Removes an existing music service account from the sources list.
+
+        Args:
+            source (str):
+                Account source value (e.g. "STORED_MUSIC", "SPOTIFY", "AMAZON", etc).
+            displayName (str):
+                Account display name that appears in UI's.
+            userAccount (str):
+                User account value used to authenticate to the service.
+            password (str):
+                Password value used to authenticate to the service.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/RemoveMusicServiceAccount.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.removeMusicServiceAccount.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("removeMusicServiceAccount", userAccount, self._Device.DeviceName))
+        request:MusicServiceAccount = MusicServiceAccount(source, displayName, userAccount, password)
+        _logsi.LogVerbose("'%s': Account details - %s" % (self._Device.DeviceName, request.ToString()))
+        msg:SoundTouchMessage = self.Put(SoundTouchNodes.removeMusicServiceAccount, request)
+        return msg
+
+
     def RemoveZone(self, delay:int=1) -> SoundTouchMessage:
         """
         Removes the given zone.
@@ -2659,7 +2768,7 @@ class SoundTouchClient:
         See the sample code below for an example.
         
         <details>
-          <summary>Sample Code</summary><br/>
+          <summary>Sample Code</summary>
         ```python
         .. include:: ../docs/include/samplecode/SoundTouchClient/StoreSnapshot.py
         ```
@@ -3212,7 +3321,7 @@ class SoundTouchClient:
         request is made to the device; if not, then a `SoundTouchError` is raised.
         
         <details>
-          <summary>Sample Code</summary><br/>
+          <summary>Sample Code</summary>
         ```python
         .. include:: ../docs/include/samplecode/SoundTouchClient/SetAudioDspControls.py
         ```
@@ -3374,12 +3483,52 @@ class SoundTouchClient:
         return self.Put(SoundTouchNodes.bass, request)
 
 
+    def SetMusicServiceAccount(self, source:str, displayName:str, userAccount:str, password:str=None
+                               ) -> SoundTouchMessage:
+        """
+        Adds a music service account to the sources list.
+
+        Args:
+            source (str):
+                Account source value (e.g. "STORED_MUSIC", "SPOTIFY", "AMAZON", etc).
+            displayName (str):
+                Account display name that appears in UI's.
+            userAccount (str):
+                User account value used to authenticate to the service.  This value must exactly
+                match (case-sensitive) the media server id in the `MediaServer` instance.
+            password (str):
+                Password value used to authenticate to the service.
+
+        UPnP media server music service (e.g. "STORED_MUSIC") sources can only be set if the
+        device has detected the UPnP media server.  The detected UPnP media servers will appear
+        in the `MediaServerList` of items obtained using a call to `GetMediaServerList` method.
+                
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SetMusicServiceAccount.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.setMusicServiceAccount.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("setMusicServiceAccount", userAccount, self._Device.DeviceName))
+        request:MusicServiceAccount = MusicServiceAccount(source, displayName, userAccount, password)
+        _logsi.LogVerbose("'%s': Account details - %s" % (self._Device.DeviceName, request.ToString()))
+        msg:SoundTouchMessage = self.Put(SoundTouchNodes.setMusicServiceAccount, request)
+        return msg
+
+
     def SetName(self, name:str) -> SoundTouchMessage:
         """
         Sets a new device name.
 
         <details>
-          <summary>Sample Code</summary><br/>
+          <summary>Sample Code</summary>
         ```python
         .. include:: ../docs/include/samplecode/SoundTouchClient/SetName.py
         ```
@@ -3405,7 +3554,7 @@ class SoundTouchClient:
                 Volume level to set, in the range of 0 (mute) to 100 (full volume).
 
         <details>
-          <summary>Sample Code</summary><br/>
+          <summary>Sample Code</summary>
         ```python
         .. include:: ../docs/include/samplecode/SoundTouchClient/SetVolumeLevel.py
         ```
@@ -3438,7 +3587,7 @@ class SoundTouchClient:
         another slot, then the duplicate preset is removed and its slot is emptied.
 
         <details>
-          <summary>Sample Code</summary><br/>
+          <summary>Sample Code</summary>
         ```python
         .. include:: ../docs/include/samplecode/SoundTouchClient/StorePreset.py
         ```
@@ -3460,7 +3609,7 @@ class SoundTouchClient:
         The `SnapshotSettings` dictionary is cleared prior to storing any settings.
         
         <details>
-          <summary>Sample Code</summary><br/>
+          <summary>Sample Code</summary>
         ```python
         .. include:: ../docs/include/samplecode/SoundTouchClient/StoreSnapshot.py
         ```

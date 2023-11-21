@@ -25,13 +25,14 @@ class PresetList:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        self._Presets = []
+        self._Presets:list[Preset] = []
         
         if (root is None):
-            pass  # no other parms to process.
+
+            pass
+
         else:
 
-            # base fields.
             for preset in root.findall('preset'):
                 self.append(Preset(root=preset))
 
@@ -49,6 +50,10 @@ class PresetList:
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

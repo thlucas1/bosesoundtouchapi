@@ -22,18 +22,16 @@ class SoftwareUpdateCheckResponse:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        # initialize storage.
         self._DeviceId:str = None
         self._IndexFileUrl:str = None
         self._ReleaseRevision:str = None
 
         if (root is None):
 
-            pass  # no other parms to process.
+            pass
 
         else:
 
-            # base fields.
             self._DeviceId = root.get('deviceID')
             self._IndexFileUrl = root.get('indexFileUrl')
             
@@ -43,6 +41,10 @@ class SoftwareUpdateCheckResponse:
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

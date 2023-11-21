@@ -33,21 +33,17 @@ class AudioSpeakerAttributeAndSetting(SoundTouchModelRequest):
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        # initialize storage.
-        self._Rear:SpeakerAttributeAndSetting = None
-        self._SubWoofer01:SpeakerAttributeAndSetting = None
-        self._SubWoofer02:SpeakerAttributeAndSetting = None
-        
+        # create empty control objects.
+        self._Rear:SpeakerAttributeAndSetting = SpeakerAttributeAndSetting('rear')
+        self._SubWoofer01:SpeakerAttributeAndSetting = SpeakerAttributeAndSetting('subwoofer01')
+        self._SubWoofer02:SpeakerAttributeAndSetting = SpeakerAttributeAndSetting('subwoofer02')
+                
         if (root is None):
         
-            # create empty control objects.
-            self._Rear:SpeakerAttributeAndSetting = SpeakerAttributeAndSetting('rear')
-            self._SubWoofer01:SpeakerAttributeAndSetting = SpeakerAttributeAndSetting('subwoofer01')
-            self._SubWoofer02:SpeakerAttributeAndSetting = SpeakerAttributeAndSetting('subwoofer02')
+            pass
         
         else:
 
-            # base fields.
             elmRear:Element = root.find('rear')
             if (elmRear is not None):
                 self._Rear = SpeakerAttributeAndSetting(root=elmRear)
@@ -60,6 +56,10 @@ class AudioSpeakerAttributeAndSetting(SoundTouchModelRequest):
             
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

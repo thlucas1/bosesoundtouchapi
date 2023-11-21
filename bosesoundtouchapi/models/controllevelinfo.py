@@ -97,6 +97,10 @@ class ControlLevelInfo(SoundTouchModelRequest):
         return self.ToString()
 
 
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
     def ControlType(self) -> str:
         """ Type of control the values represent (e.g. "bass", "treble", etc). """
@@ -105,25 +109,25 @@ class ControlLevelInfo(SoundTouchModelRequest):
 
     @property
     def MinValue(self) -> int:
-        """ The minimum allowed value. """
+        """ Minimum allowed value. """
         return self._MinValue
 
 
     @property
     def MaxValue(self) -> int:
-        """ The maximum allowed value. """
+        """ Maximum allowed value. """
         return self._MaxValue
 
 
     @property
     def Step(self) -> int:
-        """ The amount the value can increase or decrease at a time. """
+        """ Amount the value can increase or decrease at a time. """
         return self._Step
 
 
     @property
     def Value(self) -> int:
-        """ The current value of the tone control. """
+        """ Current value of the tone control. """
         return self._Value
 
     @Value.setter

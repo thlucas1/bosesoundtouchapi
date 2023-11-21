@@ -32,38 +32,46 @@ class SimpleConfig(SoundTouchModelRequest):
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._Attribute:dict = None
+        self._ConfigName:str = None
+        self._Value:str = None
+
         if (root is None):
             
-            self._ConfigName:str = configName if configName else None
-            self._Value:str = value if value else None
-            self._Attribute:dict = attribute if attribute else None
+            self._Attribute = str(attribute)
+            self._ConfigName = str(configName)
+            self._Value = str(value)
 
         else:
 
-            self._ConfigName:str = root.tag
-            self._Value:str = root.text
-            self._Attribute:dict = root.attrib
+            self._Attribute = root.attrib
+            self._ConfigName = root.tag
+            self._Value = root.text
 
 
     def __repr__(self) -> str:
         return self.ToString()
 
 
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
     def Attribute(self) -> dict:
-        """ The stored attributes. """
+        """ Stored attributes. """
         return self._Attribute
 
 
     @property
     def ConfigName(self) -> str:
-        """ The configuration name (or XML tag name when initializing the instance). """
+        """ Configuration name (or XML tag name when initializing the instance). """
         return self._ConfigName
 
 
     @property
     def Value(self) -> str:
-        """ The stored text value from the XML-Element. """
+        """ Stored text value from the XML-Element. """
         return self._Value
 
 

@@ -27,76 +27,79 @@ class NowPlayingStatus:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._Source:str = None
+        self._ContentItem:ContentItem = None
+            
+        self._Album:str = None
+        self._Artist:str = None
+        self._Image:str = None
+        self._Track:str = None
+            
+        self._ConnectionDeviceName:str = None
+        self._ConnectionStatus:str = None
+        self._Description:str = None
+        self._Duration:str = None
+        self._Position:int = 0
+        self._Genre:str = None
+        self._IsFavorite:bool = False
+        self._IsFavoriteEnabled:bool = False
+        self._IsSkipEnabled:bool = False
+        self._IsSkipPreviousEnabled:bool = False
+        self._IsSkipPreviousSupported:bool = False
+        self._IsSeekSupported:bool = False
+        self._PlayStatus:str = None
+        self._RepeatSetting:str = None
+        self._ShuffleSetting = None
+        self._StationLocation:str = None
+        self._StationName:str = None
+        self._StreamType:str = None
+        self._TrackId:str = None
+
         if (root is None):
 
-            # the following do not appear in all types of media, so they need to be
-            # initialized in case they are not set.
-            self._Source = None
-            self._ContentItem:ContentItem = None
-            
-            self._Album:str = None
-            self._Artist:str = None
-            self._Image:str = None
-            self._Track:str = None
-            
-            self._ConnectionDeviceName:str = None
-            self._ConnectionStatus:str = None
-            self._Description:str = None
-            self._Duration:str = None
-            self._Position:int = 0
-            self._Genre:str = None
-            self._IsFavorite:bool = False
-            self._IsFavoriteEnabled:bool = False
-            self._IsSkipEnabled:bool = False
-            self._IsSkipPreviousEnabled:bool = False
-            self._IsSkipPreviousSupported:bool = False
-            self._IsSeekSupported:bool = False
-            self._PlayStatus:str = None
-            self._RepeatSetting:str = None
-            self._ShuffleSetting = None
-            self._StationLocation:str = None
-            self._StationName:str = None
-            self._StreamType:str = None
-            self._TrackId:str = None
-
+            pass
+        
         else:
 
             self._Source = _xmlFindAttr(root, 'nowPlaying', 'source')
 
-            self._ContentItem:ContentItem = None
             content_item = root.find("ContentItem")
             if content_item != None: 
                 self._ContentItem = ContentItem(root=content_item)
 
-            self._Album:str = _xmlFind(root, "album")
-            self._Artist:str = _xmlFind(root, "artist")
-            image_status:str = _xmlFindAttr(root, "art", "artImageStatus")
-            if image_status == "IMAGE_PRESENT": self._Image:str = _xmlFind(root, "art")
-            else: self._Image:str = None
-            self._Track:str = _xmlFind(root, "track")
+            self._Album = _xmlFind(root, "album")
+            self._Artist = _xmlFind(root, "artist")
+            image_status = _xmlFindAttr(root, "art", "artImageStatus")
+            if image_status == "IMAGE_PRESENT": 
+                self._Image = _xmlFind(root, "art")
+            self._Track = _xmlFind(root, "track")
 
-            self._ConnectionDeviceName:str = _xmlFindAttr(root, "connectionStatusInfo", "deviceName")
-            self._ConnectionStatus:str = _xmlFindAttr(root, "connectionStatusInfo", "status")
-            self._Description:str = _xmlFind(root, "description")
-            self._Duration:str = int(_xmlFindAttr(root, "time", "total", default='0'))
-            self._Position:int = int(_xmlFind(root, "time", default='0'))
-            self._Genre:str = _xmlFind(root, "genre")
-            self._IsFavorite:bool = _xmlFind(root, "isFavorite", default=False, defaultNoText=True)
-            self._IsFavoriteEnabled:bool = _xmlFind(root, "favoriteEnabled", default=False, defaultNoText=True)
-            self._IsSkipEnabled:bool = _xmlFind(root, "skipEnabled", default=False, defaultNoText=True)
-            self._IsSkipPreviousEnabled:bool = _xmlFind(root, "skipPreviousEnabled", default=False, defaultNoText=True)
-            self._IsSkipPreviousSupported:bool = _xmlFind(root, "skipPreviousSupported", default=False, defaultNoText=True)
-            self._IsSeekSupported:bool = _xmlFind(root, "seekSupported", default=False, defaultNoText=True)
-            self._PlayStatus:str = _xmlFind(root, "playStatus")
-            self._RepeatSetting:str = _xmlFind(root, "repeatSetting")
+            self._ConnectionDeviceName = _xmlFindAttr(root, "connectionStatusInfo", "deviceName")
+            self._ConnectionStatus = _xmlFindAttr(root, "connectionStatusInfo", "status")
+            self._Description = _xmlFind(root, "description")
+            self._Duration = int(_xmlFindAttr(root, "time", "total", default='0'))
+            self._Position = int(_xmlFind(root, "time", default='0'))
+            self._Genre = _xmlFind(root, "genre")
+            self._IsFavorite = _xmlFind(root, "isFavorite", default=False, defaultNoText=True)
+            self._IsFavoriteEnabled = _xmlFind(root, "favoriteEnabled", default=False, defaultNoText=True)
+            self._IsSkipEnabled = _xmlFind(root, "skipEnabled", default=False, defaultNoText=True)
+            self._IsSkipPreviousEnabled = _xmlFind(root, "skipPreviousEnabled", default=False, defaultNoText=True)
+            self._IsSkipPreviousSupported = _xmlFind(root, "skipPreviousSupported", default=False, defaultNoText=True)
+            self._IsSeekSupported = _xmlFind(root, "seekSupported", default=False, defaultNoText=True)
+            self._PlayStatus = _xmlFind(root, "playStatus")
+            self._RepeatSetting = _xmlFind(root, "repeatSetting")
             self._ShuffleSetting = _xmlFind(root, "shuffleSetting")
-            self._StationLocation:str = _xmlFind(root, "stationLocation")
-            self._StationName:str = _xmlFind(root, "stationName")
-            self._StreamType:str = _xmlFind(root, "streamType")
-            self._TrackId:str = _xmlFind(root, "trackID")
+            self._StationLocation = _xmlFind(root, "stationLocation")
+            self._StationName = _xmlFind(root, "stationName")
+            self._StreamType = _xmlFind(root, "streamType")
+            self._TrackId = _xmlFind(root, "trackID")
             
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

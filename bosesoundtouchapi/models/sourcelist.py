@@ -25,10 +25,12 @@ class SourceList:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        self._SourceItems = []
+        self._SourceItems:list[SourceItem] = []
         
         if (root is None):
-            pass  # no other parms to process.
+            
+            pass
+        
         else:
 
             # base fields.
@@ -61,6 +63,14 @@ class SourceList:
 
     def __len__(self) -> int:
         return len(self._SourceItems)
+
+
+    def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
+        return self.ToString()
 
 
     @property

@@ -60,6 +60,10 @@ class AudioProductToneControls(SoundTouchModelRequest):
         return self.ToString()
 
 
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
     def Bass(self) -> ControlLevelInfo:
         """ Audio product tone control settings for bass details. """

@@ -96,6 +96,9 @@ class SoundTouchNotifyCategorys(Enum):
     """
     
     sourcesUpdated = 'sourcesUpdated'
+    """
+    Occurs when the sources list has been updated - e.g. if a source is added, or deleted.
+    """
     
     swUpdateStatusUpdated = 'swUpdateStatusUpdated'
     

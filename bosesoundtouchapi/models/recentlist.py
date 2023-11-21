@@ -29,10 +29,12 @@ class RecentList:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        self._Recents = []
+        self._Recents:list[Recent] = []
         
         if (root is None):
-            pass  # no other parms to process.
+
+            pass
+
         else:
 
             for recent in root.findall('recent'):
@@ -56,6 +58,10 @@ class RecentList:
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

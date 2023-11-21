@@ -73,6 +73,10 @@ class AudioDspControls(SoundTouchModelRequest):
         return self.ToString()
 
 
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
     def AudioMode(self) -> str:
         """ Audio mode value (e.g. "AUDIO_MODE_NORMAL", "AUDIO_MODE_DIALOG", etc). """

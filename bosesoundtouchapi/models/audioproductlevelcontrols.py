@@ -58,6 +58,10 @@ class AudioProductLevelControls(SoundTouchModelRequest):
         return self.ToString()
 
 
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
     def FrontCenterSpeakerLevel(self) -> ControlLevelInfo:
         """ Audio product level control settings for front center speaker level details. """

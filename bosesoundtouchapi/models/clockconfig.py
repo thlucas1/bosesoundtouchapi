@@ -23,20 +23,32 @@ class ClockConfig:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._BrightnessLevel:int = None
+        self._TimeFormat:str = None
+        self._TimeZoneInfo:str = None
+        self._UserEnable:bool = None
+        self._UserOffsetMinute:int = None
+        self._UserUtcTime:int = None
+
         if (root is None):
-            pass  # no other parms to process.
+
+            pass
+
         else:
 
-            # base fields.
-            self._BrightnessLevel:int = int(_xmlFindAttr(root, 'clockConfig', 'brightnessLevel', default='0'))
-            self._TimeFormat:str = _xmlFindAttr(root, 'clockConfig', 'timeFormat')
-            self._TimeZoneInfo:str = _xmlFindAttr(root, 'clockConfig', 'timezoneInfo')
-            self._UserEnable:bool = _xmlFindAttr(root, 'clockConfig', 'userEnable', default='false') == True
-            self._UserOffsetMinute:int = int(_xmlFindAttr(root, 'clockConfig', 'userOffsetMinute', default='0'))
-            self._UserUtcTime:int = int(_xmlFindAttr(root, 'clockConfig', 'userUtcTime', default='0'))
+            self._BrightnessLevel = int(_xmlFindAttr(root, 'clockConfig', 'brightnessLevel', default='0'))
+            self._TimeFormat = _xmlFindAttr(root, 'clockConfig', 'timeFormat')
+            self._TimeZoneInfo = _xmlFindAttr(root, 'clockConfig', 'timezoneInfo')
+            self._UserEnable = _xmlFindAttr(root, 'clockConfig', 'userEnable', default='false') == True
+            self._UserOffsetMinute = int(_xmlFindAttr(root, 'clockConfig', 'userOffsetMinute', default='0'))
+            self._UserUtcTime = int(_xmlFindAttr(root, 'clockConfig', 'userUtcTime', default='0'))
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

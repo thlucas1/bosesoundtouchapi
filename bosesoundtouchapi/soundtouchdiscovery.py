@@ -72,6 +72,10 @@ class SoundTouchDiscovery:
         return len(self._DiscoveredDeviceNames)
 
 
+    def __repr__(self) -> str:
+        return self.ToString()
+
+
     def __str__(self) -> str:
         return self.ToString()
 

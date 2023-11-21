@@ -41,34 +41,46 @@ class ContentItem:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._ContainerArt:str = None
+        self._IsPresetable:bool = None
+        self._ItemType:str = None
+        self._Location:str = None
+        self._Name:str = None
+        self._Source:str = None
+        self._SourceAccount:str = None
+
         if (root is None):
             
-            self._ContainerArt:str = containerArt
-            self._IsPresetable:bool = isPresetable
-            self._ItemType:str = itemType
-            self._Location:str = location
-            self._Name:str = name
-            self._Source:str = source
-            self._SourceAccount:str = sourceAccount
+            self._ContainerArt = containerArt
+            self._IsPresetable = isPresetable
+            self._ItemType = itemType
+            self._Location = location
+            self._Name = name
+            self._Source = source
+            self._SourceAccount = sourceAccount
 
         else:
 
-            self._ContainerArt:str = _xmlFind(root, "containerArt")
-            self._IsPresetable:bool = root.get("isPresetable") == 'true'
-            self._ItemType:str = root.get("type")
-            self._Location:str = root.get("location")
-            self._Name:str = _xmlFind(root, "itemName")
-            self._Source:str = root.get("source")
-            self._SourceAccount:str = root.get("sourceAccount")
+            self._ContainerArt = _xmlFind(root, "containerArt")
+            self._IsPresetable = root.get("isPresetable") == 'true'
+            self._ItemType = root.get("type")
+            self._Location = root.get("location")
+            self._Name = _xmlFind(root, "itemName")
+            self._Source = root.get("source")
+            self._SourceAccount = root.get("sourceAccount")
         
         
     def __repr__(self) -> str:
         return self.ToString()
 
 
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
     def ContainerArt(self) -> str:
-        """ The item's container art url. """
+        """ Item's container art url. """
         return self._ContainerArt
 
 
@@ -92,14 +104,15 @@ class ContentItem:
 
     @property
     def Name(self) -> str:
-        """ The item's name. """
+        """ Item's name. """
         return self._Name
 
 
     @property
     def Source(self) -> str:
         """ 
-        The media source type. 
+        Media source type. 
+        
         This value is defined at `bosesoundtouchapi.soundtouchsource.SoundTouchSources`. 
         """
         return self._Source
@@ -107,7 +120,7 @@ class ContentItem:
 
     @property
     def SourceAccount(self) -> str:
-        """ The source account this content item is played with. """
+        """ Source account this content item is played with. """
         return self._SourceAccount
 
 

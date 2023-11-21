@@ -23,18 +23,28 @@ class BassCapabilities:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._Default:int = None
+        self._IsAvailable:bool = None
+        self._Maximum:int = None
+        self._Minimum:int = None
+
         if (root is None):
-            pass  # no other parms to process.
+            
+            pass
+        
         else:
 
-            # base fields.
-            self._Default:int = int(_xmlFind(root, 'bassDefault', default=0))
-            self._IsAvailable:bool = _xmlFind(root, 'bassAvailable', default='false') == 'true'
-            self._Maximum:int = int(_xmlFind(root, 'bassMax', default=0))
-            self._Minimum:int = int(_xmlFind(root, 'bassMin', default=0))
+            self._Default = int(_xmlFind(root, 'bassDefault', default=0))
+            self._IsAvailable = _xmlFind(root, 'bassAvailable', default='false') == 'true'
+            self._Maximum = int(_xmlFind(root, 'bassMax', default=0))
+            self._Minimum = int(_xmlFind(root, 'bassMin', default=0))
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

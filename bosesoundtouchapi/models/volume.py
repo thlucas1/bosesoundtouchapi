@@ -31,20 +31,28 @@ class Volume(SoundTouchModelRequest):
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._Actual:int = None
+        self._IsMuted:bool = None
+        self._Target:int = None
+        
         if (root is None):
 
-            self._Actual:int = int(actual) if actual else 0
-            self._IsMuted:bool = isMuted == 'true' if isMuted else False
-            self._Target:int = int(target) if target else 0
+            self._Actual = int(actual) if actual else 0
+            self._IsMuted = isMuted == 'true' if isMuted else False
+            self._Target = int(target) if target else 0
 
         else:
 
-            self._Actual:int = int(_xmlFind(root, 'actualvolume', default='0'))
-            self._IsMuted:bool = bool(_xmlFind(root, 'muteenabled', default='false') == 'true')
-            self._Target:int = int(_xmlFind(root, 'targetvolume', default='0'))
+            self._Actual = int(_xmlFind(root, 'actualvolume', default='0'))
+            self._IsMuted = bool(_xmlFind(root, 'muteenabled', default='false') == 'true')
+            self._Target = int(_xmlFind(root, 'targetvolume', default='0'))
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

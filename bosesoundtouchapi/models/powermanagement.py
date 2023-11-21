@@ -23,13 +23,17 @@ class PowerManagement:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._BatteryCapable:bool = None
+        self._State:str = None
+
         if (root is None):
-            pass  # no other parms to process.
+
+            pass
+
         else:
 
-            # base fields.
-            self._State:str = _xmlFind(root, 'powerState')
             self._BatteryCapable:bool = bool(_xmlFind(root, 'capable', default='false') == 'true')
+            self._State:str = _xmlFind(root, 'powerState')
         
             if (self._BatteryCapable is None):
                 nodeBattery = root[1]
@@ -38,6 +42,10 @@ class PowerManagement:
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

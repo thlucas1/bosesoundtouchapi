@@ -82,9 +82,13 @@ class SoundTouchFirmware:
         self._HardwareRevision:str = hardwareRevision
 
 
+    def __repr__(self) -> str:
+        return self.ToString()
+
+
     def __str__(self) -> str:
         return self.ToString()
-    
+
 
     @property
     def DeviceId(self) -> int:

@@ -36,10 +36,10 @@ class SurveyResultItem:
         else:
 
             # base fields.
-            self._Secure:bool = root.get("secure") == 'true'
-            self._SecurityTypes:list[str] = []
-            self._SignalStrength:int = root.get('signalStrength')
-            self._Ssid:str = root.get('ssid')
+            self._Secure = root.get("secure") == 'true'
+            self._SecurityTypes = []
+            self._SignalStrength = root.get('signalStrength')
+            self._Ssid = root.get('ssid')
             
             # load all security types.
             elmSecurityTypes:Element = root.find('securityTypes')
@@ -50,6 +50,10 @@ class SurveyResultItem:
                 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

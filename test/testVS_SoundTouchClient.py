@@ -1,6 +1,7 @@
 import sys
 sys.path.append("..")
 
+import time
 import unittest
 
 # external package imports.
@@ -17,9 +18,9 @@ from bosesoundtouchapi.uri import *
 from bosesoundtouchapi.ws import *
 
 
-class Test_SoundTouchClient(unittest.TestCase):
+class Test_SoundTouchClient_OneDevice(unittest.TestCase):
     """
-    Test all Client scenarios.
+    Test client scenarios that utilize a single device.
     """
 
     @classmethod
@@ -341,68 +342,6 @@ class Test_SoundTouchClient(unittest.TestCase):
             raise
         
 
-    def test_AddZoneMembers(self):
-        """ 
-        Test AddZoneMembers method scenarios.
-        """
-        # set SmartInspect logger reference.        
-        _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
-
-        try:
-
-            print("Test Starting:  %s" % methodName)
-            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
-
-            # create BoseDevice instance.
-            client:SoundTouchClient = self._CreateApiClient()
-
-            # build list of zone members to add.
-            zoneMembers:list = []
-            zoneMembers.append(ZoneMember("192.168.1.130", "E8EB11B9B723"))
-            zoneMembers.append(ZoneMember("192.168.1.132", "F9BC35A6D825"))
-            zoneMembers.append(ZoneMember("192.168.1.133", "B8BD47C7F452"))
-
-            # get current zone configuration status.
-            zoneBefore:Zone = self._GetAndDisplayZoneStatus(client, "(curent) ", _logsi)
-            
-            # if zone not active, then create one so that we have something to add.
-            if len(zoneBefore.Members) == 0:
-                
-                print("Creating a new master zone so we have a zone member to add ...")
-
-                # initialize the new master zone configuration.
-                masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host,True) # <- master
-                member:ZoneMember
-                for member in zoneMembers:
-                    masterZone.AddMember(member)                                        # <- member
-                    break   # only add 1 zone member, so it actually adds something below
-            
-                # create a new master zone configuration on the device.
-                client.CreateZone(masterZone)
-
-                # get current zone configuration status.
-                zoneBefore:Zone = self._GetAndDisplayZoneStatus(client, "(before) ", _logsi)
-
-            # add zone members to the master zone configuration.
-            msg:SoundTouchMessage = client.AddZoneMembers(zoneMembers)
-
-            # get current zone configuration status.
-            zoneAfter:Zone = self._GetAndDisplayZoneStatus(client, "(after)  ", _logsi)
-
-            # test assertions.
-            #self.assertNotEqual(len(zoneAfter), len(zoneBefore), "Zone count should not be the same before and after CreateZone()")
-
-            print("Test Completed: %s" % methodName)
-
-        except Exception as ex:
-
-            _logsi.LogException("Test Exception: %s" % (methodName), ex)
-            print("** Exception: %s" % str(ex))
-            raise
-        
-
     # def test_Bookmark(self):
     #     """
     #     Test Bookmark method scenarios.
@@ -443,136 +382,6 @@ class Test_SoundTouchClient(unittest.TestCase):
     #         _logsi.LogException("Test Exception: %s" % (methodName), ex)
     #         print("** Exception: %s" % str(ex))
     #         raise
-        
-
-    def test_CreateZone(self):
-        """
-        Test CreateZone method scenarios.
-        """
-        # set SmartInspect logger reference.        
-        _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
-
-        try:
-
-            print("Test Starting:  %s" % methodName)
-            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
-
-            # create BoseDevice instance.
-            client:SoundTouchClient = self._CreateApiClient()
-
-            # get current zone configuration status.
-            zoneBefore:Zone = self._GetAndDisplayZoneStatus(client, "(before) ", _logsi)
-
-            # initialize the new master zone configuration.
-            masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host,True) # <- master
-            masterZone.AddMember(ZoneMember("192.168.1.130", "E8EB11B9B723"))       # <- member
-            
-            # create a new master zone configuration on the device.
-            msg:SoundTouchMessage = client.CreateZone(masterZone)
-
-            # was a message returned in the result?
-            if msg.HasXmlMessage:
-                _logsi.LogMessage("(result): %s" % (msg.XmlMessage), colorValue=SIColors.LightGreen)
-                print("(result): %s" % (msg.XmlMessage))
-            
-            # get current zone configuration status.
-            zoneAfter:Zone = self._GetAndDisplayZoneStatus(client, "(after)  ", _logsi)
-
-            # test assertions.
-            #self.assertNotEqual(len(zoneAfter), len(zoneBefore), "Zone count should not be the same before and after CreateZone()")
-
-            # test group member missing device id.
-            with self.assertRaises(SoundTouchWarning, msg="Should have raised SoundTouchWarning for group member with no device id"):
-                _logsi.LogMessage("Testing for group member with no device id ...", colorValue=SIColors.LightGreen)
-                print("Testing for group member with no device id ...")
-                masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host,True)   # <- master device
-                masterZone.AddMember(ZoneMember("192.168.1.130"))      # <- missing device id
-                client.CreateZone(masterZone)
-
-            # test zone not supplied.
-            with self.assertRaises(SoundTouchWarning, msg="Should have raised SoundTouchWarning for Zone object is None"):
-                _logsi.LogMessage("Testing for Zone object is None ...", colorValue=SIColors.LightGreen)
-                print("Testing for Zone object is None ...")
-                client.CreateZone(None)
-
-            # test invalid zone type.
-            with self.assertRaises(SoundTouchWarning, msg="Should have raised SoundTouchWarning for invalid Zone type"):
-                _logsi.LogMessage("Testing for invalid Zone type ...", colorValue=SIColors.LightGreen)
-                print("Testing for invalid Zone type ...")
-                client.CreateZone(SoundTouchClient)
-
-            # test zone with no zone members.
-            with self.assertRaises(SoundTouchWarning, msg="Should have raised SoundTouchWarning for Zone with no ZoneMember objects"):
-                _logsi.LogMessage("Testing for Zone with no ZoneMember objects ...", colorValue=SIColors.LightGreen)
-                print("Testing Zone with no ZoneMember objects ...")
-                masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host,True)   # <- master device
-                client.CreateZone(masterZone)
-
-            # test invalid zone member type.
-            with self.assertRaises(SoundTouchWarning, msg="Should have raised SoundTouchWarning for invalid ZoneMember object"):
-                _logsi.LogMessage("Testing for invalid ZoneMember object ...", colorValue=SIColors.LightGreen)
-                print("Testing for invalid ZoneMember object ...")
-                masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host,True)   # <- master device
-                masterZone.AddMember(SoundTouchClient)
-                client.CreateZone(masterZone)
-
-            # test add master as zone member.
-            with self.assertRaises(SoundTouchWarning, msg="Should have raised SoundTouchWarning for adding master as ZoneMember"):
-                _logsi.LogMessage("Testing for adding master as ZoneMember ...", colorValue=SIColors.LightGreen)
-                print("Testing for adding master as ZoneMember ...")
-                masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host,True)   # <- master device
-                masterZone.AddMember(ZoneMember(masterZone.MasterIpAddress, masterZone.MasterDeviceId)) # <- master device
-                client.CreateZone(masterZone)
-
-            print("Test Completed: %s" % methodName)
-
-        except Exception as ex:
-
-            _logsi.LogException("Test Exception: %s" % (methodName), ex)
-            print("** Exception: %s" % str(ex))
-            raise
-        
-
-    def test_CreateZoneFromDevices(self):
-        """
-        Test CreateZoneFromDevices method scenarios.
-        """
-        # set SmartInspect logger reference.        
-        _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
-
-        try:
-
-            print("Test Starting:  %s" % methodName)
-            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
-
-            # create BoseDevice instance.
-            client:SoundTouchClient = self._CreateApiClient()
-
-            # get current zone configuration status.
-            zoneBefore:Zone = self._GetAndDisplayZoneStatus(client, "(before) ", _logsi)
-
-            # create new device instances for all zone members.
-            device_master:SoundTouchDevice = SoundTouchDevice("192.168.1.131") # master
-            device_member:SoundTouchDevice = SoundTouchDevice("192.168.1.130") # member
-            
-            # create a new master zone configuration on the device.
-            masterZone:Zone = client.CreateZoneFromDevices(device_master, [device_member])
-            print("Master Zone created:\n%s" % (masterZone.ToString(True)))
-            
-            # get current zone configuration status.
-            zoneAfter:Zone = self._GetAndDisplayZoneStatus(client, "(after)  ", _logsi)
-
-            print("Test Completed: %s" % methodName)
-
-        except Exception as ex:
-
-            _logsi.LogException("Test Exception: %s" % (methodName), ex)
-            print("** Exception: %s" % str(ex))
-            raise
         
 
     def test_GetBalance(self):
@@ -989,7 +798,7 @@ class Test_SoundTouchClient(unittest.TestCase):
                 _logsi.LogObject(SILevel.Message, intfc.ToString(), intfc, colorValue=SIColors.LightGreen, excludeNonPublic=True)
                 print(intfc.ToString())
                 self.assertIsNotNone(intfc.Name, "NetworkInfoInterface Name property should not be None")
-                self.assertIsNotNone(intfc.InterfaceType, "NetworkInfoInterface InterfaceType property should not be None")
+                self.assertIsNotNone(intfc.TypeValue, "NetworkInfoInterface TypeValue property should not be None")
                 self.assertIsNotNone(intfc.State, "NetworkInfoInterface State property should not be None")
                 self.assertIsNotNone(intfc.MacAddress, "NetworkInfoInterface MacAddress property should not be None")
 
@@ -1446,53 +1255,6 @@ class Test_SoundTouchClient(unittest.TestCase):
             raise
         
 
-    def test_GetZoneStatus(self):
-        """
-        Test GetZoneStatus method scenarios.
-        """
-        # set SmartInspect logger reference.        
-        _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
-
-        try:
-
-            print("Test Starting:  %s" % methodName)
-            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
-
-            # create BoseDevice instance.
-            client:SoundTouchClient = self._CreateApiClient()
-            
-            # queries the current multiroom config.
-            zone_config:Zone = client.GetZoneStatus()
-            
-            # test assertions.
-            self.assertIsInstance(zone_config, (Zone), "Returned object should be of type Zone")
-            self.assertIsInstance(zone_config, (Iterable), "Returned object should be of type Iterable")
-            _logsi.LogObject(SILevel.Message, zone_config.ToString(), zone_config, colorValue=SIColors.LightGreen, excludeNonPublic=True)
-            print(zone_config.ToString())
-            
-            # process list of defined zone members.
-            zone_slave:ZoneMember = None
-            for zone_slave in zone_config:
-
-                # test assertions.
-                self.assertIsInstance(zone_slave, (ZoneMember), "Returned Zone object should be of type ZoneMember")
-                _logsi.LogObject(SILevel.Message, zone_slave.ToString(), zone_slave, colorValue=SIColors.LightGreen, excludeNonPublic=True)
-                print(zone_slave.ToString())
-                # self.assertIsNotNone(zone_slave.DeviceId, "ZoneMember DeviceId property should not be None")
-                self.assertIsNotNone(zone_slave.IpAddress, "ZoneMember IpAddress property should not be None")
-                # self.assertIsNotNone(zone_slave.DeviceRole, "ZoneMember DeviceRole property should not be None")
-
-            print("Test Completed: %s" % methodName)
-
-        except Exception as ex:
-
-            _logsi.LogException("Test Exception: %s" % (methodName), ex)
-            print("** Exception: %s" % str(ex))
-            raise
-        
-
     def test_MakeRequest(self):
         """
         Test MakeRequest method scenarios.
@@ -1597,7 +1359,7 @@ class Test_SoundTouchClient(unittest.TestCase):
 
             # test assertions.
             self.assertIsInstance(statAfter, (NowPlayingStatus), "Returned status object should be of type NowPlayingStatus")
-            self.assertIn(statAfter.PlayStatus, ["STOP_STATE",None], "NowPlayingStatus PlayStatus should be STOP_STATE, or None if device is in STANDBY")
+            self.assertIn(statAfter.PlayStatus, ["PAUSE_STATE","STOP_STATE",None], "NowPlayingStatus PlayStatus should be PAUSE_STATE, STOP_STATE, or None if device is in STANDBY")
 
             print("Test Completed: %s" % methodName)
 
@@ -2000,12 +1762,14 @@ class Test_SoundTouchClient(unittest.TestCase):
             # stop nowPlaying media.
             client.MediaStop()
             
+            time.sleep(3)
+            
             # get current nowPlaying status.
             statAfter:NowPlayingStatus = self._GetAndDisplayNowPlayingStatus(client, "(after)  ", _logsi)
 
             # test assertions.
             self.assertIsInstance(statAfter, (NowPlayingStatus), "Returned status object should be of type NowPlayingStatus")
-            self.assertIn(statAfter.PlayStatus, ["STOP_STATE",None], "NowPlayingStatus PlayStatus should be STOP_STATE after MediaStop(), or None if device is in STANDBY")
+            self.assertIn(statAfter.PlayStatus, ["PAUSE_STATE","STOP_STATE",None], "NowPlayingStatus PlayStatus should be STOP_STATE after MediaStop(), or None if device is in STANDBY")
 
             print("Test Completed: %s" % methodName)
 
@@ -2099,7 +1863,7 @@ class Test_SoundTouchClient(unittest.TestCase):
 
     def test_MuteOn(self):
         """
-        Test mute_on method scenarios.
+        Test MuteOn method scenarios.
         """
         # set SmartInspect logger reference.        
         _logsi:SISession = SIAuto.Main            
@@ -2128,7 +1892,7 @@ class Test_SoundTouchClient(unittest.TestCase):
 
             # test assertions.
             self.assertIsInstance(volAfter, (Volume), "Returned status object should be of type Volume")
-            self.assertEqual(volAfter.IsMuted, True, "volume IsMuted should be True after mute_on()")
+            self.assertEqual(volAfter.IsMuted, True, "volume IsMuted should be True after MuteOn()")
 
             print("Test Completed: %s" % methodName)
 
@@ -2216,7 +1980,7 @@ class Test_SoundTouchClient(unittest.TestCase):
 
             # use google text to speech to say a message.
             print("\nSaying message via Google TTS (language=EN) ...")
-            msg:SoundTouchMessage = client.PlayNotificationTTS("There is activity at the front door.")
+            msg:SoundTouchMessage = client.PlayNotificationTTS("a.There is activity at the front door.")
    
             # was a message returned in the result?
             if msg.HasXmlMessage:
@@ -2229,7 +1993,7 @@ class Test_SoundTouchClient(unittest.TestCase):
 
             # use google text to speech to say a message.
             print("\nSaying message via Google TTS (language=DE) ...")
-            msg:SoundTouchMessage = client.PlayNotificationTTS("There is activity at the front door.", 
+            msg:SoundTouchMessage = client.PlayNotificationTTS("a.There is activity at the front door.", 
                                                                "http://translate.google.com/translate_tts?ie=UTF-8&tl=DE&client=tw-ob&q={saytext}",
                                                                 volumeLevel=30)
 
@@ -2244,7 +2008,7 @@ class Test_SoundTouchClient(unittest.TestCase):
 
             # use google text to speech to say a message.
             print("\nSaying message via Google TTS (language=EN) ...")
-            msg:SoundTouchMessage = client.PlayNotificationTTS("There is activity at the front door.", 
+            msg:SoundTouchMessage = client.PlayNotificationTTS("a.There is activity at the front door.", 
                                                                "http://translate.google.com/translate_tts?ie=UTF-8&tl=EN&client=tw-ob&q={saytext}",
                                                                "Activity Detected", # <- appears in nowPlaying.Artist
                                                                "Front Door",        # <- appears in nowPlaying.Album
@@ -2466,6 +2230,7 @@ class Test_SoundTouchClient(unittest.TestCase):
             presetsBefore:PresetList = self._GetAndDisplayPresetList(client, _logsi)
 
             # remove all stored presets.
+            print("\nRemoving all presets ...")
             client.RemoveAllPresets()
             
             # give the device time to process the change.
@@ -2473,7 +2238,18 @@ class Test_SoundTouchClient(unittest.TestCase):
             
             # get list of defined presets.
             presetsAfter:PresetList = self._GetAndDisplayPresetList(client, _logsi)
+            
+            # re-add presets from before.
+            print("\nRestoring presets from before the removal ...")
+            preset:Preset
+            for preset in presetsBefore:
+                print("- Adding preset: %s" % preset.Name)
+                client.StorePreset(preset)
            
+            # get list of defined presets.
+            print("\nRestored presets ...")
+            presetsRestored:PresetList = self._GetAndDisplayPresetList(client, _logsi)
+            
             print("Test Completed: %s" % methodName)
 
         except Exception as ex:
@@ -2554,123 +2330,13 @@ class Test_SoundTouchClient(unittest.TestCase):
             presetsBefore:PresetList = self._GetAndDisplayPresetList(client, _logsi)
 
             # remove specified preset id.
+            print("\nRemoving preset id=4 ...")
             client.RemovePreset(4)
             
             # get list of defined presets.
+            print("\nUpdated presets ...")
             presetsAfter:PresetList = self._GetAndDisplayPresetList(client, _logsi)
            
-            print("Test Completed: %s" % methodName)
-
-        except Exception as ex:
-
-            _logsi.LogException("Test Exception: %s" % (methodName), ex)
-            print("** Exception: %s" % str(ex))
-            raise
-        
-
-    def test_RemoveZone(self):
-        """ 
-        Test RemoveZone method scenarios.
-        """
-        # set SmartInspect logger reference.        
-        _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
-
-        try:
-
-            print("Test Starting:  %s" % methodName)
-            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
-
-            # create BoseDevice instance.
-            client:SoundTouchClient = self._CreateApiClient()
-
-            # get current zone configuration status.
-            zoneBefore:Zone = self._GetAndDisplayZoneStatus(client, "(curent) ", _logsi)
-            
-            # if zone not active, then create one so that we have something to remove.
-            if len(zoneBefore.Members) == 0:
-                
-                print("Creating a new master zone so we have a zone member to remove ...")
-
-                # initialize the new multiroom config.
-                masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host,True) # <- master
-                masterZone.AddMember(ZoneMember("192.168.1.130", "E8EB11B9B723"))       # <- member
-            
-                # create a new multiroom group (zone) using the multiroom config.
-                client.CreateZone(masterZone)
-
-                # get current zone configuration status.
-                zoneAfter:Zone = self._GetAndDisplayZoneStatus(client, "(before) ", _logsi)
-
-            # remove master zone.
-            msg:SoundTouchMessage = client.RemoveZone()
-
-            # get current zone configuration status.
-            zoneAfter:Zone = self._GetAndDisplayZoneStatus(client, "(after)  ", _logsi)
-
-            # test assertions.
-            #self.assertNotEqual(len(zoneAfter), len(zoneBefore), "Zone count should not be the same before and after CreateZone()")
-
-            print("Test Completed: %s" % methodName)
-
-        except Exception as ex:
-
-            _logsi.LogException("Test Exception: %s" % (methodName), ex)
-            print("** Exception: %s" % str(ex))
-            raise
-        
-
-    def test_RemoveZoneMembers(self):
-        """ 
-        Test RemoveZoneMembers method scenarios.
-        """
-        # set SmartInspect logger reference.        
-        _logsi:SISession = SIAuto.Main            
-        # set method name for console output.
-        methodName:str = SISession.GetMethodName()
-
-        try:
-
-            print("Test Starting:  %s" % methodName)
-            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
-
-            # create BoseDevice instance.
-            client:SoundTouchClient = self._CreateApiClient()
-
-            # build list of zone members to remove.
-            zoneMembers:list = []
-            zoneMembers.append(ZoneMember("192.168.1.130", "E8EB11B9B723"))
-
-            # get current zone configuration status.
-            zoneBefore:Zone = self._GetAndDisplayZoneStatus(client, "(curent) ", _logsi)
-            
-            # if zone not active, then create one so that we have something to remove.
-            if len(zoneBefore.Members) == 0:
-                
-                print("Creating a new master zone so we have a zone member to remove ...")
-                
-                # initialize the new master zone configuration.
-                masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host, True) # <- master
-                member:ZoneMember
-                for member in zoneMembers:
-                    masterZone.AddMember(member)                                         # <- member
-            
-                # create a new master zone configuration on the device.
-                client.CreateZone(masterZone)
-
-                # get current zone configuration status.
-                zoneBefore:Zone = self._GetAndDisplayZoneStatus(client, "(before) ", _logsi)
-
-            # remove zone members from the master zone configuration on the device.
-            msg:SoundTouchMessage = client.RemoveZoneMembers(zoneMembers)
-
-            # get current zone configuration status.
-            zoneAfter:Zone = self._GetAndDisplayZoneStatus(client, "(after)  ", _logsi)
-
-            # test assertions.
-            #self.assertNotEqual(len(zoneAfter), len(zoneBefore), "Zone count should not be the same before and after CreateZone()")
-
             print("Test Completed: %s" % methodName)
 
         except Exception as ex:
@@ -3419,7 +3085,7 @@ class Test_SoundTouchClient(unittest.TestCase):
             time.sleep(1)
 
             # mute the device.
-            client.mute_on()
+            client.MuteOn()
             time.sleep(1)
 
             # get current settings before the snapshot restore.
@@ -3627,132 +3293,601 @@ class Test_SoundTouchClient(unittest.TestCase):
             raise
         
 
-    # def _DISABLED_test_StatusNotifications(self):
-    #     """
-    #     Test Mute method scenarios.
-    #     """
-    #     # set SmartInspect logger reference.        
-    #     _logsi:SISession = SIAuto.Main            
-    #     # set method name for console output.
-    #     methodName:str = SISession.GetMethodName()
+class Test_SoundTouchClient_MultiRoom(unittest.TestCase):
+    """
+    Test client scenarios that utilize two or more devices for multi-room (zone) functions.
+    """
 
-    #     try:
-
-    #         print("Test Starting:  %s" % methodName)
-    #         _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
-
-    #         # create BoseDevice instance.
-    #         client:SoundTouchClient = self._CreateApiClient()
-
-    #         # fetch device's capabilities - must have IsWebSocketApiProxyCapable=True in order to support notifications.
-    #         capabilities = client.GetCapabilities()
-    #         if capabilities.IsWebSocketApiProxyCapable:
-                
-    #             # create and start a websocket to receive notifications from the device.
-    #             socket:SoundTouchWebSocket = SoundTouchWebSocket(client.Device)
-                
-    #             # add our listener(s) that will handle SoundTouch device status updates.
-    #             socket.add_listener(SoundTouchNotifyCategorys.ALL, self._OnSoundTouchUpdateEvent)
-                
-    #             # start receiving updates.
-    #             socket.start_notification()
-
-    #         # for testing status notifications.
-    #         # start the test with the SoundTouch device power off (standby mode).
-    #         maxcnt:int = 20
-    #         for i in range(maxcnt):
-    #             time.sleep(1)
-
-    #             # first test is to power on.
-    #             if i == 0:
-    #                 func = "client.power_on()"
-    #                 print("%s - %s", str(i), func)
-    #                 _logsi.LogMessage("Testing method: %s", func)
-    #                 client.power_on()
-    #                 time.sleep(2)
-
-    #             if i == 2:
-    #                 func = "client.volume_up()"
-    #                 print("%s - %s", str(i), func)
-    #                 _logsi.LogMessage("Testing method: %s", func)
-    #                 client.volume_up()
-    #                 time.sleep(2)
-
-    #             if i == 4:
-    #                 func = "client.volume_down()"
-    #                 print("%s - %s", str(i), func)
-    #                 _logsi.LogMessage("Testing method: %s", func)
-    #                 client.volume_down()
-    #                 time.sleep(2)
-
-    #             if i == 6:
-    #                 func = "client.mute()"
-    #                 print("%s - %s", str(i), func)
-    #                 _logsi.LogMessage("Testing method: %s", func)
-    #                 client.mute()
-    #                 time.sleep(2)
-                    
-    #             if i == 8:
-    #                 func = "client.mute()"
-    #                 print("%s - %s", str(i), func)
-    #                 _logsi.LogMessage("Testing method: %s", func)
-    #                 client.mute()
-    #                 time.sleep(2)
-
-    #             if i == 10:
-    #                 func = "client.pause()"
-    #                 print("%s - %s", str(i), func)
-    #                 _logsi.LogMessage("Testing method: %s", func)
-    #                 client.pause()
-    #                 time.sleep(2)
-
-    #             if i == 12:
-    #                 func = "client.resume()"
-    #                 print("%s - %s", str(i), func)
-    #                 _logsi.LogMessage("Testing method: %s", func)
-    #                 client.resume()
-    #                 time.sleep(2)
-
-    #             if i == 14:
-    #                 func = "client.SetVolumeLevel(30)"
-    #                 print("%s - %s", str(i), func)
-    #                 _logsi.LogMessage("Testing method: %s", func)
-    #                 client.SetVolumeLevel(50)
-    #                 time.sleep(2)
-
-    #             if i == 16:
-    #                 func = "client.SetVolumeLevel(20)"
-    #                 print("%s - %s", str(i), func)
-    #                 _logsi.LogMessage("Testing method: %s", func)
-    #                 client.SetVolumeLevel(10)
-    #                 time.sleep(2)
-
-    #             # last test is to power off (standby).
-    #             if i == (maxcnt - 1):
-    #                 func = "client.power_off()"
-    #                 print("%s - %s", str(i), func)
-    #                 _logsi.LogMessage("Testing method: %s", func)
-    #                 client.power_off()
-
-    #         # with self.assertRaises(Exception, msg="Should have raised Exception since dictionary key was not found and raiseExceptionIfNotFound=True."):
-    #         #     result = svc.GetDictKeyValueBool(dictStringTrue, KEY_NAME_NOTFOUND, True)
-    #         # result = svc.GetDictKeyValueBool(dictStringTrue, KEY_NAME_NOTFOUND, False)
-    #         # self.assertIsNone(result, "Should have returned None since dictionary key was not found and raiseExceptionIfNotFound=False.")
-
-    #         print("Mute Tests Completed")
-
-    #     except Exception as ex:
-
-    #         _logsi.LogException("Test Exception: %s" % (methodName), ex)
-    #         print("** Exception: %s" % str(ex))
-    #         raise
+    @classmethod
+    def setUpClass(cls):
         
-    #     finally:
-            
-    #         # stop listening for Bose SoundTouch status updates.
-    #         if (socket):
-    #             socket.stop_notification()
+        try:
 
+            print("*******************************************************************************")
+            print("** unittest.TestCase - setUpClass() Started")
+
+            # load SmartInspect settings from a configuration settings file.
+            print("** Loading SmartInspect configuration settings")
+            siConfigPath:str = "./test/smartinspect.cfg"
+            SIAuto.Si.LoadConfiguration(siConfigPath)
+
+            # start monitoring the configuration file for changes, and reload it when it changes.
+            # this will check the file for changes every 60 seconds.
+            print("** Starting SmartInspect configuration settings watchdog")
+            siConfig:SIConfigurationTimer = SIConfigurationTimer(SIAuto.Si, siConfigPath, 60)
+
+            # get smartinspect logger reference and log basic system / domain details.
+            _logsi:SISession = SIAuto.Main            
+            _logsi.LogSeparator(SILevel.Fatal)
+            _logsi.LogAppDomain(SILevel.Message)
+            _logsi.LogSystem(SILevel.Message)
+            
+        except Exception as ex:
+
+            print("** unittest.TestCase - Exception in setUpClass() method!\n" + str(ex))
+            raise
+
+        finally:
+
+            print("** unittest.TestCase - setUpClass() Complete")
+            print("*******************************************************************************")
+
+    
+    @classmethod
+    def tearDownClass(cls):
+        
+        try:
+
+            print("*******************************************************************************")
+            print("** unittest.TestCase - tearDownClass() Started")
+
+            # unwire events, and dispose of SmartInspect.
+            print("** Disposing of SmartInspect resources")
+            SIAuto.Si.Dispose()
+            
+        except Exception as ex:
+
+            print("** unittest.TestCase - Exception in tearDownClass() method!\n" + str(ex))
+            raise
+
+        finally:
+
+            print("** unittest.TestCase - tearDownClass() Complete")
+            print("*******************************************************************************")
+                    
+    
+    def setUp(self):
+        
+        try:
+
+            print("*******************************************************************************")
+            print("** unittest.TestCase - setUp() Started")
+
+            # nothing to do here.
+            
+        except Exception as ex:
+
+            print("** unittest.TestCase - Exception in setUp() method!\n" + str(ex))
+            raise
+
+        finally:
+
+            print("** unittest.TestCase - setUp() Complete")
+            print("*******************************************************************************")
+
+    
+    def tearDown(self):
+        
+        try:
+
+            print("*******************************************************************************")
+            print("** unittest.TestCase - tearDown() Started")
+
+            # nothing to do here.
+            
+        except Exception as ex:
+
+            print("** unittest.TestCase - Exception in tearDown() method!\n" + str(ex))
+            raise
+
+        finally:
+
+            print("** unittest.TestCase - tearDown() Complete")
+            print("*******************************************************************************")
+                    
+    
+    def _CreateApiClient(self) -> SoundTouchClient:
+        """
+        Creates a new SoundTouchClient instance, and sets all properties for executing these test cases.
+
+        Returns:
+            An SoundTouchClient instance.
+        """
+        # set SmartInspect logger reference.        
+        _logsi:SISession = SIAuto.Main            
+
+        try:
+
+            # create SoundTouchDevice instance.
+            device:SoundTouchDevice = SoundTouchDevice("192.168.1.131") # Bose SoundTouch 10
+            #device:SoundTouchDevice = SoundTouchDevice("192.168.1.130") # Bose SoundTouch 300
+            #device:SoundTouchDevice = SoundTouchDevice("192.168.1.133") # non-existant ip
+            #device:SoundTouchDevice = SoundTouchDevice("x.168.1.133") # invalid ip
+            
+            # create SoundTouchClient instance from device.
+            client:SoundTouchClient = SoundTouchClient(device)
+                       
+            # return instance to caller.
+            return client
+
+        except Exception as ex:
+
+            _logsi.LogException("Exception in Test Method \"{0}\"".format(SISession.GetMethodName()), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+
+
+    def _OnSoundTouchUpdateEvent(self, args:Element) -> None:
+        # set SmartInspect logger reference.        
+        _logsi:SISession = SIAuto.Main            
+
+        if (args != None):
+            argsEncoded = ElementTree.tostring(args, encoding="unicode")
+            _logsi.LogXml(SILevel.Message, "SoundTouch device status update: '%s'" % (args.tag), argsEncoded, SIColors.LightGreen)
+            print("Status update args: %s", argsEncoded)
+        
+
+    def _OnSoundTouchInfoEvent(self, args:Element) -> None:
+        # set SmartInspect logger reference.        
+        _logsi:SISession = SIAuto.Main            
+
+        if (args != None):
+            argsEncoded = ElementTree.tostring(args, encoding="unicode")
+            _logsi.LogXml(SILevel.Message, "SoundTouch device information event: '%s'" % (args.tag), argsEncoded, SIColors.LightGreen)
+            print("Status info args: %s", argsEncoded)
+        
+
+    def _GetAndDisplayPresetList(self, client:SoundTouchClient, _logsi:SISession, log_trace:bool = True) -> PresetList:
+    
+            # get list of defined presets.
+            preset_list:PresetList = client.GetPresetList()
+
+            # trace.
+            if log_trace:
+                
+                print(preset_list.ToString())
+                
+                preset:Preset
+                for preset in preset_list:
+                    _logsi.LogObject(SILevel.Message, preset.ToString(), preset, colorValue=SIColors.LightGreen, excludeNonPublic=True)
+                    print(preset.ToString())
+        
+            # return current list to caller.
+            return preset_list
+    
+
+    def _GetAndDisplayRecentList(self, client:SoundTouchClient, _logsi:SISession, log_trace:bool = True) -> RecentList:
+    
+            # get list of defined recents.
+            recent_list:RecentList = client.GetRecentList()
+
+            # trace.
+            if log_trace:
+                
+                print(recent_list.ToString())
+                
+                recent:Recent
+                for recent in recent_list:
+                    _logsi.LogObject(SILevel.Message, recent.ToString(), recent, colorValue=SIColors.LightGreen, excludeNonPublic=True)
+                    print(recent.ToString())
+        
+            # return current list to caller.
+            return recent_list
+    
+
+    def _GetAndDisplayZoneStatus(self, client:SoundTouchClient, log_prefix:str, _logsi:SISession, log_trace:bool = True) -> Zone:
+    
+            # get current multiroom config.
+            zone:Zone = client.GetZoneStatus()
+            
+            # trace.
+            if log_trace:
+
+                _logsi.LogObject(SILevel.Message, "%s%s" % (log_prefix, zone.ToString()), zone, colorValue=SIColors.LightGreen, excludeNonPublic=True)
+                print("%s%s" % (log_prefix, zone.ToString()))
+                
+                zone_member:ZoneMember
+                for zone_member in zone:
+                    _logsi.LogObject(SILevel.Message, zone_member.ToString(), zone_member, colorValue=SIColors.LightGreen, excludeNonPublic=True)
+                    print(zone_member.ToString())
+        
+            # return current multiroom config to caller.
+            return zone
+    
+
+    def _GetAndDisplayNowPlayingStatus(self, client:SoundTouchClient, log_prefix:str, _logsi:SISession, log_trace:bool = True) -> NowPlayingStatus:
+    
+            # get current nowPlaying status.
+            status:NowPlayingStatus = client.GetNowPlayingStatus(True)
+
+            # trace.
+            if log_trace:
+                
+                _logsi.LogObject(SILevel.Message, "%s%s" % (log_prefix, status.ToString()), status, colorValue=SIColors.LightGreen, excludeNonPublic=True)
+                print("%s%s" % (log_prefix, status.ToString()))
+                
+            # return current status to caller.
+            return status
+
+
+    def _GetAndDisplayVolume(self, client:SoundTouchClient, log_prefix:str, _logsi:SISession, log_trace:bool = True) -> Volume:
+    
+            # get current volume levels.
+            vol:Volume = client.GetVolume(True)
+
+            # trace.
+            if log_trace:
+                
+                _logsi.LogObject(SILevel.Message, "%s%s" % (log_prefix, vol.ToString()), vol, colorValue=SIColors.LightGreen, excludeNonPublic=True)
+                print("%s%s" % (log_prefix, vol.ToString()))
+                
+            # return current volume to caller.
+            return vol
+
+    ###################################################################################################################################
+    # test methods start here - above are testing support methods.
+    ###################################################################################################################################
+
+    def test_AddZoneMembers(self):
+        """ 
+        Test AddZoneMembers method scenarios.
+        """
+        # set SmartInspect logger reference.        
+        _logsi:SISession = SIAuto.Main            
+        # set method name for console output.
+        methodName:str = SISession.GetMethodName()
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # build list of zone members to add.
+            zoneMembers:list = []
+            zoneMembers.append(ZoneMember("192.168.1.130", "E8EB11B9B723"))
+            zoneMembers.append(ZoneMember("192.168.1.132", "F9BC35A6D825"))
+            zoneMembers.append(ZoneMember("192.168.1.133", "B8BD47C7F452"))
+
+            # get current zone configuration status.
+            zoneBefore:Zone = self._GetAndDisplayZoneStatus(client, "(curent) ", _logsi)
+            
+            # if zone not active, then create one so that we have something to add.
+            if len(zoneBefore.Members) == 0:
+                
+                print("Creating a new master zone so we have a zone member to add ...")
+
+                # initialize the new master zone configuration.
+                masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host,True) # <- master
+                member:ZoneMember
+                for member in zoneMembers:
+                    masterZone.AddMember(member)                                        # <- member
+                    break   # only add 1 zone member, so it actually adds something below
+            
+                # create a new master zone configuration on the device.
+                client.CreateZone(masterZone)
+
+                # get current zone configuration status.
+                zoneBefore:Zone = self._GetAndDisplayZoneStatus(client, "(before) ", _logsi)
+
+            # add zone members to the master zone configuration.
+            msg:SoundTouchMessage = client.AddZoneMembers(zoneMembers)
+
+            # get current zone configuration status.
+            zoneAfter:Zone = self._GetAndDisplayZoneStatus(client, "(after)  ", _logsi)
+
+            # test assertions.
+            #self.assertNotEqual(len(zoneAfter), len(zoneBefore), "Zone count should not be the same before and after CreateZone()")
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_CreateZone(self):
+        """
+        Test CreateZone method scenarios.
+        """
+        # set SmartInspect logger reference.        
+        _logsi:SISession = SIAuto.Main            
+        # set method name for console output.
+        methodName:str = SISession.GetMethodName()
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get current zone configuration status.
+            zoneBefore:Zone = self._GetAndDisplayZoneStatus(client, "(before) ", _logsi)
+
+            # initialize the new master zone configuration.
+            masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host,True) # <- master
+            masterZone.AddMember(ZoneMember("192.168.1.130", "E8EB11B9B723"))       # <- member
+            
+            # create a new master zone configuration on the device.
+            msg:SoundTouchMessage = client.CreateZone(masterZone)
+
+            # was a message returned in the result?
+            if msg.HasXmlMessage:
+                _logsi.LogMessage("(result): %s" % (msg.XmlMessage), colorValue=SIColors.LightGreen)
+                print("(result): %s" % (msg.XmlMessage))
+            
+            # get current zone configuration status.
+            zoneAfter:Zone = self._GetAndDisplayZoneStatus(client, "(after)  ", _logsi)
+
+            # test assertions.
+            #self.assertNotEqual(len(zoneAfter), len(zoneBefore), "Zone count should not be the same before and after CreateZone()")
+
+            # test group member missing device id.
+            with self.assertRaises(SoundTouchWarning, msg="Should have raised SoundTouchWarning for group member with no device id"):
+                _logsi.LogMessage("Testing for group member with no device id ...", colorValue=SIColors.LightGreen)
+                print("Testing for group member with no device id ...")
+                masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host,True)   # <- master device
+                masterZone.AddMember(ZoneMember("192.168.1.130"))      # <- missing device id
+                client.CreateZone(masterZone)
+
+            # test zone not supplied.
+            with self.assertRaises(SoundTouchWarning, msg="Should have raised SoundTouchWarning for Zone object is None"):
+                _logsi.LogMessage("Testing for Zone object is None ...", colorValue=SIColors.LightGreen)
+                print("Testing for Zone object is None ...")
+                client.CreateZone(None)
+
+            # test invalid zone type.
+            with self.assertRaises(SoundTouchWarning, msg="Should have raised SoundTouchWarning for invalid Zone type"):
+                _logsi.LogMessage("Testing for invalid Zone type ...", colorValue=SIColors.LightGreen)
+                print("Testing for invalid Zone type ...")
+                client.CreateZone(SoundTouchClient)
+
+            # test zone with no zone members.
+            with self.assertRaises(SoundTouchWarning, msg="Should have raised SoundTouchWarning for Zone with no ZoneMember objects"):
+                _logsi.LogMessage("Testing for Zone with no ZoneMember objects ...", colorValue=SIColors.LightGreen)
+                print("Testing Zone with no ZoneMember objects ...")
+                masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host,True)   # <- master device
+                client.CreateZone(masterZone)
+
+            # test invalid zone member type.
+            with self.assertRaises(SoundTouchWarning, msg="Should have raised SoundTouchWarning for invalid ZoneMember object"):
+                _logsi.LogMessage("Testing for invalid ZoneMember object ...", colorValue=SIColors.LightGreen)
+                print("Testing for invalid ZoneMember object ...")
+                masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host,True)   # <- master device
+                masterZone.AddMember(SoundTouchClient)
+                client.CreateZone(masterZone)
+
+            # test add master as zone member.
+            with self.assertRaises(SoundTouchWarning, msg="Should have raised SoundTouchWarning for adding master as ZoneMember"):
+                _logsi.LogMessage("Testing for adding master as ZoneMember ...", colorValue=SIColors.LightGreen)
+                print("Testing for adding master as ZoneMember ...")
+                masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host,True)   # <- master device
+                masterZone.AddMember(ZoneMember(masterZone.MasterIpAddress, masterZone.MasterDeviceId)) # <- master device
+                client.CreateZone(masterZone)
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_CreateZoneFromDevices(self):
+        """
+        Test CreateZoneFromDevices method scenarios.
+        """
+        # set SmartInspect logger reference.        
+        _logsi:SISession = SIAuto.Main            
+        # set method name for console output.
+        methodName:str = SISession.GetMethodName()
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get current zone configuration status.
+            zoneBefore:Zone = self._GetAndDisplayZoneStatus(client, "(before) ", _logsi)
+
+            # create new device instances for all zone members.
+            device_master:SoundTouchDevice = SoundTouchDevice("192.168.1.131") # master
+            device_member:SoundTouchDevice = SoundTouchDevice("192.168.1.130") # member
+            
+            # create a new master zone configuration on the device.
+            masterZone:Zone = client.CreateZoneFromDevices(device_master, [device_member])
+            print("Master Zone created:\n%s" % (masterZone.ToString(True)))
+            
+            # get current zone configuration status.
+            zoneAfter:Zone = self._GetAndDisplayZoneStatus(client, "(after)  ", _logsi)
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_GetZoneStatus(self):
+        """
+        Test GetZoneStatus method scenarios.
+        """
+        # set SmartInspect logger reference.        
+        _logsi:SISession = SIAuto.Main            
+        # set method name for console output.
+        methodName:str = SISession.GetMethodName()
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+            
+            # queries the current multiroom config.
+            zone_config:Zone = client.GetZoneStatus()
+            
+            # test assertions.
+            self.assertIsInstance(zone_config, (Zone), "Returned object should be of type Zone")
+            self.assertIsInstance(zone_config, (Iterable), "Returned object should be of type Iterable")
+            _logsi.LogObject(SILevel.Message, zone_config.ToString(), zone_config, colorValue=SIColors.LightGreen, excludeNonPublic=True)
+            print(zone_config.ToString())
+            
+            # process list of defined zone members.
+            zone_slave:ZoneMember = None
+            for zone_slave in zone_config:
+
+                # test assertions.
+                self.assertIsInstance(zone_slave, (ZoneMember), "Returned Zone object should be of type ZoneMember")
+                _logsi.LogObject(SILevel.Message, zone_slave.ToString(), zone_slave, colorValue=SIColors.LightGreen, excludeNonPublic=True)
+                print(zone_slave.ToString())
+                # self.assertIsNotNone(zone_slave.DeviceId, "ZoneMember DeviceId property should not be None")
+                self.assertIsNotNone(zone_slave.IpAddress, "ZoneMember IpAddress property should not be None")
+                # self.assertIsNotNone(zone_slave.DeviceRole, "ZoneMember DeviceRole property should not be None")
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+
+
+    def test_RemoveZone(self):
+        """ 
+        Test RemoveZone method scenarios.
+        """
+        # set SmartInspect logger reference.        
+        _logsi:SISession = SIAuto.Main            
+        # set method name for console output.
+        methodName:str = SISession.GetMethodName()
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # get current zone configuration status.
+            zoneBefore:Zone = self._GetAndDisplayZoneStatus(client, "(curent) ", _logsi)
+            
+            # if zone not active, then create one so that we have something to remove.
+            if len(zoneBefore.Members) == 0:
+                
+                print("Creating a new master zone so we have a zone member to remove ...")
+
+                # initialize the new multiroom config.
+                masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host,True) # <- master
+                masterZone.AddMember(ZoneMember("192.168.1.130", "E8EB11B9B723"))       # <- member
+            
+                # create a new multiroom group (zone) using the multiroom config.
+                client.CreateZone(masterZone)
+
+                # get current zone configuration status.
+                zoneAfter:Zone = self._GetAndDisplayZoneStatus(client, "(before) ", _logsi)
+
+            # remove master zone.
+            msg:SoundTouchMessage = client.RemoveZone()
+
+            # get current zone configuration status.
+            zoneAfter:Zone = self._GetAndDisplayZoneStatus(client, "(after)  ", _logsi)
+
+            # test assertions.
+            #self.assertNotEqual(len(zoneAfter), len(zoneBefore), "Zone count should not be the same before and after CreateZone()")
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_RemoveZoneMembers(self):
+        """ 
+        Test RemoveZoneMembers method scenarios.
+        """
+        # set SmartInspect logger reference.        
+        _logsi:SISession = SIAuto.Main            
+        # set method name for console output.
+        methodName:str = SISession.GetMethodName()
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # build list of zone members to remove.
+            zoneMembers:list = []
+            zoneMembers.append(ZoneMember("192.168.1.130", "E8EB11B9B723"))
+
+            # get current zone configuration status.
+            zoneBefore:Zone = self._GetAndDisplayZoneStatus(client, "(curent) ", _logsi)
+            
+            # if zone not active, then create one so that we have something to remove.
+            if len(zoneBefore.Members) == 0:
+                
+                print("Creating a new master zone so we have a zone member to remove ...")
+                
+                # initialize the new master zone configuration.
+                masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host, True) # <- master
+                member:ZoneMember
+                for member in zoneMembers:
+                    masterZone.AddMember(member)                                         # <- member
+            
+                # create a new master zone configuration on the device.
+                client.CreateZone(masterZone)
+
+                # get current zone configuration status.
+                zoneBefore:Zone = self._GetAndDisplayZoneStatus(client, "(before) ", _logsi)
+
+            # remove zone members from the master zone configuration on the device.
+            msg:SoundTouchMessage = client.RemoveZoneMembers(zoneMembers)
+
+            # get current zone configuration status.
+            zoneAfter:Zone = self._GetAndDisplayZoneStatus(client, "(after)  ", _logsi)
+
+            # test assertions.
+            #self.assertNotEqual(len(zoneAfter), len(zoneBefore), "Zone count should not be the same before and after CreateZone()")
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
 
 # execute unit tests.
 if __name__ == '__main__':

@@ -31,7 +31,7 @@ try:
 
     # mute the device.
     print("Changing Mute to On ...")
-    client.mute_on()
+    client.MuteOn()
 
     # get current settings before the snapshot restore.
     print("\n** Settings before RestoreSnapshot ... **")

@@ -24,17 +24,15 @@ class ServiceAvailability:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        self._Services = []
+        self._Services:list[Service] = []
         
         if (root is None):
-            
-            pass  # no other parms to process.
-        
+
+            pass
+
         else:
 
-            # base fields.
             elmServices:Element = root.find('services')
-        
             for service in elmServices.findall('service'):
                 self.append(Service(root=service))
             
@@ -56,6 +54,10 @@ class ServiceAvailability:
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

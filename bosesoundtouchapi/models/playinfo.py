@@ -40,6 +40,13 @@ class PlayInfo(SoundTouchModelRequest):
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._AppKey:str = None
+        self._Service:str = None
+        self._Message:str = None
+        self._Reason:str = None
+        self._Url:str = None
+        self._Volume:int = None
+
         if (root is None):
             
             if appKey is None:
@@ -49,24 +56,28 @@ class PlayInfo(SoundTouchModelRequest):
             if (volume is None) or (not isinstance(volume, int)) or (volume < 0) or (volume > 100):
                 volume = int(30)
 
-            self._AppKey:str = appKey
-            self._Service:str = service
-            self._Message:str = message
-            self._Reason:str = reason
-            self._Url:str = url
-            self._Volume:int = int(volume)
+            self._AppKey = appKey
+            self._Service = service
+            self._Message = message
+            self._Reason = reason
+            self._Url = url
+            self._Volume = int(volume)
             
         else:
 
-            self._AppKey:str = _xmlFind(root, 'app_key')
-            self._Service:str = _xmlFind(root, 'service')
-            self._Message:str = _xmlFind(root, 'message')
-            self._Reason:str = _xmlFind(root, 'reason')
-            self._Url:str = _xmlFind(root, 'url')
-            self._Volume:int = int(_xmlFind(root, 'volume', default=0))
+            self._AppKey = _xmlFind(root, 'app_key')
+            self._Service = _xmlFind(root, 'service')
+            self._Message = _xmlFind(root, 'message')
+            self._Reason = _xmlFind(root, 'reason')
+            self._Url = _xmlFind(root, 'url')
+            self._Volume = int(_xmlFind(root, 'volume', default=0))
 
         
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 
@@ -115,10 +126,10 @@ class PlayInfo(SoundTouchModelRequest):
         """
         elm = Element('play_info')
         
-        subelm = Element('url')
-        subelm.text = self._Url
-        elm.append(subelm)
-
+        if self._Url is not None:
+            subelm = Element('url')
+            subelm.text = self._Url
+            elm.append(subelm)
         if self._Volume > 0:
             subelm = Element('volume')
             subelm.text = str(self._Volume)
@@ -165,13 +176,16 @@ class PlayInfo(SoundTouchModelRequest):
             encoding (str):
                 encode type (e.g. 'utf-8', 'unicode', etc).  
                 Default is 'utf-8'.
-
+                
         Returns:
             An xml string that can be used in a POST request to update the
             device configuration.
         """
-        elm = self.ToElement()
-        xml = tostring(elm, encoding='unicode')
+        elm:Element = self.ToElement()
+        xml:str = tostring(elm, encoding=encoding)
+        # always return a string, as some encodings return a byte array!
+        if not isinstance(xml, str):
+            xml = xml.decode(encoding=encoding)
         return xml
 
 

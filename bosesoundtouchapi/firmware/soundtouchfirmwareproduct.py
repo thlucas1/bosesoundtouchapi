@@ -37,9 +37,13 @@ class SoundTouchFirmwareProduct:
         self._ProductId:int = productId
 
 
+    def __repr__(self) -> str:
+        return self.ToString()
+
+
     def __str__(self) -> str:
         return self.ToString()
-    
+
 
     @property
     def DeviceClass(self) -> str:

@@ -31,11 +31,22 @@ class Capabilities:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._Capabilities:dict = {}
+        self._DeviceId:str = None
+        self._IsBcoResetCapable:bool = None
+        self._IsClockDisplayCapable:bool = None
+        self._IsDisablePowerSavingCapable:bool = None
+        self._IsDualModeCapable:bool = None
+        self._IsLightSwitchCapable:bool = None
+        self._IsLrStereoCapable:bool = None
+        self._IsWebSocketApiProxyCapable:bool = None
+        
         if (root is None):
-            pass  # no other parms to process.
+            
+            pass
+
         else:
 
-            # base fields.
             self._DeviceId = root.get('deviceID')
             self._IsBcoResetCapable = _xmlFind(root, 'bcoresetCapable', default='false') == 'true'
             self._IsClockDisplayCapable = _xmlFind(root, 'clockDisplay', default='false') == 'true'
@@ -45,28 +56,32 @@ class Capabilities:
             self._IsLrStereoCapable = _xmlFind(root, 'lrStereoCapable', default='false') == 'true'
             self._IsWebSocketApiProxyCapable = _xmlFind(root, './networkConfig/wsapiproxy', default='false') == 'true'
 
-            self._capabilities = {}
+            self._Capabilities = {}
             for cap in root.findall('capability'):
                 self[cap.get('name')] = cap.get('url')
 
 
     def __getitem__(self, key):
-        return self._capabilities[key]
+        return self._Capabilities[key]
 
 
     def __setitem__(self, key, value):
-        self._capabilities[key] = value
+        self._Capabilities[key] = value
 
 
     def __iter__(self) -> Iterator:
-        return iter(self._capabilities)
+        return iter(self._Capabilities)
 
 
     def __len__(self) -> int:
-        return len(self._capabilities)
+        return len(self._Capabilities)
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 
@@ -79,25 +94,25 @@ class Capabilities:
     @property
     def IsAudioDspControlsCapable(self) -> bool:
         """ Returns whether the device supports audiodspcontrols functionality. """
-        return 'audiodspcontrols' in self._capabilities
+        return 'audiodspcontrols' in self._Capabilities
 
 
     @property
     def IsAudioProductLevelControlsCapable(self) -> bool:
         """ Returns whether the device supports audioproductlevelcontrols functionality. """
-        return 'audioproductlevelcontrols' in self._capabilities
+        return 'audioproductlevelcontrols' in self._Capabilities
 
 
     @property
     def IsAudioProductToneControlsCapable(self) -> bool:
         """ Returns whether the device supports audioproducttonecontrols functionality. """
-        return 'audioproducttonecontrols' in self._capabilities
+        return 'audioproducttonecontrols' in self._Capabilities
 
 
     @property
     def IsAudioSpeakerAttributeAndSettingCapable(self) -> bool:
         """ Returns whether the device supports audiospeakerattributeandsetting functionality. """
-        return 'audiospeakerattributeandsetting' in self._capabilities
+        return 'audiospeakerattributeandsetting' in self._Capabilities
 
 
     @property
@@ -139,31 +154,31 @@ class Capabilities:
     @property
     def IsProductCecHdmiControlCapable(self) -> bool:
         """ Returns whether the device supports productcechdmicontrol functionality. """
-        return 'productcechdmicontrol' in self._capabilities
+        return 'productcechdmicontrol' in self._Capabilities
 
 
     @property
     def IsProductHdmiAssignmentControlsCapable(self) -> bool:
         """ Returns whether the device supports producthdmiassignmentcontrols functionality. """
-        return 'producthdmiassignmentcontrols' in self._capabilities
+        return 'producthdmiassignmentcontrols' in self._Capabilities
 
 
     @property
     def IsReBroadcastLatencyModeCapable(self) -> bool:
         """ Returns whether the device supports rebroadcastlatencymode functionality. """
-        return 'rebroadcastlatencymode' in self._capabilities
+        return 'rebroadcastlatencymode' in self._Capabilities
 
 
     @property
     def IsSystemTimeoutCapable(self) -> bool:
         """ Returns whether the device supports systemtimeout functionality. """
-        return 'systemtimeout' in self._capabilities
+        return 'systemtimeout' in self._Capabilities
 
 
     @property
     def IsSystemTimeoutControlCapable(self) -> bool:
         """ Returns whether the device supports systemtimeoutcontrol functionality. """
-        return 'systemtimeoutcontrol' in self._capabilities
+        return 'systemtimeoutcontrol' in self._Capabilities
 
 
     @property

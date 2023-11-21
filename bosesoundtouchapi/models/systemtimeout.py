@@ -23,16 +23,23 @@ class SystemTimeout:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._IsPowersavingEnabled:bool = None
+        
         if (root is None):
-            pass  # no other parms to process.
+
+            pass
+
         else:
 
-            # base fields.
-            self._IsPowersavingEnabled:bool = bool(_xmlFind(root, 'powersaving_enabled', default='false') == 'true')
+            self._IsPowersavingEnabled = bool(_xmlFind(root, 'powersaving_enabled', default='false') == 'true')
 
 
     def __repr__(self) -> str:
-        return self.ToString()   
+        return self.ToString()
+
+
+    def __str__(self) -> str:
+        return self.ToString()
 
 
     @property

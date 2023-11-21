@@ -23,16 +23,24 @@ class DSPMonoStereoItem:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._DeviceId:str = None
+        self._IsMonoEnabled:bool = None
+        
         if (root is None):
-            pass  # no other parms to process.
+
+            pass
+
         else:
 
-            # base fields.
-            self._DeviceId:str = root.get('deviceID')
-            self._IsMonoEnabled:bool = bool(_xmlFindAttr(root, 'mono', 'enable', default='false') == 'true')
+            self._DeviceId = root.get('deviceID')
+            self._IsMonoEnabled = bool(_xmlFindAttr(root, 'mono', 'enable', default='false') == 'true')
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

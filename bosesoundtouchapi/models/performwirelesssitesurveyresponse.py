@@ -24,16 +24,14 @@ class PerformWirelessSiteSurveyResponse:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        # initialize storage.
         self._SurveyResultItems = []
 
         if (root is None):
-            
-            pass  # no other parms to process.
-        
+
+            pass
+
         else:
 
-            # base fields.
             elmItems:Element = root.find('items')
             if elmItems is not None:
                 elmItem:Element
@@ -58,6 +56,10 @@ class PerformWirelessSiteSurveyResponse:
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

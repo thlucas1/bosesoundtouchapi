@@ -53,9 +53,14 @@ class SoundTouchFirmwareRelease:
         self._UrlPath:str = urlPath
         self._UsbPath:str = usbPath
 
+
+    def __repr__(self) -> str:
+        return self.ToString()
+
+
     def __str__(self) -> str:
         return self.ToString()
-    
+
 
     @property
     def Features(self) -> list:

@@ -50,21 +50,35 @@ class Preset:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        # base fields.
+        self._PresetId:int = None
+        self._CreatedOn:int = None
+        self._UpdatedOn:int = None
+
+        # ContentItem fields.
+        self._Source:str = None
+        self._ItemType:str = None
+        self._Location:str = None
+        self._SourceAccount:str = None
+        self._IsPresetable:bool = None
+        self._Name:str = None
+        self._ContainerArt:str = None
+
         if (root is None):
             
             # base fields.
-            self._PresetId:int = int(presetId) if presetId else 0
-            self._CreatedOn:int = int(createdOn) if createdOn else 0
-            self._UpdatedOn:int = int(updatedOn) if updatedOn else 0
+            self._PresetId = int(presetId) if presetId else 0
+            self._CreatedOn = int(createdOn) if createdOn else 0
+            self._UpdatedOn = int(updatedOn) if updatedOn else 0
 
             # ContentItem fields.
-            self._Source:str = source
-            self._ItemType:str = typeValue
-            self._Location:str = location
-            self._SourceAccount:str = sourceAccount
-            self._IsPresetable:bool = isPresetable
-            self._Name:str = name
-            self._ContainerArt:str = containerArt
+            self._Source = source
+            self._ItemType = typeValue
+            self._Location = location
+            self._SourceAccount = sourceAccount
+            self._IsPresetable = isPresetable
+            self._Name = name
+            self._ContainerArt = containerArt
         
             # use current epoch time if created / updated on are not set.
             epoch_time:int = int(time.time())
@@ -76,23 +90,27 @@ class Preset:
         else:
 
             # base fields.
-            self._CreatedOn:int = int(root.get("createdOn", default=0))
-            self._PresetId:int = int(root.get("id"))
-            self._UpdatedOn:int = int(root.get("updatedOn", default=0))
+            self._CreatedOn = int(root.get("createdOn", default=0))
+            self._PresetId = int(root.get("id"))
+            self._UpdatedOn = int(root.get("updatedOn", default=0))
 
             # ContentItem fields.
             root_ci = root.find('ContentItem')
             if root_ci != None:
-                self._ContainerArt:str = _xmlFind(root_ci, "containerArt")
-                self._IsPresetable:bool = bool(root_ci.get("isPresetable", default='false') == 'true')
-                self._ItemType:str = root_ci.get("type")
-                self._Location:str = root_ci.get("location")
-                self._Name:str = _xmlFind(root_ci, "itemName")
-                self._Source:str = root_ci.get("source")
-                self._SourceAccount:str = root_ci.get("sourceAccount")
+                self._ContainerArt = _xmlFind(root_ci, "containerArt")
+                self._IsPresetable = bool(root_ci.get("isPresetable", default='false') == 'true')
+                self._ItemType = root_ci.get("type")
+                self._Location = root_ci.get("location")
+                self._Name = _xmlFind(root_ci, "itemName")
+                self._Source = root_ci.get("source")
+                self._SourceAccount = root_ci.get("sourceAccount")
 
         
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 
@@ -107,10 +125,6 @@ class Preset:
 
     def __lt__(self, other):
         try:
-            # the following comparison will fail if the property value is None!  
-            # use the following syntax when calling a sort method that uses lambda searches:
-            # epColl.sort(PresetId=lambda x: x.PresetId or "", reverse=False)     <- GOOD syntax
-            # epColl.sort(PresetId=lambda x: x.PresetId, reverse=False)           <- BAD syntax, as the "x.PresetId" property may be None, and will cause this to fail!
             return self.PresetId < other.PresetId
         except Exception as ex:
             if (isinstance(self, Preset )) and (isinstance(other, Preset )):
@@ -126,7 +140,7 @@ class Preset:
 
     @property
     def ContainerArt(self) -> str:
-        """ The content item's container art url. """
+        """ Content item's container art url. """
         return self._ContainerArt
 
 
@@ -150,20 +164,21 @@ class Preset:
 
     @property
     def Name(self) -> str:
-        """ The content item's name. """
+        """ Content item's name. """
         return self._Name
 
 
     @property
     def PresetId(self) -> int:
-        """ The preset identifier (1 - 6). """
+        """ Preset identifier (1 - 6). """
         return self._PresetId
 
 
     @property
     def Source(self) -> str:
         """ 
-        The content item source type. 
+        Content item source type. 
+        
         This value is defined at `bosesoundtouchapi.soundtouchsource.SoundTouchSources`. 
         """
         return self._Source
@@ -171,7 +186,7 @@ class Preset:
 
     @property
     def SourceAccount(self) -> str:
-        """ The source account this content item is played with. """
+        """ Source account this content item is played with. """
         return self._SourceAccount
 
 

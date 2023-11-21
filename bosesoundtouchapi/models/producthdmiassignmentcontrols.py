@@ -27,15 +27,19 @@ class ProductHdmiAssignmentControls:
         self._HdmiInputSelection01:str = None
 
         if (root is None):
-            
-            pass  # no other parms to process.
-        
+
+            pass
+
         elif root.tag == 'producthdmiassignmentcontrols':
 
             # base fields.
             self._HdmiInputSelection01 = root.get('hdmiinputselection_01', default=None)
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

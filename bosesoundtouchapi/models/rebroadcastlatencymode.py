@@ -24,13 +24,13 @@ class RebroadcastLatencyMode:
                 If specified, then other passed arguments are ignored.
         """
         # initialize storage.
-        self._Mode:str = None
         self._Controllable:bool = None
+        self._Mode:str = None
 
         if (root is None):
-            
-            pass  # no other parms to process.
-        
+
+            pass
+
         elif root.tag == 'rebroadcastlatencymode':
 
             # base fields.
@@ -39,6 +39,10 @@ class RebroadcastLatencyMode:
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

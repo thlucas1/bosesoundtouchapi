@@ -15,7 +15,7 @@ class MusicServiceAccount(SoundTouchModelRequest):
     Audio DSP Controls configuration of the device.      
     """
 
-    def __init__(self, source:str=None, displayName:str=None, userName:str=None, password:str=None,
+    def __init__(self, source:str=None, displayName:str=None, userAccount:str=None, password:str=None,
                  root:Element=None
                  ) -> None:
         """
@@ -26,8 +26,8 @@ class MusicServiceAccount(SoundTouchModelRequest):
                 Account source value (e.g. "STORED_MUSIC", "SPOTIFY", "AMAZON", etc).
             displayName (str):
                 Account display name that appears in UI's.
-            userName (str):
-                User name value used to authenticate to the service.
+            userAccount (str):
+                User account value used to authenticate to the service.
             password (str):
                 Password value used to authenticate to the service.
             root (Element):
@@ -38,30 +38,31 @@ class MusicServiceAccount(SoundTouchModelRequest):
             SoundTouchError:
                 videoSyncAudioDelay argument was not of type int.  
         """
-        # initialize storage.
         self._Source:str = None
         self._DisplayName:str = None
-        self._UserName:str = None
         self._Password:str = None
+        self._UserAccount:str = None
         
         if (root is None):
             
-            # base fields.
             self._Source = source
             self._DisplayName = displayName
-            self._UserName = userName
             self._Password = password
+            self._UserAccount = userAccount
         
         elif root.tag == 'credentials':
 
-            # base fields.
             self._Source = root.get('source', default=None)
             self._DisplayName = root.get('displayName', default=None)
-            self._UserName = _xmlFind(root, 'user', default=None)
             self._Password = _xmlFind(root, 'pass', default=None)
+            self._UserAccount = _xmlFind(root, 'user', default=None)
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 
@@ -78,9 +79,9 @@ class MusicServiceAccount(SoundTouchModelRequest):
 
 
     @property
-    def UserName(self) -> str:
-        """ User name value used to authenticate to the service. """
-        return self._UserName
+    def UserAccount(self) -> str:
+        """ User account value used to authenticate to the service. """
+        return self._UserAccount
 
 
     @property
@@ -98,7 +99,7 @@ class MusicServiceAccount(SoundTouchModelRequest):
         elm.set('displayName', self._DisplayName or '')
         
         elm_user = Element('user')
-        elm_user.text = '%s/0' % (self._UserName or '')
+        elm_user.text = '%s' % (self._UserAccount or '')
         elm.append(elm_user)
 
         elm_pass = Element('pass')
@@ -115,7 +116,7 @@ class MusicServiceAccount(SoundTouchModelRequest):
         msg:str = 'MusicServiceAccount:'
         msg = '%s Source="%s"' % (msg, self._Source)
         msg = '%s DisplayName="%s"' % (msg, self._DisplayName)
-        msg = '%s Username="%s"' % (msg, self._UserName)
+        msg = '%s User="%s"' % (msg, self._UserAccount)
         msg = '%s Password="%s"' % (msg, "".ljust(len(self._Password or ''), '*'))
         return msg 
 
@@ -135,5 +136,8 @@ class MusicServiceAccount(SoundTouchModelRequest):
             device configuration.
         """
         elm = self.ToElement()
-        xml = tostring(elm, encoding='unicode')
+        xml:str = tostring(elm, encoding=encoding)
+        # always return a string, as some encodings return a byte array!
+        if not isinstance(xml, str):
+            xml = xml.decode(encoding=encoding)
         return xml

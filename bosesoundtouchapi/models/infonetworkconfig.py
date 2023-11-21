@@ -23,45 +23,54 @@ class InfoNetworkConfig:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._IpAddress:str = None
+        self._MacAddress:str = None
+        self._TypeValue:str = None
+        
         if (root is None):
-            pass  # no other parms to process.
+            
+            pass
+        
         else:
 
-            # base fields.
-            self._type_item = root.get('type')
-            self._mac_address = _xmlFind(root, 'macAddress')
-            self._ip_address = _xmlFind(root, 'ipAddress')
+            self._IpAddress = _xmlFind(root, 'ipAddress')
+            self._MacAddress = _xmlFind(root, 'macAddress')
+            self._TypeValue = root.get('type')
 
 
     def __repr__(self) -> str:
-        return self.toString()
+        return self.ToString()
+
+
+    def __str__(self) -> str:
+        return self.ToString()
 
 
     @property
-    def mac_address(self) -> str:
-        """The device's mac address."""
-        return self._mac_address
+    def MacAddress(self) -> str:
+        """ MAC address (media access control address) assigned to the adapter. """
+        return self._MacAddress
 
 
     @property
-    def type_item(self) -> str:
-        """The adapter type (WIFI or ETHERNET)."""
-        return self._type_item
+    def TypeValue(self) -> str:
+        """ Network interface adapter type (e.g. WIFI, ETHERNET). """
+        return self._TypeValue
 
 
     @property
-    def ip_address(self) -> str:
-        """The mapped ip address."""
-        return self._ip_address
+    def IpAddress(self) -> str:
+        """ IPV4 address assigned by the network. """
+        return self._IpAddress
 
 
-    def toString(self) -> str:
+    def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.
         """
         msg:str = 'InfoNetworkConfig:'
-        if self._mac_address and len(self._mac_address) > 0: msg = '%s macAddress="%s"' % (msg, str(self._mac_address))
-        if self._ip_address and len(self._ip_address) > 0: msg = '%s ipAddress="%s"' % (msg, str(self._ip_address))
-        if self._type_item and len(self._type_item) > 0: msg = '%s type="%s"' % (msg, str(self._type_item))
+        if self._MacAddress is not None and len(self._MacAddress) > 0: msg = '%s macAddress="%s"' % (msg, str(self._MacAddress))
+        if self._IpAddress is not None and len(self._IpAddress) > 0: msg = '%s ipAddress="%s"' % (msg, str(self._IpAddress))
+        if self._TypeValue is not None and len(self._TypeValue) > 0: msg = '%s type="%s"' % (msg, str(self._TypeValue))
         return msg 
     

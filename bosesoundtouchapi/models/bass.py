@@ -28,6 +28,9 @@ class Bass(SoundTouchModelRequest):
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._Actual:int = None
+        self._Target:int = None
+
         if (root is None):
             
             self._Actual = int(actual) if actual else 0
@@ -42,15 +45,19 @@ class Bass(SoundTouchModelRequest):
         return self.ToString()
 
 
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
     def Actual(self) -> int:
-        """ The actual value of the bass level. """
+        """ Actual value of the bass level. """
         return self._Actual
 
 
     @property
     def Target(self) -> int:
-        """ The targeted value of the bass level. """
+        """ Targeted value of the bass level. """
         return self._Target
 
 

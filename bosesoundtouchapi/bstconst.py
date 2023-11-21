@@ -4,7 +4,7 @@
 # constants are placed in this file if they are used across multiple files.
 # the only exception to this is for the VERSION constant, which is placed here for convenience.
 
-VERSION:str = "1.0.18"
+VERSION:str = "1.0.19"
 """ 
 Current version of the Bose SoundTouch API Python3 Library. 
 """
@@ -45,19 +45,14 @@ Bose Developer application key used for notifications.
 
 # application trace messages.
 
+MSG_TRACE_ACTION_KEY:str = "Sending '%s' key press and release action to SoundTouch device: '%s'"
+"""
+Sending '%s' key press and release to SoundTouch device: '%s'
+"""
+
 MSG_TRACE_DELAY_DEVICE:str = "Delaying for %d seconds to allow SoundTouch device '%s' to process the change"
 """
 Delaying for %d seconds to allow SoundTouch device '%s' to process the change
-"""
-
-MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE:str = "Setting %s to '%s' on SoundTouch device: '%s'"
-"""
-Setting %s to '%s' on SoundTouch device: '%s'
-"""
-
-MSG_TRACE_GET_CONFIG_OBJECT:str = "Getting %s configuration for SoundTouch device: '%s'"
-"""
-Getting %s configuration for SoundTouch device: '%s'
 """
 
 MSG_TRACE_DEVICE_COMMAND:str = "Executing command '%s' on SoundTouch device: '%s'"
@@ -65,12 +60,22 @@ MSG_TRACE_DEVICE_COMMAND:str = "Executing command '%s' on SoundTouch device: '%s
 Executing command '%s' on SoundTouch device: '%s'
 """
 
-MSG_TRACE_ACTION_KEY:str = "Sending '%s' key press and release action to SoundTouch device: '%s'"
+MSG_TRACE_DEVICE_COMMAND_WITH_PARM:str = "Executing command '%s' (%s) on SoundTouch device: '%s'"
 """
-Sending '%s' key press and release to SoundTouch device: '%s'
+Executing command '%s' (%s) on SoundTouch device: '%s'
 """
 
 MSG_TRACE_FAVORITE_NOT_ENABLED:str = "Current NowPlaying item is not enabled for favorites: '%s'"
 """
 Current NowPlaying item is not enabled for favorites: '%s'
+"""
+
+MSG_TRACE_GET_CONFIG_OBJECT:str = "Getting %s configuration for SoundTouch device: '%s'"
+"""
+Getting %s configuration for SoundTouch device: '%s'
+"""
+
+MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE:str = "Setting %s to '%s' on SoundTouch device: '%s'"
+"""
+Setting %s to '%s' on SoundTouch device: '%s'
 """

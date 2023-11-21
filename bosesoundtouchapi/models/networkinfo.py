@@ -24,47 +24,53 @@ class NetworkInfo:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        self._interfaces = []
+        self._Interfaces = []
+        self._WifiProfileCount:int = None
 
         if (root is None):
-            pass  # no other parms to process.
+
+            pass
+
         else:
 
-            # base fields.
-            self._WifiProfileCount:int = int(root.get('wifiProfileCount', default='0'))
+            self._WifiProfileCount = int(root.get('wifiProfileCount', default='0'))
             
             for interface in root.find('interfaces'):
                 self.append(NetworkInfoInterface(interface))
 
 
     def __getitem__(self, key) -> NetworkInfoInterface:
-        return self._interfaces[key]
+        return self._Interfaces[key]
 
 
     def __iter__(self) -> Iterator:
-        return iter(self._interfaces)
+        return iter(self._Interfaces)
 
 
     def __len__(self):
-        return len(self._interfaces)
+        return len(self._Interfaces)
 
 
     def __repr__(self) -> str:
         return self.ToString()
 
 
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
     def InterfaceCount(self) -> int:
         """ 
-        The total number of network interfaces defined, including both
+        Total number of network interfaces defined, including both
         wired and wireless. 
         """
-        return len(self._interfaces)
+        return len(self._Interfaces)
 
 
     @property
     def WifiProfileCount(self) -> int:
-        """ The number of wireless (wifi) network interfaces defined. """
+        """ Number of wireless (wifi) network interfaces defined. """
         return self._WifiProfileCount
 
 
@@ -76,7 +82,7 @@ class NetworkInfo:
             value:
                 The `NetworkInfoInterface` object to append.
         """
-        self._interfaces.append(value)
+        self._Interfaces.append(value)
 
 
     def ToString(self, includeItems:bool=False) -> str:

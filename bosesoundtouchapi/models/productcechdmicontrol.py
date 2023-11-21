@@ -28,9 +28,9 @@ class ProductCecHdmiControl(SoundTouchModelRequest):
         self._CecMode:str = None
 
         if (root is None):
-            
-            pass  # no other parms to process.
-        
+
+            pass
+
         elif root.tag == 'productcechdmicontrol':
 
             # base fields.
@@ -38,6 +38,10 @@ class ProductCecHdmiControl(SoundTouchModelRequest):
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

@@ -133,6 +133,9 @@
     <Compile Include="docs\include\samplecode\SoundTouchClient\PlayUrl.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\PlayNotificationTTS.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\PowerStandby.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\AddMusicServiceSources.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SetMusicServiceAccount.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\RemoveMusicServiceAccount.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SelectLastWifiSource.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SelectLastSource.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SelectLastSoundTouchSource.py" />

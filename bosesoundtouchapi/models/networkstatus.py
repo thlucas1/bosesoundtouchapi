@@ -24,13 +24,16 @@ class NetworkStatus:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        self._interfaces = []
+        self._DeviceId = None
+        self._Interfaces:list[NetworkStatusInterface] = []
+        self._SerialNumber = None
         
         if (root is None):
-            pass  # no other parms to process.
+
+            pass
+
         else:
 
-            # base fields.
             root_devices:Element = root.find('devices')
             root_device:Element = root_devices.find('device')
             self._DeviceId = root_device.get('deviceID')
@@ -41,23 +44,27 @@ class NetworkStatus:
             
 
     def __getitem__(self, key) -> NetworkStatusInterface:
-        return self._interfaces[key]
+        return self._Interfaces[key]
 
 
     def __iter__(self) -> Iterator:
-        return iter(self._interfaces)
+        return iter(self._Interfaces)
 
 
     def __len__(self) -> int:
-        return len(self._interfaces)
+        return len(self._Interfaces)
 
 
     def __repr__(self) -> str:
         return self.ToString()
 
 
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
-    def DeviceId(self):
+    def DeviceId(self) -> str:
         """ The device identifier, as assigned by the manufacturer. """
         return self._DeviceId
 
@@ -68,11 +75,11 @@ class NetworkStatus:
         The total number of network interfaces defined, including both
         wired and wireless. 
         """
-        return len(self._interfaces)
+        return len(self._Interfaces)
 
 
     @property
-    def SerialNumber(self):
+    def SerialNumber(self) -> str:
         """ The device serial number, as assigned by the manufacturer. """
         return self._SerialNumber
 
@@ -85,7 +92,7 @@ class NetworkStatus:
             value:
                 The `NetworkStatusInterface` object to append.
         """
-        self._interfaces.append(value)
+        self._Interfaces.append(value)
 
 
     def ToString(self, includeItems:bool=False) -> str:

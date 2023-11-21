@@ -23,11 +23,14 @@ class WirelessProfile:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._Ssid:str = None
+
         if (root is None):
-            pass  # no other parms to process.
+
+            pass
+
         else:
 
-            # base fields.
             self._Ssid = _xmlFind(root, 'ssid')
 
 
@@ -35,8 +38,12 @@ class WirelessProfile:
         return self.ToString()
 
 
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
-    def Ssid(self):
+    def Ssid(self) -> str:
         """ The network service set identifier (SSID) the device is connected to. """       
         return self._Ssid
 

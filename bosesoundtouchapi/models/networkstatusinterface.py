@@ -23,13 +23,21 @@ class NetworkStatusInterface:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        self._bindings = []
+        self._Bindings:list[str] = []
+        self._FrequencyKhz:str = None
+        self._Kind:str = None
+        self._MacAddress:str = None
+        self._Name:str = None
+        self._Rssi:str = None
+        self._IsRunning:bool = None
+        self._Ssid:str = None
 
         if (root is None):
-            pass  # no other parms to process.
+
+            pass
+
         else:
 
-            # base fields.
             self._FrequencyKhz:str = _xmlFind(root, 'frequencyKHz')
             self._Kind:str = _xmlFind(root, 'kind')
             self._MacAddress:str = _xmlFind(root, 'mac-addr')
@@ -39,26 +47,30 @@ class NetworkStatusInterface:
             self._Ssid:str = _xmlFind(root, 'ssid')
 
             for binding in root.find('bindings'):
-                self._bindings.append(_xmlFind(binding, 'ipv4address'))
+                self._Bindings.append(_xmlFind(binding, 'ipv4address'))
 
 
     def __getitem__(self, key) -> str:
-        return self._bindings[key]
+        return self._Bindings[key]
 
 
     def __setitem__(self, key, value):
-        self._bindings[key] = value
+        self._Bindings[key] = value
 
 
     def __iter__(self):
-        return iter(self._bindings)
+        return iter(self._Bindings)
 
 
     def __len__(self) -> int:
-        return len(self._bindings)
+        return len(self._Bindings)
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 
@@ -116,11 +128,11 @@ class NetworkStatusInterface:
         Returns a displayable string representation of the class.
         """
         msg:str = 'NetworkStatusInterface:'
-        if self._Name and len(self._Name) > 0: msg = '%s name="%s"' % (msg, str(self._Name))
-        if self._MacAddress and len(self._MacAddress) > 0: msg = '%s macAddress="%s"' % (msg, str(self._MacAddress))
-        if self._IsRunning: msg = '%s running="%s"' % (msg, str(self._IsRunning).lower())
-        if self._Kind and len(self._Kind) > 0: msg = '%s kind="%s"' % (msg, str(self._Kind))
-        if self._Ssid and len(self._Ssid) > 0: msg = '%s ssid="%s"' % (msg, str(self._Ssid))
-        if self._Rssi and len(self._Rssi) > 0: msg = '%s rssi="%s"' % (msg, str(self._Rssi))
-        if self._FrequencyKhz and len(self._FrequencyKhz) > 0: msg = '%s frequencyKHz="%s"' % (msg, str(self._FrequencyKhz))
+        if self._Name is not None and len(self._Name) > 0: msg = '%s name="%s"' % (msg, str(self._Name))
+        if self._MacAddress is not None and len(self._MacAddress) > 0: msg = '%s macAddress="%s"' % (msg, str(self._MacAddress))
+        if self._IsRunning is not None: msg = '%s running="%s"' % (msg, str(self._IsRunning).lower())
+        if self._Kind is not None and len(self._Kind) > 0: msg = '%s kind="%s"' % (msg, str(self._Kind))
+        if self._Ssid is not None and len(self._Ssid) > 0: msg = '%s ssid="%s"' % (msg, str(self._Ssid))
+        if self._Rssi is not None and len(self._Rssi) > 0: msg = '%s rssi="%s"' % (msg, str(self._Rssi))
+        if self._FrequencyKhz is not None and len(self._FrequencyKhz) > 0: msg = '%s frequencyKHz="%s"' % (msg, str(self._FrequencyKhz))
         return msg

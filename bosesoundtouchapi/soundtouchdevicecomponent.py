@@ -28,6 +28,10 @@ class SoundTouchDeviceComponent:
         self._SerialNumber = serialNumber
 
 
+    def __repr__(self) -> str:
+        return self.ToString()
+
+
     def __str__(self) -> str:
         return self.ToString()
 

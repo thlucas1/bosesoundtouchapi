@@ -23,20 +23,34 @@ class SourceItem:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        # initialize instance.
+        self._IsLocal:bool = None
+        self._IsMultiroomAllowed:bool = None
+        self._Source:str = None
+        self._SourceAccount:str = None
+        self._Status:str = None
+        self._FriendlyName:str = None
+
         if (root is None):
-            pass  # no other parms to process.
+            
+            pass
+        
         else:
 
             # base fields.
-            self._IsLocal:bool = bool(root.get('isLocal', default='false') == 'true')
-            self._IsMultiroomAllowed:bool = bool(root.get('multiroomallowed', default='false') == 'true')
-            self._Source:str = root.get('source')
-            self._SourceAccount:str = root.get('sourceAccount')
-            self._Status:str = root.get('status')
-            self._UserName:str = root.text
+            self._IsLocal = bool(root.get('isLocal', default='false') == 'true')
+            self._IsMultiroomAllowed = bool(root.get('multiroomallowed', default='false') == 'true')
+            self._Source = root.get('source')
+            self._SourceAccount = root.get('sourceAccount')
+            self._Status = root.get('status')
+            self._FriendlyName = root.text
 
         
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 
@@ -60,6 +74,14 @@ class SourceItem:
             if (isinstance(self, SourceItem )) and (isinstance(other, SourceItem )):
                 return self.Source < other.Source
             return False
+
+
+    @property
+    def FriendlyName(self) -> str:
+        """ 
+        The friendly name of the source (e.g. "My Media Player", "SpotifyConnectUserName", etc).        
+        """
+        return self._FriendlyName
 
 
     @property
@@ -102,16 +124,6 @@ class SourceItem:
         return self._Status
 
 
-    @property
-    def UserName(self) -> str:
-        """ 
-        A user name used to play media content, if one is required.
-        
-        Example sources requiring a sourceAccount value are "QPLAY", "SPOTIFY", "AIRPLAY", "ALEXA", etc.
-        """
-        return self._UserName
-
-
     def ToElement(self) -> Element:
         """ 
         Returns an xmltree Element node representation of the class. 
@@ -122,7 +134,8 @@ class SourceItem:
         elm.set('status', str(self._Status))
         elm.set('isLocal', str(self._IsLocal))
         elm.set('multiroomAllowed', str(self._IsMultiroomAllowed))
-        elm.set('userName', str(self._UserName))
+        if self._FriendlyName is not None and len(self._FriendlyName) > 0:
+            elm.text = str(self._FriendlyName)
         return elm
 
         
@@ -131,10 +144,10 @@ class SourceItem:
         Returns a displayable string representation of the class.
         """
         msg:str = 'SourceItem:'
-        if self._Source and len(self._Source) > 0: msg = '%s source="%s"' % (msg, str(self._Source))
-        if self._SourceAccount and len(self._SourceAccount) > 0: msg = '%s sourceAccount="%s"' % (msg, str(self._SourceAccount))
-        if self._Status and len(self._Status) > 0: msg = '%s status="%s"' % (msg, str(self._Status))
+        if self._Source is not None and len(self._Source) > 0: msg = '%s source="%s"' % (msg, str(self._Source))
+        if self._SourceAccount is not None and len(self._SourceAccount) > 0: msg = '%s sourceAccount="%s"' % (msg, str(self._SourceAccount))
+        if self._Status is not None and len(self._Status) > 0: msg = '%s status="%s"' % (msg, str(self._Status))
         msg = '%s isLocal=%s' % (msg, str(self._IsLocal).lower())
         msg = '%s multiroomAllowed=%s' % (msg, str(self._IsMultiroomAllowed).lower())
-        if self._UserName and len(self._UserName) > 0: msg = '%s username="%s"' % (msg, str(self._UserName))
+        if self._FriendlyName is not None and len(self._FriendlyName) > 0: msg = '%s friendlyName="%s"' % (msg, str(self._FriendlyName))
         return msg 

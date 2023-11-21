@@ -23,16 +23,14 @@ class Service:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        
-        # initialize storage.
         self._IsAvailable:bool = None
         self._Reason:str = None
         self._ServiceType:str = None
         
         if (root is None):
-            
-            pass  # no other parms to process.
-        
+
+            pass
+
         else:
 
             # base fields.
@@ -42,6 +40,10 @@ class Service:
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

@@ -22,7 +22,6 @@ class SoftwareUpdateQueryResponse:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        # initialize storage.
         self._CanAbort:bool = None
         self._DeviceId:str = None
         self._FailureCode:str = None
@@ -32,11 +31,10 @@ class SoftwareUpdateQueryResponse:
 
         if (root is None):
 
-            pass  # no other parms to process.
+            pass
 
         else:
 
-            # base fields.
             self._DeviceId = root.get('deviceID')
             self._CanAbort = _xmlFind(root, "canAbort") == 'true'
             self._FailureCode = _xmlFind(root, 'failureCode')
@@ -46,6 +44,10 @@ class SoftwareUpdateQueryResponse:
 
 
     def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
         return self.ToString()
 
 

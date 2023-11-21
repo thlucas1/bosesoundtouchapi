@@ -33,6 +33,10 @@ class SoundTouchMessage:
         self._Response = response
 
       
+    def __repr__(self) -> str:
+        return self.ToString()
+
+
     def __str__(self) -> str:
         return self.ToString()
 
