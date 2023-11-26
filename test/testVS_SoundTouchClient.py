@@ -424,6 +424,58 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
     #         raise
         
 
+    def test_ClearBluetoothPaired(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_ClearBluetoothPaired"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # clear bluetooth pairing list.
+            print("Clearing Bluetooth pairing list ...")
+            client.ClearBluetoothPaired()
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
+    def test_EnterBluetoothPairing(self):
+        
+        _logsi:SISession = SIAuto.Main            
+        methodName:str = "test_EnterBluetoothPairing"
+
+        try:
+
+            print("Test Starting:  %s" % methodName)
+            _logsi.LogMessage("Testing method: '%s'" % (methodName), colorValue=SIColors.LightGreen)
+
+            # create BoseDevice instance.
+            client:SoundTouchClient = self._CreateApiClient()
+
+            # enter bluetooth pairing mode.
+            print("\nEntering Bluetooth pairing mode - check your mobile device Bluetooth list ...")
+            client.EnterBluetoothPairing()
+
+            print("Test Completed: %s" % methodName)
+
+        except Exception as ex:
+
+            _logsi.LogException("Test Exception: %s" % (methodName), ex)
+            print("** Exception: %s" % str(ex))
+            raise
+        
+
     def test_Get(self):
         
         _logsi:SISession = SIAuto.Main            

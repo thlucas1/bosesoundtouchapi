@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.20 ] - 2023/11/25
+
+  *  Added method to `SoundTouchClient`: `ClearBluetoothPaired` - Clears all bluetooth pairings from the device.
+  *  Added method to `SoundTouchClient`: `EnterBluetoothPairing` - Enters bluetooth pairing mode, and waits for a compatible device to pair with.
+
 ###### [ 1.0.19 ] - 2023/11/21 
 
   *  Added VS test class `testVS_SoundTouchDiscovery.py` to test Zeroconf discovery scenarios.

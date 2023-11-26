@@ -82,12 +82,14 @@ class SoundTouchClient:
         
 
     def __enter__(self) -> 'SoundTouchClient':
+        # if called via a context manager (e.g. "with" statement).
         return self
 
 
     def __exit__(self, etype, value, traceback) -> None:
-        """No need to do anything"""
-
+        # if called via a context manager (e.g. "with" statement).
+        pass
+    
 
     def __getitem__(self, key):
         if repr(key) in self._ConfigurationCache:
@@ -503,6 +505,40 @@ class SoundTouchClient:
     #     self.Action(SoundTouchKeys.BOOKMARK)
 
 
+    def ClearBluetoothPaired(self) -> SoundTouchMessage:
+        """
+        Clears all existing bluetooth pairings from the device.
+        
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `enterBluetoothPairing` function,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        Note that some SoundTouch devices do not support this functionality.  This method will 
+        first query the device supportedUris to determine if it supports the function; if so, 
+        then the request is made to the device; if not, then a `SoundTouchError` is raised.
+        
+        After the method completes, any existing bluetooth pairings from other devices will no 
+        longer be able to connect; you will need to re-pair each device.
+        
+        Some SoundTouch devices will emit a descending tone when the pairing list is cleared.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/ClearBluetoothPaired.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.clearBluetoothPaired.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        return self.Get(SoundTouchNodes.clearBluetoothPaired)
+
+
     def CreateZone(self, zone:Zone, delay:int=3) -> SoundTouchMessage:
         """
         Creates a multiroom zone from a Zone object.
@@ -614,6 +650,39 @@ class SoundTouchClient:
         self.CreateZone(zone)
         return zone
 
+
+    def EnterBluetoothPairing(self) -> SoundTouchMessage:
+        """
+        Enters bluetooth pairing mode, and waits for a compatible device to pair with.
+        
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `enterBluetoothPairing` function,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        Note that some SoundTouch devices do not support this functionality.  This method will 
+        first query the device supportedUris to determine if it supports the function; if so, 
+        then the request is made to the device; if not, then a `SoundTouchError` is raised.
+        
+        On the device you want to connect, turn on Bluetooth.  In the Bluetooth settings menu 
+        of the device, the SoundTouch device name should appear within a few seconds and allow
+        your device to pair with it.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/EnterBluetoothPairing.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.enterBluetoothPairing.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        return self.Get(SoundTouchNodes.enterBluetoothPairing)
+        
 
     def Get(self, uri:SoundTouchUri) -> SoundTouchMessage:
         """

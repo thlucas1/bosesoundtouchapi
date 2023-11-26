@@ -140,11 +140,13 @@ class SoundTouchWebSocket:
         
 
     def __enter__(self) -> 'SoundTouchWebSocket':
+        # if called via a context manager (e.g. "with" statement).
         self.StartNotification()
         return self
 
 
     def __exit__(self, etype, value, traceback) -> None:
+        # if called via a context manager (e.g. "with" statement).
         self.StopNotification()
         self.ClearListeners()
 

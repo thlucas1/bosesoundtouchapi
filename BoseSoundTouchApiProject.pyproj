@@ -111,6 +111,7 @@
     <Compile Include="docs\include\samplecode\SmartInspectPython\ClassLogging.py" />
     <Compile Include="docs\include\samplecode\SmartInspectPython\MainLogging.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\Action.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\ClearBluetoothPaired.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetAudioProductLevelControls.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetAudioSpeakerAttributeAndSetting.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetAudioProductToneControls.py" />
@@ -129,6 +130,7 @@
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetRecentList.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\MediaPlay.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\PlayContentItem.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\EnterBluetoothPairing.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\PlayNotificationBeep.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\PlayUrl.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\PlayNotificationTTS.py" />
