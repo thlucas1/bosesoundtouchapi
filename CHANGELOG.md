@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.20 ] - 2023/11/29
+
+  *  SmartInspect SIConfigurationTimer changes to remove interval value.
+
 ###### [ 1.0.20 ] - 2023/11/25
 
   *  Added method to `SoundTouchClient`: `ClearBluetoothPaired` - Clears all bluetooth pairings from the device.

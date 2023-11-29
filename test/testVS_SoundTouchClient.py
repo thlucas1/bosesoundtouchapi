@@ -42,7 +42,7 @@ class Test_SoundTouchClient_OneDevice(unittest.TestCase):
             # start monitoring the configuration file for changes, and reload it when it changes.
             # this will check the file for changes every 60 seconds.
             print("** Starting SmartInspect configuration settings watchdog")
-            siConfig:SIConfigurationTimer = SIConfigurationTimer(SIAuto.Si, siConfigPath, 60)
+            siConfig:SIConfigurationTimer = SIConfigurationTimer(SIAuto.Si, siConfigPath)
 
             # get smartinspect logger reference and log basic system / domain details.
             _logsi:SISession = SIAuto.Main            
@@ -4242,7 +4242,7 @@ class Test_SoundTouchClient_MultiRoom(unittest.TestCase):
             # start monitoring the configuration file for changes, and reload it when it changes.
             # this will check the file for changes every 60 seconds.
             print("** Starting SmartInspect configuration settings watchdog")
-            siConfig:SIConfigurationTimer = SIConfigurationTimer(SIAuto.Si, siConfigPath, 60)
+            siConfig:SIConfigurationTimer = SIConfigurationTimer(SIAuto.Si, siConfigPath)
 
             # get smartinspect logger reference and log basic system / domain details.
             _logsi:SISession = SIAuto.Main            
@@ -4486,7 +4486,7 @@ class Test_SoundTouchClient_MultiRoom(unittest.TestCase):
 
             # build list of zone members to add.
             zoneMembers:list = []
-            zoneMembers.append(ZoneMember("192.168.1.130", "E8EB11B9B723"))
+           #zoneMembers.append(ZoneMember("192.168.1.130", "E8EB11B9B723"))
             zoneMembers.append(ZoneMember("192.168.1.132", "F9BC35A6D825"))
             zoneMembers.append(ZoneMember("192.168.1.133", "B8BD47C7F452"))
 
