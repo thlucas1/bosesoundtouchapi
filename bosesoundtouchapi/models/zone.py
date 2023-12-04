@@ -151,9 +151,14 @@ class Zone:
             self._Members.append(member)
 
 
-    def ToElement(self) -> Element:
+    def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Returns an xmltree Element node representation of the class. 
+
+        Args:
+            isRequestBody (bool):
+                True if the element should only return attributes needed for a POST
+                request body; otherwise, False to return all attributes.
         """
         elm = Element('zone')
         if self._MasterDeviceId: elm.set('master', str(self._MasterDeviceId))

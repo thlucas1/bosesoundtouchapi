@@ -1,5 +1,6 @@
 from bosesoundtouchapi import *
 from bosesoundtouchapi.models import *
+import time
 
 try:
 
@@ -13,10 +14,10 @@ try:
     nowPlaying:NowPlayingStatus = client.GetNowPlayingStatus(True)
     print("\nCurrent Now Playing Status:\n%s" % nowPlaying.ToString())
 
-    # does nowPlaying item support favorites?
-    if nowPlaying.IsFavoriteEnabled:
+    # does nowPlaying item support ratings?
+    if nowPlaying.IsRatingEnabled:
                 
-        # remove the currently playing media from the device favorites.
+        # rate the currently playing media.
         client.ThumbsDown()
             
         # give the device time to process the change.
@@ -28,7 +29,7 @@ try:
 
     else:
                 
-        print("\nFavorites not enabled for currently playing media")
+        print("\Ratings are not enabled for currently playing media")
 
 except Exception as ex:
 

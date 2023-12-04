@@ -27,33 +27,44 @@ class NowPlayingStatus:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._DeviceId:str = None
         self._Source:str = None
+        self._SourceAccount:str = None
         self._ContentItem:ContentItem = None
-            
+                              
         self._Album:str = None
         self._Artist:str = None
-        self._Image:str = None
-        self._Track:str = None
-            
+        self._ArtistId:str = None
+        self._ArtImageStatus:str = None
+        self._ArtUrl:str = None
         self._ConnectionDeviceName:str = None
         self._ConnectionStatus:str = None
         self._Description:str = None
         self._Duration:str = None
         self._Position:int = 0
         self._Genre:str = None
+        self._IsAdvertisement:bool = False
         self._IsFavorite:bool = False
         self._IsFavoriteEnabled:bool = False
+        self._IsRatingEnabled:bool = False
         self._IsSkipEnabled:bool = False
         self._IsSkipPreviousEnabled:bool = False
         self._IsSkipPreviousSupported:bool = False
         self._IsSeekSupported:bool = False
         self._PlayStatus:str = None
+        self._Rating:str = None
         self._RepeatSetting:str = None
+        self._SessionId:str = None
         self._ShuffleSetting = None
         self._StationLocation:str = None
         self._StationName:str = None
         self._StreamType:str = None
+        self._Track:str = None
         self._TrackId:str = None
+
+        # other possibilities?
+        # userAccountSuspended. 
+        # inactivityTimeoutExpired. 
 
         if (root is None):
 
@@ -61,37 +72,43 @@ class NowPlayingStatus:
         
         else:
 
-            self._Source = _xmlFindAttr(root, 'nowPlaying', 'source')
+            self._DeviceId = root.get('deviceID')
+            self._Source = root.get('source')
+            self._SourceAccount = root.get('sourceAccount')
 
-            content_item = root.find("ContentItem")
-            if content_item != None: 
-                self._ContentItem = ContentItem(root=content_item)
+            elmContentItem = root.find("ContentItem")
+            if elmContentItem is not None:
+                self._ContentItem = ContentItem(root=elmContentItem)
 
             self._Album = _xmlFind(root, "album")
+            self._ArtImageStatus = _xmlFindAttr(root, "art", "artImageStatus")
+            if self._ArtImageStatus == "IMAGE_PRESENT": 
+                self._ArtUrl = _xmlFind(root, "art")
             self._Artist = _xmlFind(root, "artist")
-            image_status = _xmlFindAttr(root, "art", "artImageStatus")
-            if image_status == "IMAGE_PRESENT": 
-                self._Image = _xmlFind(root, "art")
-            self._Track = _xmlFind(root, "track")
-
+            self._ArtistId = _xmlFind(root, "artistID")
             self._ConnectionDeviceName = _xmlFindAttr(root, "connectionStatusInfo", "deviceName")
             self._ConnectionStatus = _xmlFindAttr(root, "connectionStatusInfo", "status")
             self._Description = _xmlFind(root, "description")
             self._Duration = int(_xmlFindAttr(root, "time", "total", default='0'))
             self._Position = int(_xmlFind(root, "time", default='0'))
             self._Genre = _xmlFind(root, "genre")
+            self._IsAdvertisement = _xmlFind(root, "isAdvertisement", default=False, defaultNoText=True)
             self._IsFavorite = _xmlFind(root, "isFavorite", default=False, defaultNoText=True)
             self._IsFavoriteEnabled = _xmlFind(root, "favoriteEnabled", default=False, defaultNoText=True)
+            self._IsRatingEnabled = _xmlFind(root, "rateEnabled", default=False, defaultNoText=True)
             self._IsSkipEnabled = _xmlFind(root, "skipEnabled", default=False, defaultNoText=True)
             self._IsSkipPreviousEnabled = _xmlFind(root, "skipPreviousEnabled", default=False, defaultNoText=True)
             self._IsSkipPreviousSupported = _xmlFind(root, "skipPreviousSupported", default=False, defaultNoText=True)
             self._IsSeekSupported = _xmlFind(root, "seekSupported", default=False, defaultNoText=True)
             self._PlayStatus = _xmlFind(root, "playStatus")
+            self._Rating = _xmlFind(root, "rating")
             self._RepeatSetting = _xmlFind(root, "repeatSetting")
+            self._SessionId = _xmlFind(root, "sessionID")
             self._ShuffleSetting = _xmlFind(root, "shuffleSetting")
             self._StationLocation = _xmlFind(root, "stationLocation")
             self._StationName = _xmlFind(root, "stationName")
             self._StreamType = _xmlFind(root, "streamType")
+            self._Track = _xmlFind(root, "track")
             self._TrackId = _xmlFind(root, "trackID")
             
 
@@ -107,20 +124,42 @@ class NowPlayingStatus:
     def Album(self) -> str:
         """ 
         The album of the playing track (if present). 
-        
-        Sources supporting: AIRPLAY
         """
         return self._Album
+
+
+    @property
+    def ArtImageStatus(self) -> str:
+        """ 
+        Contains "IMAGE_PRESENT" value if an art image url is present.
+        """
+        return self._ArtImageStatus
+
+
+    @property
+    def ArtUrl(self) -> str:
+        """ 
+        A url link to the art image of the station (if present). 
+        
+        Note that this art image could be different from the `ContentItem.ContainerArt` image.
+        """
+        return self._ArtUrl
 
 
     @property
     def Artist(self) -> str:
         """ 
         The creator of the track (if present). 
-        
-        Sources supporting: AIRPLAY
         """
         return self._Artist
+
+
+    @property
+    def ArtistId(self) -> str:
+        """ 
+        Unique identifier of the artist, as provided by the source music service (if present). 
+        """
+        return self._ArtistId
 
 
     @property
@@ -128,7 +167,7 @@ class NowPlayingStatus:
         """ 
         The staus of the bluetooth connection (if present). 
         
-        Sources supporting: BLUETOOTH
+        This value only seems to be present for the "BLUETOOTH" source.
         """
         return self._ConnectionDeviceName
 
@@ -138,7 +177,7 @@ class NowPlayingStatus:
         """ 
         The staus of the bluetooth connection (if present). 
         
-        Sources supporting: BLUETOOTH
+        This value only seems to be present for the "BLUETOOTH" source.
         """
         return self._ConnectionStatus
 
@@ -160,11 +199,15 @@ class NowPlayingStatus:
 
 
     @property
+    def DeviceId(self) -> str:
+        """ Device identifier the configuration information was obtained from. """
+        return self._DeviceId
+
+    
+    @property
     def Duration(self) -> int:
         """ 
-        The track's duration. 
-            
-        Sources supporting: AIRPLAY
+        The track's duration (if present).
         """
         return self._Duration
 
@@ -174,17 +217,15 @@ class NowPlayingStatus:
         """ 
         The genre of the track (if present). 
         """
-        return self._Artist
+        return self._Genre
 
 
     @property
-    def Image(self) -> str:
+    def IsAdvertisement(self) -> bool:
         """ 
-        A url link to the cover image of the track (if present). 
-            
-        Sources supporting: AIRPLAY
+        True if the currently playing track is an advertisement; otherwise, False.
         """
-        return self._Image
+        return self._IsAdvertisement
 
 
     @property
@@ -204,6 +245,16 @@ class NowPlayingStatus:
 
 
     @property
+    def IsRatingEnabled(self) -> bool:
+        """ 
+        True if track rating is enabled; otherwise, False.
+        
+        If true, then the `SoundTouchClient.ThumbsUp` and 
+        """
+        return self._IsRatingEnabled
+
+
+    @property
     def IsRepeatEnabled(self) -> bool:
         """ 
         True if repeat play (one or all) is enabled; otherwise, False. 
@@ -218,9 +269,7 @@ class NowPlayingStatus:
     @property
     def IsSeekSupported(self) -> bool:
         """ 
-        True if the currently playing media supports seek functions; otherwise, False.
-        
-        Sources supporting: AIRPLAY
+        True if the currently playing media supports seek functions; otherwise, False (if present).
         """
         return self._IsSeekSupported
 
@@ -238,9 +287,7 @@ class NowPlayingStatus:
     @property
     def IsSkipEnabled(self) -> bool:
         """ 
-        True if the currently playing media supports skip functions; otherwise, False.
-        
-        Sources supporting: AIRPLAY
+        True if the currently playing media supports skip functions; otherwise, False (if present).
         """
         return self._IsSkipEnabled
 
@@ -248,9 +295,7 @@ class NowPlayingStatus:
     @property
     def IsSkipPreviousEnabled(self) -> bool:
         """ 
-        True if the currently playing media skip previous functions are enabled; otherwise, False.
-        
-        Sources supporting: AIRPLAY
+        True if the currently playing media skip previous functions are enabled; otherwise, False (if present).
         """
         return self._IsSkipPreviousEnabled
 
@@ -258,9 +303,7 @@ class NowPlayingStatus:
     @property
     def IsSkipPreviousSupported(self) -> bool:
         """ 
-        True if the currently playing media supports skip previous functions; otherwise, False.
-        
-        Sources supporting: AIRPLAY
+        True if the currently playing media supports skip previous functions; otherwise, False (if present).
         """
         return self._IsSkipPreviousSupported
 
@@ -277,10 +320,16 @@ class NowPlayingStatus:
     def Position(self) -> int:
         """ 
         The current position of the playing media (if present). 
-            
-        Sources supporting: AIRPLAY
         """
         return self._Position
+
+
+    @property
+    def Rating(self) -> str:
+        """ 
+        Rating value (e.g. "NONE", "DOWN", "UP", etc). 
+        """
+        return self._Rating
 
 
     @property
@@ -289,6 +338,14 @@ class NowPlayingStatus:
         Repeat setting value (e.g. "REPEAT_ALL", "REPEAT_ONE", "REPEAT_OFF", etc). 
         """
         return self._RepeatSetting
+
+
+    @property
+    def SessionId(self) -> str:
+        """ 
+        Unique identifier of the session, as provided by the source music service (if present). 
+        """
+        return self._SessionId
 
 
     @property
@@ -309,6 +366,15 @@ class NowPlayingStatus:
 
 
     @property
+    def SourceAccount(self) -> str:
+        """ 
+        The media source account.
+        This should be one of the sources defined in `bosesoundtouchapi.soundtouchsource.SoundTouchSources`. 
+        """
+        return self._SourceAccount
+
+
+    @property
     def StationLocation(self) -> str:
         """ 
         The station's location.
@@ -320,8 +386,6 @@ class NowPlayingStatus:
     def StationName(self) -> str:
         """ 
         The station's name (if present). 
-            
-        Sources supporting: AIRPLAY
         """
         return self._StationName
 
@@ -338,9 +402,7 @@ class NowPlayingStatus:
     @property
     def Track(self) -> str:
         """ 
-        The current media file name (if present). 
-            
-        Sources supporting: AIRPLAY
+        The current media track name (if present). 
         """
         return self._Track
 
@@ -348,7 +410,7 @@ class NowPlayingStatus:
     @property
     def TrackId(self) -> str:
         """ 
-        The track's id. 
+        Unique identifier of the track, as provided by the source music service (if present). 
         """
         return self._TrackId
 
@@ -358,12 +420,23 @@ class NowPlayingStatus:
         Returns a displayable string representation of the class.
         """
         msg:str = 'NowPlayingStatus:'
-        if self._Source and len(self._Source) > 0: msg = '%s source="%s"' % (msg, str(self._Source))
-        if self._PlayStatus and len(self._PlayStatus) > 0: msg = '%s playStatus="%s"' % (msg, str(self._PlayStatus))
-        if self._ContentItem: msg = '%s %s' % (msg, self._ContentItem.ToString())
-        if self._RepeatSetting and len(self._RepeatSetting) > 0: msg = '%s repeat="%s"' % (msg, str(self._RepeatSetting))
-        if self._ShuffleSetting and len(self._ShuffleSetting) > 0: msg = '%s shuffle="%s"' % (msg, str(self._ShuffleSetting))
-        msg = '%s favoriteEnabled="%s"' % (msg, str(self._IsFavoriteEnabled).lower())
-        if self._IsFavorite: msg = '%s favorite="%s"' % (msg, str(self._IsFavorite).lower())
+        if self._Source is not None and len(self._Source) > 0: msg = '%s Source="%s"' % (msg, str(self._Source))
+        if self._SourceAccount is not None and len(self._SourceAccount) > 0: msg = '%s SourceAccount="%s"' % (msg, str(self._SourceAccount))
+        if self._PlayStatus is not None and len(self._PlayStatus) > 0: msg = '%s PlayStatus="%s"' % (msg, str(self._PlayStatus))
+        if self._ContentItem is not None: msg = '%s %s' % (msg, self._ContentItem.ToString())
+        if self._RepeatSetting is not None and len(self._RepeatSetting) > 0: msg = '%s Repeat="%s"' % (msg, str(self._RepeatSetting))
+        if self._ShuffleSetting is not None and len(self._ShuffleSetting) > 0: msg = '%s Shuffle="%s"' % (msg, str(self._ShuffleSetting))
+        msg = '%s FavoriteEnabled="%s"' % (msg, str(self._IsFavoriteEnabled).lower())
+        if self._IsFavorite is not None: msg = '%s IsFavorite="%s"' % (msg, str(self._IsFavorite).lower())
+        if self._IsAdvertisement is not None: msg = '%s IsAdvertisement="%s"' % (msg, str(self._IsAdvertisement).lower())
+        if self._IsRatingEnabled is not None: msg = '%s RateEnabled="%s"' % (msg, str(self._IsRatingEnabled).lower())
+        if self._Rating is not None and len(self._Rating) > 0: msg = '%s Rating="%s"' % (msg, str(self._Rating))
+        if self._Artist is not None and len(self._Artist) > 0: msg = '%s Artist="%s"' % (msg, str(self._Artist))
+        if self._ArtistId is not None and len(self._ArtistId) > 0: msg = '%s ArtistId="%s"' % (msg, str(self._ArtistId))
+        if self._Track is not None and len(self._Track) > 0: msg = '%s Track="%s"' % (msg, str(self._Track))
+        if self._TrackId is not None and len(self._TrackId) > 0: msg = '%s TrackId="%s"' % (msg, str(self._TrackId))
+        if self._SessionId is not None and len(self._SessionId) > 0: msg = '%s SessionId="%s"' % (msg, str(self._SessionId))
+        if self._ArtUrl is not None and len(self._ArtUrl) > 0: msg = '%s ArtUrl="%s"' % (msg, str(self._ArtUrl))
+        if self._DeviceId is not None and len(self._DeviceId) > 0: msg = '%s DeviceId="%s"' % (msg, str(self._DeviceId))
         return msg 
     

@@ -171,8 +171,11 @@ artifacts/
 # THIS project's files and directories to ignore:
 # ------------------------------------------------------------------------------------------------------
 /test/developer_notes.txt
+/test/test_Navigate.py
 /test/test_SampleCode.py
 /test/test_StatusNotifications.py
+/test/testVS_SoundTouchDiscovery.py
+/test/testVS_SoundTouchClient.py
 /test/stu/
 /Git*.cmd
 # include PDOC documentation

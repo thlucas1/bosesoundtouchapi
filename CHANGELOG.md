@@ -6,6 +6,30 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.21 ] - 2023/12/04
+
+  * Added method `SoundTouchClient`.`GetMusicServiceStations` - Gets a list of your stored stations from the specified music service (e.g. PANDORA, etc).  This has only been tested with Pandora at this point, so not sure if it will work for Spotify, Amazon Music, etc.
+  * Added method `SoundTouchClient`.`AddMusicServiceStation` - Adds a station to a music service (e.g. PANDORA, etc) collection of previously stored stations.  This has only been tested with Pandora at this point, so not sure if it will work for Spotify, Amazon Music, etc.
+  * Added method `SoundTouchClient`.`RemoveMusicServiceStation` - Removes a station from a music service (e.g. PANDORA, etc) collection of previously stored stations.  This has only been tested with Pandora at this point, so not sure if it will work for Spotify, Amazon Music, etc.
+  * Added method `SoundTouchClient`.`SearchMusicServiceStations` - Searches a music service (e.g. PANDORA, etc) for stations that can be added to a users collection of stations.  This has only been tested with Pandora at this point, so not sure if it will work for Spotify, Amazon Music, etc.
+  * Added method `SoundTouchClient`.`GetTrackInfo` - Gets extended track information for the current playing music service media.
+  * Added method `SoundTouchClient`.`Bookmark` - Bookmarks the current playing music service media.
+  * Updated method `SoundTouchClient`.`RemoveAllPresets` to return a PresetList object that contains the updated list of presets.
+  * Updated method `SoundTouchClient`.`RemovePreset` to return a PresetList object that contains the updated list of presets.
+  * Updated method `SoundTouchClient`.`StorePreset` to return a PresetList object that contains the updated list of presets.
+  * Added model `AddStation` - addStation configuration.
+  * Added model `Navigate` - navigate configuration.
+  * Added model `NavigateItem` - navigate item configuration.
+  * Added model `NavigateResponse` - navigate response configuration.
+  * Added model `SearchResult` - searchResult configuration.
+  * Added model `RemoveStation` - removeStation configuration.
+  * Added model `TrackInfo` - trackInfo configuration.
+  * Added class `SoundTouchMenuTypes` - menu types enumeration.
+  * Added class `SoundTouchSortOrders` - sort orders enumeration.
+  * Updated model `ContentItem` - added new properties: IsNavigate, Offset.
+  * Updated model `NowPlayingStatus` - added new properties: ArtistId, ArtImageStatus, DeviceId, IsAdvertisement, IsRatingEnabled, Rating, SessionId, SourceAccount, TrackId.
+  * Updated model `NowPlayingStatus` - changed `Image` property name to `ArtUrl` to more closely match the SoundTouch API schema.
+
 ###### [ 1.0.20 ] - 2023/11/29
 
   *  SmartInspect SIConfigurationTimer changes to remove interval value.

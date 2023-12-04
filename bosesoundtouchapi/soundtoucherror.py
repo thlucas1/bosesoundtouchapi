@@ -43,6 +43,14 @@ class SoundTouchError(Exception):
                 logsi.LogError(self.ToString())
 
 
+    def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
     def ErrorCode(self) -> int:
         """ 

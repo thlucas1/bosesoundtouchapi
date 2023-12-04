@@ -4,6 +4,7 @@ from xml.etree.ElementTree import Element, tostring
 
 # our package imports.
 from ..bstutils import export, _xmlFind
+from ..soundtouchsources import SoundTouchSources
 from .contentitem import ContentItem
 
 @export
@@ -61,11 +62,12 @@ class Recent:
 
         if (root is None):
             
-            # base fields.
+            if isinstance(source, SoundTouchSources):
+                source = str(source.value)
+
             self._RecentId = int(recentId) if recentId else 0
             self._CreatedOn = int(createdOn) if createdOn else 0
 
-            # ContentItem fields.
             self._Source = source
             self._ItemType = typeValue
             self._Location = location
@@ -81,11 +83,9 @@ class Recent:
 
         else:
 
-            # base fields.
             self._CreatedOn = int(root.get("utcTime", default=0))
-            self._RecentId = int(root.get("id"))
+            self._RecentId = int(root.get("id", default=0))
 
-            # ContentItem fields.
             root_ci = root.find('contentItem')
             if root_ci != None:
                 self._ContainerArt = _xmlFind(root_ci, "containerArt")
@@ -109,7 +109,7 @@ class Recent:
     def __eq__(self, other):
         try:
             return self.CreatedOn == other.CreatedOn
-        except Exception as ex:
+        except Exception:
             if (isinstance(self, Recent )) and (isinstance(other, Recent )):
                 return self.CreatedOn == other.CreatedOn
             return False
@@ -117,7 +117,7 @@ class Recent:
     def __lt__(self, other):
         try:
             return self.CreatedOn < other.CreatedOn
-        except Exception as ex:
+        except Exception:
             if (isinstance(self, Recent )) and (isinstance(other, Recent )):
                 return self.CreatedOn < other.CreatedOn
             return False
@@ -204,13 +204,18 @@ class Recent:
         return xml
 
 
-    def ToElement(self) -> Element:
+    def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Returns an xmltree Element node representation of the class. 
+
+        Args:
+            isRequestBody (bool):
+                True if the element should only return attributes needed for a POST
+                request body; otherwise, False to return all attributes.
         """
         elm = Element('recent')
-        if self._RecentId and self._RecentId > 0: elm.set('id', str(self._RecentId))
-        if self._CreatedOn and self._CreatedOn > 0: elm.set('createdOn', str(self._CreatedOn))
+        if self._RecentId is not None and self._RecentId > 0: elm.set('id', str(self._RecentId))
+        if self._CreatedOn is not None and self._CreatedOn > 0: elm.set('createdOn', str(self._CreatedOn))
         
         elm.append(self.ContentItem_ToElement())
         return elm
@@ -221,14 +226,14 @@ class Recent:
         Returns a displayable string representation of the class.
         """
         msg:str = 'Recent:'
-        if self._RecentId: msg = '%s id="%s"' % (msg, str(self._RecentId))
-        if self._Name and len(self._Name) > 0: msg = '%s name="%s"' % (msg, str(self._Name))
-        if self._Source and len(self._Source) > 0: msg = '%s source="%s"' % (msg, str(self._Source))
-        if self._SourceAccount and len(self._SourceAccount) > 0: msg = '%s sourceAccount="%s"' % (msg, str(self._SourceAccount))
-        if self._ItemType and len(self._ItemType) > 0: msg = '%s type="%s"' % (msg, str(self._ItemType))
-        if self._Location and len(self._Location) > 0: msg = '%s location="%s"' % (msg, str(self._Location))
+        if self._RecentId is not None: msg = '%s id="%s"' % (msg, str(self._RecentId))
+        if self._Name is not None and len(self._Name) > 0: msg = '%s name="%s"' % (msg, str(self._Name))
+        if self._Source is not None and len(self._Source) > 0: msg = '%s source="%s"' % (msg, str(self._Source))
+        if self._SourceAccount is not None and len(self._SourceAccount) > 0: msg = '%s sourceAccount="%s"' % (msg, str(self._SourceAccount))
+        if self._ItemType is not None and len(self._ItemType) > 0: msg = '%s type="%s"' % (msg, str(self._ItemType))
+        if self._Location is not None and len(self._Location) > 0: msg = '%s location="%s"' % (msg, str(self._Location))
         msg = '%s isPresetable="%s"' % (msg, str(self._IsPresetable).lower())
-        if self._CreatedOn > 0: msg = '%s created="%s"' % (msg, str(self._CreatedOn))
+        if self._CreatedOn is not None and self._CreatedOn > 0: msg = '%s created="%s"' % (msg, str(self._CreatedOn))
         return msg 
 
 

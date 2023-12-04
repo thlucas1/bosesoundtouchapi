@@ -14,21 +14,21 @@ from .bstutils import export
 from .models import *
 from .soundtouchdevice import SoundTouchDevice
 from .soundtoucherror import SoundTouchError
-from .soundtouchexception import SoundTouchException
 from .soundtouchkeys import SoundTouchKeys
 from .soundtouchmessage import SoundTouchMessage
 from .soundtouchmodelrequest import SoundTouchModelRequest
 from .soundtouchsources import SoundTouchSources
-from .soundtouchwarning import SoundTouchWarning
 from .uri import *
 
 from .bstconst import (
     MSG_TRACE_ACTION_KEY,
+    MSG_TRACE_BOOKMARKS_NOT_ENABLED,
     MSG_TRACE_DELAY_DEVICE,
     MSG_TRACE_DEVICE_COMMAND,
     MSG_TRACE_DEVICE_COMMAND_WITH_PARM,
     MSG_TRACE_FAVORITE_NOT_ENABLED,
     MSG_TRACE_GET_CONFIG_OBJECT,
+    MSG_TRACE_RATING_NOT_ENABLED,
     MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE
 )
 
@@ -281,7 +281,7 @@ class SoundTouchClient:
             # return metadata to caller.
             return metadata
         
-        except Exception as ex:
+        except Exception:
         
             # ignore exceptions, no metadata available is acceptable.
             return None
@@ -427,6 +427,43 @@ class SoundTouchClient:
                 
         return result   
 
+    def AddMusicServiceStation(self, addStation:AddStation) -> SoundTouchMessage:
+        """
+        Adds a station to a music service (e.g. PANDORA, etc) collection of previously 
+        stored stations.
+        
+        Args:
+            addStation (AddStation):
+                Criteria used to add the music service station.
+
+        Returns:
+            A `SoundTouchMessage` object that contains the response.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `addStation` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        The added station will be immediately selected for playing.
+                
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/AddMusicServiceStation.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.addStation.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("addStation", addStation.ToString(), self._Device.DeviceName))
+        result:SoundTouchMessage = self.Put(SoundTouchNodes.addStation, addStation)
+        return result
+
+
     def AddZoneMembers(self, members:list[ZoneMember], delay:int=3) -> SoundTouchMessage:
         """
         Adds the given zone members to the device's zone.
@@ -491,18 +528,26 @@ class SoundTouchClient:
         return result
 
 
-    # def Bookmark(self) -> None:
-    #     """ 
-    #     Not sure what this does ... similar to favorites maybe?
+    def Bookmark(self) -> None:
+        """ 
+        Bookmarks the currently playing media
 
-    #     <details>
-    #       <summary>Sample Code</summary>
-    #     ```python
-    #     .. include:: ../docs/include/samplecode/SoundTouchClient/Bookmark.py
-    #     ```
-    #     </details>
-    #     """
-    #     self.Action(SoundTouchKeys.BOOKMARK)
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/Bookmark.py
+        ```
+        </details>
+        """
+        # # get current nowPlaying status.
+        # nowPlaying:NowPlayingStatus = self.GetNowPlayingStatus(True)
+
+        # # can the nowPlaying item be rated?
+        # if nowPlaying.IsRatingEnabled:
+        #     self.Action(SoundTouchKeys.BOOKMARK)
+        # else:
+        #     _logsi.LogVerbose(MSG_TRACE_BOOKMARKS_NOT_ENABLED % nowPlaying.ToString())
+        self.Action(SoundTouchKeys.BOOKMARK)
 
 
     def ClearBluetoothPaired(self) -> SoundTouchMessage:
@@ -1119,6 +1164,40 @@ class SoundTouchClient:
         return self.GetProperty(SoundTouchNodes.listMediaServers, MediaServerList, refresh)
 
 
+    def GetMusicServiceStations(self, navigate:Navigate) -> NavigateResponse:
+        """
+        Gets a list of your stored stations from the specified music service (e.g. PANDORA, etc).
+        
+        Args:
+            navigate (Navigate):
+                Navigate criteria used to search the music service.
+
+        Returns:
+            A `NavigateResponse` object that contains the navigation response.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `navigate` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetMusicServiceStations.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.navigate.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("NavigateResponse", self._Device.DeviceName))
+        result:NavigateResponse = self.Put(SoundTouchNodes.navigate, navigate, NavigateResponse)
+        return result
+
+
     def GetName(self, refresh=True) -> SimpleConfig:
         """
         Gets the current name configuration of the device, and updates the SoundTouchDevice 
@@ -1700,6 +1779,45 @@ class SoundTouchClient:
         return self.GetProperty(SoundTouchNodes.systemtimeout, SystemTimeout, refresh)
 
 
+    def GetTrackInfo(self, refresh=True) -> TrackInfo:
+        """
+        Gets extended track information for the current playing music service media.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `TrackInfo` object that contains track information.
+            
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `trackInfo` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+                
+        This method only returns information if the currently playing content is from 
+        a music service source (e.g. PANDORA, SPOTIFY, etc).  If currently playing media is 
+        NOT from a music service source (e.g. AIRPLAY, STORED_MUSIC, etc) then the 
+        SoundTouch webservice will become unresponsive (e.g. hangs) for about 30
+        seconds until it times out with an error status.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetTrackInfo.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.trackInfo.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("TrackInfo", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.trackInfo, TrackInfo, refresh)
+
+
     def GetVolume(self, refresh=True) -> Volume:
         """
         Gets the current volume configuration of the device.
@@ -2129,7 +2247,7 @@ class SoundTouchClient:
 
         Args:
             item (ContentItem):
-                content item to play.
+                Content item to play.
             delay (int):
                 Time delay (in seconds) to wait AFTER selecting the content item.  
                 This delay will give the device time to process the change before another 
@@ -2489,11 +2607,11 @@ class SoundTouchClient:
         </details>
         """
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("StandBy", self._Device.DeviceName))
-        msg = self.Get(SoundTouchNodes.standby)
+        self.Get(SoundTouchNodes.standby)
         return
         
 
-    def Put(self, uri:SoundTouchUri, body:str) -> SoundTouchMessage:
+    def Put(self, uri:SoundTouchUri, body:str, returnClassType=None) -> SoundTouchMessage:
         """
         Makes a POST request to apply a new value for the given node.
 
@@ -2503,13 +2621,19 @@ class SoundTouchClient:
         Args:
             uri (SoundTouchUri):
                 The node where the requested value is stored.
-            body (str | SoundTouchModelRequest):
+            body (SoundTouchModelRequest | str):
                 The request body xml, or a class that inherits from `SoundTouchModelRequest`
                 that implements the `ToXmlRequestBody` method.
+            returnClassType (type):
+                The configuration class type (e.g. NavigateResponse, etc) to return.
+                Default is None; do not return a class type.
 
         Returns: 
-            A `SoundTouchMessage` object storing the request uri, a payload that has been 
-            sent (optional), and the response as an `xml.etree.ElementTree.Element`.
+            If the returnClassType argument is specified, then a new instance of the class
+            type is returned with the parsed message response.  
+            
+            Otherwise, a `SoundTouchMessage` object storing the request uri, a payload that 
+            has been sent (optional), and the response as an `xml.etree.ElementTree.Element`.
 
         Raises:
             SoundTouchError:
@@ -2528,11 +2652,19 @@ class SoundTouchClient:
         reqBody:str = body
         if isinstance(body, SoundTouchModelRequest):
             reqBody = body.ToXmlRequestBody()
-            
-        message = SoundTouchMessage(uri, reqBody)
+
+        # formulate the message, and make the request.
+        msg = SoundTouchMessage(uri, reqBody)
+        self.MakeRequest('POST', msg)
         
-        self.MakeRequest('POST', message)
-        return message
+        # do we need to parse the response?  if so (and there is a response), then 
+        # parse the response and return a new instance of the specified class type.
+        if returnClassType is not None:
+            if msg.Response is not None:
+                return returnClassType(root=msg.Response)
+            
+        # otherwise, just return the message.
+        return msg
 
 
     def RefreshConfiguration(self, uri:SoundTouchUri, classType) -> object:
@@ -2543,7 +2675,7 @@ class SoundTouchClient:
             uri (SoundTouchUri):
                 The configuration uri key.
             classType (type):
-                The configuration class type (e.g. Balance, Volume, etc).
+                The configuration class type (e.g. Balance, Volume, etc) to return.
             refresh (bool):
                 True to refresh the property with real-time information from the device;
                 otherwise, False to just return the cached value.
@@ -2564,12 +2696,12 @@ class SoundTouchClient:
         return self[uri]
 
 
-    def RemoveAllPresets(self) -> SoundTouchMessage:
+    def RemoveAllPresets(self) -> PresetList:
         """
         Removes all presets from the device's list of presets.
         
         Returns:
-            A message object that may contain more information about the result.
+            A `PresetList` object that contains the updated preset list configuration of the device.
             
         Raises:
             Exception:
@@ -2577,8 +2709,6 @@ class SoundTouchClient:
         
         A `GetPresetList()` method call is made to retrieve the current list of presets.
         The returned list of presets are deleted one by one.  
-        The message returned is the message returned from the final preset removal.  
-        If there were no presets to remove, then the returned result is None.
 
         <details>
           <summary>Sample Code</summary>
@@ -2593,14 +2723,19 @@ class SoundTouchClient:
         presets:PresetList = self.GetPresetList(True)
         
         # remove them all.
-        msg:SoundTouchMessage = None
+        presetList:PresetList = PresetList()
         preset:Preset
         for preset in presets:
-            msg = self.Put(SoundTouchNodes.removePreset, preset.ToXmlString())
-        return msg
+            presetList = self.Put(SoundTouchNodes.removePreset, preset, PresetList)
+
+        # update configuration cache with the updated list.
+        if isinstance(presetList, PresetList):
+            self[SoundTouchNodes.presets] = presetList
+            
+        return presetList
 
 
-    def RemovePreset(self, presetId: int) -> SoundTouchMessage:
+    def RemovePreset(self, presetId: int) -> PresetList:
         """
         Removes the specified Preset id from the device's list of presets.
         
@@ -2609,7 +2744,7 @@ class SoundTouchClient:
                 The preset id to remove; valid values are 1 thru 6.
                 
         Returns:
-            A message object that may contain more information about the result.
+            A `PresetList` object that contains the updated preset list configuration of the device.
             
         Raises:
             Exception:
@@ -2630,7 +2765,13 @@ class SoundTouchClient:
         """
         _logsi.LogVerbose("Removing preset from SoundTouch device: '%s'" % self._Device.DeviceName)
         item:Preset = Preset(presetId)
-        return self.Put(SoundTouchNodes.removePreset, item.ToXmlString())
+        presetList:PresetList = self.Put(SoundTouchNodes.removePreset, item, PresetList)
+        
+        # update configuration cache with the updated list.
+        if isinstance(presetList, PresetList):
+            self[SoundTouchNodes.presets] = presetList
+        return presetList
+
 
 
     def RemoveFavorite(self) -> None:
@@ -2691,6 +2832,45 @@ class SoundTouchClient:
         _logsi.LogVerbose("'%s': Account details - %s" % (self._Device.DeviceName, request.ToString()))
         msg:SoundTouchMessage = self.Put(SoundTouchNodes.removeMusicServiceAccount, request)
         return msg
+
+
+    def RemoveMusicServiceStation(self, removeStation:RemoveStation) -> SoundTouchMessage:
+        """
+        Removes a station from a music service (e.g. PANDORA, etc) collection of previously 
+        stored stations.
+        
+        Args:
+            removeStation (RemoveStation):
+                Criteria used to remove the music service station.
+
+        Returns:
+            A `SoundTouchMessage` object that contains the response.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `removeStation` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        Playing will be stopped and the NowPlaying status will be updated with source="INVALID_SOURCE"
+        if the station being removed is currently playing; otherwise, currently playing content
+        is not changed.
+                
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/RemoveMusicServiceStation.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.removeStation.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("removeStation", removeStation.ToString(), self._Device.DeviceName))
+        result:SoundTouchMessage = self.Put(SoundTouchNodes.removeStation, removeStation)
+        return result
 
 
     def RemoveZone(self, delay:int=1) -> SoundTouchMessage:
@@ -2863,6 +3043,44 @@ class SoundTouchClient:
         return
 
 
+    def SearchMusicServiceStations(self, searchStation:SearchStation) -> SearchStationResults:
+        """
+        Searches a music service (e.g. PANDORA, etc) for stations that can be added to
+        a users collection of stations.
+        
+        Args:
+            searchStation (SearchStation):
+                Criteria used to search a music service for available stations.
+
+        Returns:
+            A `SoundTouchMessage` object that contains the response.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `searchStation` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        The `AddMusicServiceStation` method can be used to add a result item (song or artist)
+        from the results of this method.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SearchMusicServiceStations.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.searchStation.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("searchStation", searchStation.ToString(), self._Device.DeviceName))
+        result:SoundTouchMessage = self.Put(SoundTouchNodes.searchStation, searchStation, SearchStationResults)
+        return result
+
+
     def SelectContentItem(self, item:ContentItem, delay:int=5) -> SoundTouchMessage:
         """
         Selects the given ContentItem.
@@ -2888,7 +3106,7 @@ class SoundTouchClient:
         _logsi.LogObject(SILevel.Verbose, "Select content item", item)
         delay = self._ValidateDelay(delay, 5, 10)
             
-        result = self.Put(SoundTouchNodes.select, item.ToXmlString())
+        result = self.Put(SoundTouchNodes.select, item)
         
         if delay > 0:
             _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
@@ -3116,7 +3334,7 @@ class SoundTouchClient:
             raise SoundTouchError('Preset argument was not supplied', logsi=_logsi)
         delay = self._ValidateDelay(delay, 5, 10)
         
-        result = self.Put(SoundTouchNodes.select, preset.ContentItem_ToXmlString())
+        result = self.Put(SoundTouchNodes.select, preset.ContentItem)
         
         if delay > 0:
             _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
@@ -3127,7 +3345,7 @@ class SoundTouchClient:
 
     def SelectPreset1(self, delay:int=3) -> None:
         """ 
-        Mirrors the press and release of the PRESET1 key on the SoundTouch remote.
+        Selects pre-defined preset number 1 on the device.
         
         Args:
             delay (int):
@@ -3155,7 +3373,7 @@ class SoundTouchClient:
 
     def SelectPreset2(self, delay:int=3) -> None:
         """ 
-        Mirrors the press and release of the PRESET2 key on the SoundTouch remote.
+        Selects pre-defined preset number 2 on the device.
         
         Args:
             delay (int):
@@ -3183,7 +3401,7 @@ class SoundTouchClient:
 
     def SelectPreset3(self, delay:int=3) -> None:
         """ 
-        Mirrors the press and release of the PRESET3 key on the SoundTouch remote.
+        Selects pre-defined preset number 3 on the device.
         
         Args:
             delay (int):
@@ -3211,7 +3429,7 @@ class SoundTouchClient:
 
     def SelectPreset4(self, delay:int=3) -> None:
         """ 
-        Mirrors the press and release of the PRESET4 key on the SoundTouch remote.
+        Selects pre-defined preset number 4 on the device.
         
         Args:
             delay (int):
@@ -3239,7 +3457,7 @@ class SoundTouchClient:
 
     def SelectPreset5(self, delay:int=3) -> None:
         """ 
-        Mirrors the press and release of the PRESET5 key on the SoundTouch remote.
+        Selects pre-defined preset number 5 on the device.
         
         Args:
             delay (int):
@@ -3267,7 +3485,7 @@ class SoundTouchClient:
 
     def SelectPreset6(self, delay:int=3) -> None:
         """ 
-        Mirrors the press and release of the PRESET6 key on the SoundTouch remote.
+        Selects pre-defined preset number 6 on the device.
         
         Args:
             delay (int):
@@ -3634,7 +3852,7 @@ class SoundTouchClient:
         return self.Put(SoundTouchNodes.volume, request)
 
 
-    def StorePreset(self, item:Preset) -> SoundTouchMessage:
+    def StorePreset(self, item:Preset) -> PresetList:
         """
         Stores the given Preset to the device's list of presets.
         
@@ -3643,7 +3861,7 @@ class SoundTouchClient:
                 The Preset object to store.
                 
         Returns:
-            A message object that may contain more information about the result.
+            A `PresetList` object that contains the updated preset list configuration of the device.
             
         Raises:
             Exception:
@@ -3663,7 +3881,12 @@ class SoundTouchClient:
         </details>
         """
         _logsi.LogVerbose("Storing preset to SoundTouch device: '%s'" % self._Device.DeviceName)
-        return self.Put(SoundTouchNodes.storePreset, item.ToXmlString())
+        presetList:PresetList = self.Put(SoundTouchNodes.storePreset, item, PresetList)
+        
+        # update configuration cache with the updated list.
+        if isinstance(presetList, PresetList):
+            self[SoundTouchNodes.presets] = presetList
+        return presetList
 
 
     def StoreSnapshot(self) -> None:
@@ -3696,14 +3919,20 @@ class SoundTouchClient:
 
     def ThumbsDown(self) -> None:
         """ 
-        Removes the currently playing media from the device favorites.
+        Sets a thumbs down rating for the currently playing media.
         
         This will first make a call to `GetNowPlayingStatus()` method to ensure
-        favorites are enabled for the now playing media.  If not enabled, then
+        ratings are enabled for the now playing media.  If not enabled, then
         the request is ignored and no exception is raised.
         
-        The THUMBS_DOWN key appears to do the same thing as the REMOVE_FAVORITE
-        key, but it's included here for completeness.
+        Note that this method should only be used with source music services
+        that support ratings (e.g. PANDORA, SPOTIFY, etc). The rating value is
+        actually stored with the music service, and is not located on the SoundTouch
+        device itself.
+        
+        Note that for some music services (e.g. PANDORA), the now playing
+        selection will change immediately once this method processing completes;
+        there is no code in this API that forces the change.
         
         <details>
           <summary>Sample Code</summary>
@@ -3715,23 +3944,25 @@ class SoundTouchClient:
         # get current nowPlaying status.
         nowPlaying:NowPlayingStatus = self.GetNowPlayingStatus(True)
 
-        # can the nowPlaying item be a favorite?
-        if nowPlaying.IsFavoriteEnabled:
+        # can the nowPlaying item be rated?
+        if nowPlaying.IsRatingEnabled:
             self.Action(SoundTouchKeys.THUMBS_DOWN)
         else:
-            _logsi.LogVerbose(MSG_TRACE_FAVORITE_NOT_ENABLED % nowPlaying.ToString())
+            _logsi.LogVerbose(MSG_TRACE_RATING_NOT_ENABLED % nowPlaying.ToString())
 
 
     def ThumbsUp(self) -> None:
         """ 
-        Adds the currently playing media to the device favorites.
+        Sets a thumbs up rating for the currently playing media.
 
         This will first make a call to `GetNowPlayingStatus()` method to ensure
-        favorites are enabled for the now playing media.  If not enabled, then
+        ratings are enabled for the now playing media.  If not enabled, then
         the request is ignored and no exception is raised.
         
-        The THUMBS_UP key appears to do the same thing as the ADD_FAVORITE
-        key, but it's included here for completeness.
+        Note that this method should only be used with source music services
+        that support ratings (e.g. PANDORA, SPOTIFY, etc). The rating value is
+        actually stored with the music service, and is not located on the SoundTouch
+        device itself.
         
         <details>
           <summary>Sample Code</summary>
@@ -3743,11 +3974,11 @@ class SoundTouchClient:
         # get current nowPlaying status.
         nowPlaying:NowPlayingStatus = self.GetNowPlayingStatus(True)
 
-        # can the nowPlaying item be a favorite?
-        if nowPlaying.IsFavoriteEnabled:
+        # can the nowPlaying item be rated?
+        if nowPlaying.IsRatingEnabled:
             self.Action(SoundTouchKeys.THUMBS_UP)
         else:
-            _logsi.LogVerbose(MSG_TRACE_FAVORITE_NOT_ENABLED % nowPlaying.ToString())
+            _logsi.LogVerbose(MSG_TRACE_RATING_NOT_ENABLED % nowPlaying.ToString())
 
 
     def ToString(self) -> str:

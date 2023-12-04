@@ -37,6 +37,14 @@ class SoundTouchWarning(Exception):
                 logsi.LogWarning(self.ToString())
 
 
+    def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
     def Message(self) -> str:
         """ 

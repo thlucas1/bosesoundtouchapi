@@ -83,6 +83,7 @@ class AudioSpeakerAttributeAndSetting(SoundTouchModelRequest):
 
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
+        Overridden.  
         Returns an xmltree Element node representation of the class. 
 
         Args:
@@ -112,22 +113,3 @@ class AudioSpeakerAttributeAndSetting(SoundTouchModelRequest):
         if (self._SubWoofer02 is not None) and (self._SubWoofer02.IsAnyPropertySet == True):
             msg = '%s\n  %s' % (msg, self._SubWoofer02.ToString())
         return msg 
-
-
-    def ToXmlRequestBody(self, encoding:str='utf-8') -> str:
-        """ 
-        Overridden.
-        Returns a POST request body, which is used to update the device configuration.
-        
-        Args:
-            encoding (str):
-                encode type (e.g. 'utf-8', 'unicode', etc).  
-                Default is 'utf-8'.
-
-        Returns:
-            An xml string that can be used in a POST request to update the
-            device configuration.
-        """
-        elm = self.ToElement(True)
-        xml = tostring(elm, encoding='unicode')
-        return xml

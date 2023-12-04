@@ -4,6 +4,7 @@ from xml.etree.ElementTree import Element, tostring
 # our package imports.
 from ..bstutils import export, _xmlFind
 from ..soundtouchmodelrequest import SoundTouchModelRequest
+from ..soundtouchsources import SoundTouchSources
 
 
 @export
@@ -45,6 +46,9 @@ class MusicServiceAccount(SoundTouchModelRequest):
         
         if (root is None):
             
+            if isinstance(source, SoundTouchSources):
+                source = str(source.value)
+                
             self._Source = source
             self._DisplayName = displayName
             self._Password = password
@@ -90,9 +94,15 @@ class MusicServiceAccount(SoundTouchModelRequest):
         return self._Password
 
 
-    def ToElement(self) -> Element:
+    def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
+        Overridden.  
         Returns an xmltree Element node representation of the class. 
+
+        Args:
+            isRequestBody (bool):
+                True if the element should only return attributes needed for a POST
+                request body; otherwise, False to return all attributes.
         """
         elm = Element('credentials')
         elm.set('source', self._Source or '')
@@ -119,25 +129,3 @@ class MusicServiceAccount(SoundTouchModelRequest):
         msg = '%s User="%s"' % (msg, self._UserAccount)
         msg = '%s Password="%s"' % (msg, "".ljust(len(self._Password or ''), '*'))
         return msg 
-
-
-    def ToXmlRequestBody(self, encoding:str='utf-8') -> str:
-        """ 
-        Overridden.
-        Returns a POST request body, which is used to update the device configuration.
-        
-        Args:
-            encoding (str):
-                encode type (e.g. 'utf-8', 'unicode', etc).  
-                Default is 'utf-8'.
-
-        Returns:
-            An xml string that can be used in a POST request to update the
-            device configuration.
-        """
-        elm = self.ToElement()
-        xml:str = tostring(elm, encoding=encoding)
-        # always return a string, as some encodings return a byte array!
-        if not isinstance(xml, str):
-            xml = xml.decode(encoding=encoding)
-        return xml

@@ -14,37 +14,14 @@ try:
     sourceList:SourceList = client.GetSourceList()
     print("\nSource list before the change:\n%s" % sourceList.ToString(True))
     
-    # get list of upnp media services detected by the device.
-    mediaServerList:MediaServerList = client.GetMediaServerList()
-    print("\nUPnP Media Server list before the change:\n%s" % mediaServerList.ToString(True))
-    
-    # remove all music service account sources for upnp media servers.
-    print("\n\nRemoving all music service 'STORED_MUSIC' account sources ...")
-    mediaServer:MediaServer
-    for mediaServer in mediaServerList:
-        sourceAccount:str = "%s%s" % (mediaServer.ServerId, "/0")
-        sourceItem:SourceItem
-        for sourceItem in sourceList:
-            if sourceItem.SourceAccount == mediaServer.ServerId:
-                print("- Removing source: '%s' (%s)" % (mediaServer.FriendlyName, sourceItem.SourceAccount))
-                client.RemoveMusicServiceAccount(sourceItem.Source, sourceItem.FriendlyName, sourceItem.SourceAccount, None)
-                break
-            elif sourceItem.SourceAccount == sourceAccount:
-                print("- Removing source: '%s' (%s)" % (mediaServer.FriendlyName, sourceAccount))
-                client.RemoveMusicServiceAccount(sourceItem.Source, sourceItem.FriendlyName, sourceAccount, None)
-                break
+    # set music service account source - Music Library on NAS (STORED_MUSIC).
+    # note the userAccount value must match what is defined in the "/listMediaServers" service, with an ending "/0".
+    print("\n\nAdding music service source: Music Library on NAS, Account='d09708a1-5953-44bc-a413-123456789012' ...")
+    client.SetMusicServiceAccount("STORED_MUSIC", "Music Library on NAS", "d09708a1-5953-44bc-a413-123456789012/0", None)
                 
-    # get real-time configuration from the device.
-    sourceList:SourceList = client.GetSourceList()
-    print("\nSource list after the remove:\n%s" % sourceList.ToString(True))
-           
-    # add all music service account sources for upnp media servers.
-    print("\nAdding all UPnP media servers as 'STORED_MUSIC' account sources ...")
-    mediaServer:MediaServer
-    for mediaServer in mediaServerList:
-        sourceAccount:str = "%s%s" % (mediaServer.ServerId, "/0")
-        print("- Adding source: '%s' (%s)" % (mediaServer.FriendlyName, sourceAccount))
-        client.SetMusicServiceAccount("STORED_MUSIC", mediaServer.FriendlyName, sourceAccount, None)
+    # set music service account source - PANDORA.
+    print("\n\nAdding music service source: Pandora, Account='yourPandoraUserId' ...")
+    client.SetMusicServiceAccount("PANDORA", "Pandora Account", "yourPandoraUserId", "yourPandoraPassword")
                 
     # get list of defined sources.
     sourceList:SourceList = client.GetSourceList()

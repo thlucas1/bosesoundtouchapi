@@ -50,7 +50,7 @@ class SoftwareUpdateCheckResponse:
 
     @property
     def DeviceId(self) -> str:
-        """ Device Identifier. """
+        """ Device identifier the configuration information was obtained from. """
         return self._DeviceId
 
 

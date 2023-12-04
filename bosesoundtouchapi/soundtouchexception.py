@@ -48,6 +48,14 @@ class SoundTouchException(Exception):
                     logsi.LogError(message)
 
 
+    def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
     def InnerException(self) -> Exception:
         """ 
@@ -80,3 +88,16 @@ class SoundTouchException(Exception):
             The Message property value.
         """
         return self._MessageId
+
+
+    def ToString(self) -> str:
+        """
+        Returns a displayable string representation of the class.
+        """
+        msg:str = 'SoundTouchException:'
+        if self._MessageId is not None and len(self._MessageId) > 0:
+            msg = '%s %s - ' % (msg, str(self._MessageId))
+        msg = '%s "%s"' % (msg, str(self._Message))
+        if self._InnerException is not None:
+            msg = '%s, innerException: %s' % (msg, str(self._InnerException))
+        return msg 

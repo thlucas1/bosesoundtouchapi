@@ -10,10 +10,7 @@ try:
     client:SoundTouchClient = SoundTouchClient(device)
 
     # remove all presets.
-    client.RemoveAllPresets()
-            
-    # get list of defined presets.
-    presetList:PresetList = client.GetPresetList()
+    presetList:PresetList = client.RemoveAllPresets()
     print(presetList.ToString(True))
         
 except Exception as ex:
