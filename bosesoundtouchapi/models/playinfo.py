@@ -120,36 +120,48 @@ class PlayInfo(SoundTouchModelRequest):
         return self._Volume
 
 
-    def ToElement(self) -> Element:
+    def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
+        Overridden.  
         Returns an xmltree Element node representation of the class. 
+
+        Args:
+            isRequestBody (bool):
+                True if the element should only return attributes needed for a POST
+                request body; otherwise, False to return all attributes.
         """
         elm = Element('play_info')
         
         if self._Url is not None:
-            subelm = Element('url')
-            subelm.text = self._Url
-            elm.append(subelm)
+            elmNode = Element('url')
+            elmNode.text = self._Url
+            elm.append(elmNode)
+            
         if self._Volume > 0:
-            subelm = Element('volume')
-            subelm.text = str(self._Volume)
-            elm.append(subelm)
-        if self._AppKey != None: 
-            subelm = Element('app_key')
-            subelm.text = self._AppKey
-            elm.append(subelm)
-        if self._Service != None: 
-            subelm = Element('service')
-            subelm.text = self._Service
-            elm.append(subelm)
-        if self._Message != None: 
-            subelm = Element('message')
-            subelm.text = self._Message
-            elm.append(subelm)
-        if self._Reason != None: 
-            subelm = Element('reason')
-            subelm.text = self._Reason
-            elm.append(subelm)
+            elmNode = Element('volume')
+            elmNode.text = str(self._Volume)
+            elm.append(elmNode)
+            
+        if self._AppKey is not None:
+            elmNode = Element('app_key')
+            elmNode.text = self._AppKey
+            elm.append(elmNode)
+            
+        if self._Service is not None:
+            elmNode = Element('service')
+            elmNode.text = self._Service
+            elm.append(elmNode)
+            
+        if self._Message is not None:
+            elmNode = Element('message')
+            elmNode.text = self._Message
+            elm.append(elmNode)
+            
+        if self._Reason is not None:
+            elmNode = Element('reason')
+            elmNode.text = self._Reason
+            elm.append(elmNode)
+            
         return elm
 
 
@@ -165,28 +177,6 @@ class PlayInfo(SoundTouchModelRequest):
         if self._Reason and len(self._Reason) > 0: msg = '%s reason="%s"' % (msg, str(self._Reason))
         if self._Url and len(self._Url) > 0: msg = '%s url="%s"' % (msg, str(self._Url))
         return msg 
-
-
-    def ToXmlRequestBody(self, encoding:str='utf-8') -> str:
-        """ 
-        Overridden.
-        Returns a POST request body, which is used to update the device configuration.
-        
-        Args:
-            encoding (str):
-                encode type (e.g. 'utf-8', 'unicode', etc).  
-                Default is 'utf-8'.
-                
-        Returns:
-            An xml string that can be used in a POST request to update the
-            device configuration.
-        """
-        elm:Element = self.ToElement()
-        xml:str = tostring(elm, encoding=encoding)
-        # always return a string, as some encodings return a byte array!
-        if not isinstance(xml, str):
-            xml = xml.decode(encoding=encoding)
-        return xml
 
 
     def ToXmlString(self, encoding:str='utf-8') -> str:

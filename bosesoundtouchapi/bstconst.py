@@ -4,7 +4,7 @@
 # constants are placed in this file if they are used across multiple files.
 # the only exception to this is for the VERSION constant, which is placed here for convenience.
 
-VERSION:str = "1.0.20"
+VERSION:str = "1.0.21"
 """ 
 Current version of the Bose SoundTouch API Python3 Library. 
 """
@@ -50,6 +50,11 @@ MSG_TRACE_ACTION_KEY:str = "Sending '%s' key press and release action to SoundTo
 Sending '%s' key press and release to SoundTouch device: '%s'
 """
 
+MSG_TRACE_BOOKMARKS_NOT_ENABLED:str = "Current NowPlaying item is not enabled for bookmarks: '%s'"
+"""
+Current NowPlaying item is not enabled for bookmarks: '%s'
+"""
+
 MSG_TRACE_DELAY_DEVICE:str = "Delaying for %d seconds to allow SoundTouch device '%s' to process the change"
 """
 Delaying for %d seconds to allow SoundTouch device '%s' to process the change
@@ -73,6 +78,11 @@ Current NowPlaying item is not enabled for favorites: '%s'
 MSG_TRACE_GET_CONFIG_OBJECT:str = "Getting %s configuration for SoundTouch device: '%s'"
 """
 Getting %s configuration for SoundTouch device: '%s'
+"""
+
+MSG_TRACE_RATING_NOT_ENABLED:str = "Current NowPlaying item is not enabled for ratings: '%s'"
+"""
+Current NowPlaying item is not enabled for ratings: '%s'
 """
 
 MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE:str = "Setting %s to '%s' on SoundTouch device: '%s'"

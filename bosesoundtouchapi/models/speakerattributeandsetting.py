@@ -124,6 +124,7 @@ class SpeakerAttributeAndSetting(SoundTouchModelRequest):
 
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
+        Overridden.  
         Returns an xmltree Element node representation of the class.
         
         Args:
@@ -153,22 +154,3 @@ class SpeakerAttributeAndSetting(SoundTouchModelRequest):
         if self._Controllable is not None: msg = '%s Controllable="%s"' % (msg, str(self._Controllable).lower())
         if self._Wireless is not None: msg = '%s Wireless="%s"' % (msg, str(self._Wireless).lower())
         return msg 
-
-
-    def ToXmlRequestBody(self, encoding:str='utf-8') -> str:
-        """ 
-        Overridden.
-        Returns a POST request body, which is used to update the device configuration.
-        
-        Args:
-            encoding (str):
-                encode type (e.g. 'utf-8', 'unicode', etc).  
-                Default is 'utf-8'.
-
-        Returns:
-            An xml string that can be used in a POST request to update the
-            device configuration.
-        """
-        elm = self.ToElement(True)
-        xml = tostring(elm, encoding='unicode')
-        return xml

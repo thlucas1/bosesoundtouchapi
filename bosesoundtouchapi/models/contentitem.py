@@ -4,9 +4,12 @@ from xml.etree.ElementTree import Element, tostring
 
 # our package imports.
 from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..soundtouchmodelrequest import SoundTouchModelRequest
+from ..soundtouchsources import SoundTouchSources
+
 
 @export
-class ContentItem:
+class ContentItem(SoundTouchModelRequest):
     """
     SoundTouch device ContentItem configuration object.
        
@@ -42,15 +45,20 @@ class ContentItem:
                 If specified, then other passed arguments are ignored.
         """
         self._ContainerArt:str = None
+        self._IsNavigate:bool = None
         self._IsPresetable:bool = None
         self._ItemType:str = None
         self._Location:str = None
         self._Name:str = None
+        self._Offset:int = None
         self._Source:str = None
         self._SourceAccount:str = None
 
         if (root is None):
             
+            if isinstance(source, SoundTouchSources):
+                source = str(source.value)
+
             self._ContainerArt = containerArt
             self._IsPresetable = isPresetable
             self._ItemType = itemType
@@ -62,13 +70,15 @@ class ContentItem:
         else:
 
             self._ContainerArt = _xmlFind(root, "containerArt")
-            self._IsPresetable = root.get("isPresetable") == 'true'
+            self._IsNavigate = root.get("isNavigate", default='false') == 'true'
+            self._IsPresetable = root.get("isPresetable", default='false') == 'true'
             self._ItemType = root.get("type")
             self._Location = root.get("location")
             self._Name = _xmlFind(root, "itemName")
+            self._Offset = root.get("offset")
             self._Source = root.get("source")
             self._SourceAccount = root.get("sourceAccount")
-        
+            
         
     def __repr__(self) -> str:
         return self.ToString()
@@ -85,6 +95,12 @@ class ContentItem:
 
 
     @property
+    def IsNavigate(self) -> bool:
+        """ Returns True if the content item is part of a navigate result; otherwise, False. """
+        return self._IsNavigate
+
+
+    @property
     def IsPresetable(self) -> bool:
         """ Returns True if the content item can be saved as a Preset; otherwise, False. """
         return self._IsPresetable
@@ -98,7 +114,7 @@ class ContentItem:
 
     @property
     def Location(self) -> str:
-        """ If present, a direct link to the media. """
+        """ If present, a direct url link to the media. """
         return self._Location
 
 
@@ -106,6 +122,12 @@ class ContentItem:
     def Name(self) -> str:
         """ Item's name. """
         return self._Name
+
+
+    @property
+    def Offset(self) -> int:
+        """ If present, the offset of the currently playing content. """
+        return self._Offset
 
 
     @property
@@ -124,26 +146,34 @@ class ContentItem:
         return self._SourceAccount
 
 
-    def ToElement(self) -> Element:
+    def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
+        Overridden.  
         Returns an xmltree Element node representation of the class. 
+
+        Args:
+            isRequestBody (bool):
+                True if the element should only return attributes needed for a POST
+                request body; otherwise, False to return all attributes.
         """
         elm = Element('ContentItem')
-        if self._Source and len(self._Source) > 0: elm.set('source', str(self._Source))
-        if self._ItemType and len(self._ItemType) > 0: elm.set('type', str(self._ItemType))
-        if self._Location and len(self._Location) > 0: elm.set('location', str(self._Location))
-        if self._SourceAccount and len(self._SourceAccount) > 0: elm.set('sourceAccount', str(self._SourceAccount))
+        if self._Source is not None and len(self._Source) > 0: elm.set('source', str(self._Source))
+        if self._ItemType is not None and len(self._ItemType) > 0: elm.set('type', str(self._ItemType))
+        if self._Location is not None and len(self._Location) > 0: elm.set('location', str(self._Location))
+        if self._SourceAccount is not None and len(self._SourceAccount) > 0: elm.set('sourceAccount', str(self._SourceAccount))
+        if self._IsNavigate: elm.set('isNavigate', str(self._IsNavigate).lower())
         if self._IsPresetable: elm.set('isPresetable', str(self._IsPresetable).lower())
+        if self._Offset is not None and self._Offset > 0: elm.set('offset', str(self._Offset))
 
-        elm_itemname = Element('itemName')
-        if self._Name: 
-            elm_itemname.text = self._Name
-            elm.append(elm_itemname)
+        if self._Name is not None: 
+            elmNode = Element('itemName')
+            elmNode.text = self._Name
+            elm.append(elmNode)
 
-        elm_containerart = Element('containerArt')
-        if self._ContainerArt: 
-            elm_containerart.text = self._ContainerArt
-            elm.append(elm_containerart)
+        if self._ContainerArt is not None: 
+            elmNode = Element('containerArt')
+            elmNode.text = self._ContainerArt
+            elm.append(elmNode)
             
         return elm
 
@@ -153,27 +183,13 @@ class ContentItem:
         Returns a displayable string representation of the class.
         """
         msg:str = 'ContentItem:'
-        if self._Name and len(self._Name) > 0: msg = '%s name="%s"' % (msg, str(self._Name))
-        if self._Source and len(self._Source) > 0: msg = '%s source="%s"' % (msg, str(self._Source))
-        if self._ItemType and len(self._ItemType) > 0: msg = '%s type="%s"' % (msg, str(self._ItemType))
-        if self._Location and len(self._Location) > 0: msg = '%s location="%s"' % (msg, str(self._Location))
-        if self._SourceAccount and len(self._SourceAccount) > 0: msg = '%s sourceAccount="%s"' % (msg, str(self._SourceAccount))
-        msg = '%s isPresetable="%s"' % (msg, str(self._IsPresetable).lower())
+        if self._Name is not None and len(self._Name) > 0: msg = '%s Name="%s"' % (msg, str(self._Name))
+        if self._Source is not None and len(self._Source) > 0: msg = '%s Source="%s"' % (msg, str(self._Source))
+        if self._ItemType is not None and len(self._ItemType) > 0: msg = '%s Type="%s"' % (msg, str(self._ItemType))
+        if self._Location is not None and len(self._Location) > 0: msg = '%s Location="%s"' % (msg, str(self._Location))
+        if self._SourceAccount is not None and len(self._SourceAccount) > 0: msg = '%s SourceAccount="%s"' % (msg, str(self._SourceAccount))
+        if self._Offset is not None and self._Offset > 0: msg = '%s Offset="%s"' % (msg, str(self._Offset))
+        msg = '%s IsPresetable="%s"' % (msg, str(self._IsPresetable).lower())
+        if self._IsNavigate is not None: msg = '%s IsNavigate="%s"' % (msg, str(self._IsNavigate).lower())
+        if self._ContainerArt is not None and len(self._ContainerArt) > 0: msg = '%s ContainerArt="%s"' % (msg, str(self._ContainerArt))
         return msg 
-
-
-    def ToXmlString(self, encoding:str='utf-8') -> str:
-        """ 
-        Returns an xml string representation of the class. 
-        
-        Args:
-            encoding (str):
-                encode type (e.g. 'utf-8', 'unicode', etc).  
-                Default is 'utf-8'.
-        """
-        if encoding is None:
-            encoding = 'utf-8'
-        elm = self.ToElement()
-        xml = tostring(elm, encoding=encoding).decode(encoding)
-        return xml
-    

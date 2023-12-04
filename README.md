@@ -23,7 +23,8 @@ The following features are supported by this API.
 - Audio Product CEC HDMI Control support (set, retrieve, supported values)
 - Presets (store, remove, remove all, select)
 - Recent Media History (list recent content that was played, select recent item for play)
-- Favorites (add, remove, thumbs up, thumbs down)
+- Pandora Music Service Support (add / remove stations, get saved stations, search for stations)
+- Favorites and Ratings (add, remove, thumbs up, thumbs down)
 - Snapshot device settings (store, restore)
 - Change Device Name
 - Configuration data (clock time, clock, timezone, capabilities, bass capabilities)

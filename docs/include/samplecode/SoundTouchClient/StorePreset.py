@@ -27,10 +27,7 @@ try:
     print("Storing Preset: '%s' - %s" % (new_preset_radio.Name, new_preset_radio.Location))
                 
     # store preset.
-    client.StorePreset(new_preset_radio)
-            
-    # get list of defined presets.
-    presetList:PresetList = client.GetPresetList()
+    presetList:PresetList = client.StorePreset(new_preset_radio)
     print(presetList.ToString(True))
         
 except Exception as ex:

@@ -29,6 +29,7 @@ class Bass(SoundTouchModelRequest):
                 If specified, then other passed arguments are ignored.
         """
         self._Actual:int = None
+        self._DeviceId:str = None
         self._Target:int = None
 
         if (root is None):
@@ -37,6 +38,7 @@ class Bass(SoundTouchModelRequest):
 
         else:
 
+            self._DeviceId = root.get('deviceID')
             self._Actual = int(_xmlFind(root, 'actualbass', default=0))
             self._Target = int(_xmlFind(root, 'targetbass', default=0))
 
@@ -56,33 +58,55 @@ class Bass(SoundTouchModelRequest):
 
 
     @property
+    def DeviceId(self):
+        """ Device identifier the configuration information was obtained from. """
+        return self._DeviceId
+
+    
+    @property
     def Target(self) -> int:
         """ Targeted value of the bass level. """
         return self._Target
 
 
+    def ToElement(self, isRequestBody:bool=False) -> Element:
+        """ 
+        Overridden.  
+        Returns an xmltree Element node representation of the class. 
+
+        Args:
+            isRequestBody (bool):
+                True if the element should only return attributes needed for a POST
+                request body; otherwise, False to return all attributes.
+        """
+        elm = Element('bass')
+        if isRequestBody == True:
+            
+            elm.text = str(self.Actual)
+            
+        else:
+            
+            if self._DeviceId and len(self._DeviceId) > 0: elm.set('deviceID', str(self._DeviceId))
+                           
+            if self._Target is not None:
+                elmNode = Element('targetbass')
+                elmNode.text = str(self._Target)
+                elm.append(elmNode)
+                
+            if self._Actual is not None:
+                elmNode = Element('actualbass')
+                elmNode.text = str(self._Actual)
+                elm.append(elmNode)
+                
+        return elm
+
+        
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.
         """
         msg:str = 'Bass:'
-        msg = '%s actual=%d' % (msg, self._Actual)
-        msg = '%s target=%d' % (msg, self._Target)
+        msg = '%s Actual=%d' % (msg, self._Actual)
+        msg = '%s Target=%d' % (msg, self._Target)
         return msg 
     
-
-    def ToXmlRequestBody(self, encoding:str='utf-8') -> str:
-        """ 
-        Overridden.
-        Returns a POST request body, which is used to update the device configuration.
-        
-        Args:
-            encoding (str):
-                encode type (e.g. 'utf-8', 'unicode', etc).  
-                Default is 'utf-8'.
-
-        Returns:
-            An xml string that can be used in a POST request to update the
-            device configuration.
-        """
-        return '<bass>%s</bass>' % self._Actual

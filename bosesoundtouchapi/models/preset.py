@@ -5,10 +5,12 @@ from xml.etree.ElementTree import Element, tostring
 
 # our package imports.
 from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..soundtouchmodelrequest import SoundTouchModelRequest
+from ..soundtouchsources import SoundTouchSources
 from .contentitem import ContentItem
 
 @export
-class Preset:
+class Preset(SoundTouchModelRequest):
     """
     SoundTouch device Preset configuration object.
        
@@ -50,35 +52,27 @@ class Preset:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        # base fields.
         self._PresetId:int = None
         self._CreatedOn:int = None
         self._UpdatedOn:int = None
-
-        # ContentItem fields.
-        self._Source:str = None
-        self._ItemType:str = None
-        self._Location:str = None
-        self._SourceAccount:str = None
-        self._IsPresetable:bool = None
-        self._Name:str = None
-        self._ContainerArt:str = None
+        self._ContentItem:ContentItem = ContentItem()
 
         if (root is None):
             
-            # base fields.
+            if isinstance(source, SoundTouchSources):
+                source = str(source.value)
+
             self._PresetId = int(presetId) if presetId else 0
             self._CreatedOn = int(createdOn) if createdOn else 0
             self._UpdatedOn = int(updatedOn) if updatedOn else 0
 
-            # ContentItem fields.
-            self._Source = source
-            self._ItemType = typeValue
-            self._Location = location
-            self._SourceAccount = sourceAccount
-            self._IsPresetable = isPresetable
-            self._Name = name
-            self._ContainerArt = containerArt
+            self._ContentItem._Source = source
+            self._ContentItem._ItemType = typeValue
+            self._ContentItem._Location = location
+            self._ContentItem._SourceAccount = sourceAccount
+            self._ContentItem._IsPresetable = isPresetable
+            self._ContentItem._Name = name
+            self._ContentItem._ContainerArt = containerArt
         
             # use current epoch time if created / updated on are not set.
             epoch_time:int = int(time.time())
@@ -89,21 +83,13 @@ class Preset:
 
         else:
 
-            # base fields.
             self._CreatedOn = int(root.get("createdOn", default=0))
             self._PresetId = int(root.get("id"))
             self._UpdatedOn = int(root.get("updatedOn", default=0))
 
-            # ContentItem fields.
-            root_ci = root.find('ContentItem')
-            if root_ci != None:
-                self._ContainerArt = _xmlFind(root_ci, "containerArt")
-                self._IsPresetable = bool(root_ci.get("isPresetable", default='false') == 'true')
-                self._ItemType = root_ci.get("type")
-                self._Location = root_ci.get("location")
-                self._Name = _xmlFind(root_ci, "itemName")
-                self._Source = root_ci.get("source")
-                self._SourceAccount = root_ci.get("sourceAccount")
+            rootCI:Element = root.find('ContentItem')
+            if rootCI is not None:
+                self._ContentItem:ContentItem = ContentItem(root=rootCI)
 
         
     def __repr__(self) -> str:
@@ -133,6 +119,12 @@ class Preset:
 
 
     @property
+    def ContentItem(self) -> ContentItem:
+        """ ContentItem value. """
+        return self._ContentItem
+
+
+    @property
     def CreatedOn(self) -> int:
         """ Date and time (in epoch format) of when the preset was created. """
         return self._CreatedOn
@@ -141,31 +133,41 @@ class Preset:
     @property
     def ContainerArt(self) -> str:
         """ Content item's container art url. """
-        return self._ContainerArt
+        if self._ContentItem is None:
+            return None
+        return self._ContentItem._ContainerArt
 
 
     @property
     def IsPresetable(self) -> str:
         """ Returns True if the content item can be saved as a Preset; otherwise, False. """
-        return self._IsPresetable
+        if self._ContentItem is None:
+            return None
+        return self._ContentItem._IsPresetable
 
 
     @property
     def ItemType(self) -> str:
         """ Specifies the type of the content item. """
-        return self._ItemType
+        if self._ContentItem is None:
+            return None
+        return self._ContentItem._ItemType
 
 
     @property
     def Location(self) -> str:
         """ If present, the content item's direct link to the media. """
-        return self._Location
+        if self._ContentItem is None:
+            return None
+        return self._ContentItem._Location
 
 
     @property
     def Name(self) -> str:
         """ Content item's name. """
-        return self._Name
+        if self._ContentItem is None:
+            return None
+        return self._ContentItem._Name
 
 
     @property
@@ -181,13 +183,17 @@ class Preset:
         
         This value is defined at `bosesoundtouchapi.soundtouchsource.SoundTouchSources`. 
         """
-        return self._Source
+        if self._ContentItem is None:
+            return None
+        return self._ContentItem._Source
 
 
     @property
     def SourceAccount(self) -> str:
         """ Source account this content item is played with. """
-        return self._SourceAccount
+        if self._ContentItem is None:
+            return None
+        return self._ContentItem._SourceAccount
 
 
     @property
@@ -196,40 +202,25 @@ class Preset:
         return self._UpdatedOn
 
 
-    def ContentItem_ToElement(self) -> Element:
+    def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
-        Returns an xmltree Element node representation of the ContentItem fields of the class. 
-        """
-        elm_ci:ContentItem = ContentItem(self._Source, self._ItemType, self._Location, self._SourceAccount, self._IsPresetable, self._Name, self._ContainerArt)
-        return elm_ci.ToElement()
-
-        
-    def ContentItem_ToXmlString(self, encoding:str='utf-8') -> str:
-        """ 
-        Returns an xml string representation of the ContentItem fields of the class. 
-        
-        Args:
-            encoding (str):
-                encode type (e.g. 'utf-8', 'unicode', etc).  
-                Default is 'utf-8'.
-        """
-        if encoding is None:
-            encoding = 'utf-8'
-        elm = self.ContentItem_ToElement()
-        xml = tostring(elm, encoding=encoding).decode(encoding)
-        return xml
-
-
-    def ToElement(self) -> Element:
-        """ 
+        Overridden.  
         Returns an xmltree Element node representation of the class. 
+
+        Args:
+            isRequestBody (bool):
+                True if the element should only return attributes needed for a POST
+                request body; otherwise, False to return all attributes.
         """
         elm = Element('preset')
-        if self._PresetId and self._PresetId > 0: elm.set('id', str(self._PresetId))
-        if self._CreatedOn and self._CreatedOn > 0: elm.set('createdOn', str(self._CreatedOn))
-        if self._UpdatedOn and self._UpdatedOn > 0: elm.set('updatedOn', str(self._UpdatedOn))
+        if self._PresetId is not None and self._PresetId > 0: elm.set('id', str(self._PresetId))
+        if self._CreatedOn is not None and self._CreatedOn > 0: elm.set('createdOn', str(self._CreatedOn))
+        if self._UpdatedOn is not None and self._UpdatedOn > 0: elm.set('updatedOn', str(self._UpdatedOn))
         
-        elm.append(self.ContentItem_ToElement())
+        if self._ContentItem is not None:
+            elmNode = self._ContentItem.ToElement()
+            elm.append(elmNode)
+            
         return elm
 
         
@@ -238,13 +229,10 @@ class Preset:
         Returns a displayable string representation of the class.
         """
         msg:str = 'Preset:'
-        if self._PresetId: msg = '%s id="%s"' % (msg, str(self._PresetId))
-        if self._Name and len(self._Name) > 0: msg = '%s name="%s"' % (msg, str(self._Name))
-        if self._Source and len(self._Source) > 0: msg = '%s source="%s"' % (msg, str(self._Source))
-        if self._SourceAccount and len(self._SourceAccount) > 0: msg = '%s sourceAccount="%s"' % (msg, str(self._SourceAccount))
-        if self._ItemType and len(self._ItemType) > 0: msg = '%s type="%s"' % (msg, str(self._ItemType))
-        if self._Location and len(self._Location) > 0: msg = '%s location="%s"' % (msg, str(self._Location))
-        msg = '%s isPresetable="%s"' % (msg, str(self._IsPresetable).lower())
+        if self._PresetId is not None: msg = '%s Id="%s"' % (msg, str(self._PresetId))
+        if self._CreatedOn is not None and self._CreatedOn > 0: msg = '%s CreatedOn="%s"' % (msg, str(self._CreatedOn))
+        if self._UpdatedOn is not None and self._UpdatedOn > 0: msg = '%s UpdatedOn="%s"' % (msg, str(self._UpdatedOn))
+        if self._ContentItem is not None: msg = '%s %s' % (msg, str(self._ContentItem))
         return msg 
 
 
@@ -259,6 +247,12 @@ class Preset:
         """
         if encoding is None:
             encoding = 'utf-8'
-        elm = self.ToElement()
-        xml = tostring(elm, encoding=encoding).decode(encoding)
+            
+        elm:Element = self.ToElement(False)
+        xml:str = tostring(elm, encoding=encoding)
+        
+        # always return a string, as some encodings return a byte array!
+        if not isinstance(xml, str):
+            xml = xml.decode(encoding=encoding)
         return xml
+        

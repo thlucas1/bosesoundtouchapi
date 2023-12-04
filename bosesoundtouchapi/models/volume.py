@@ -32,6 +32,7 @@ class Volume(SoundTouchModelRequest):
                 If specified, then other passed arguments are ignored.
         """
         self._Actual:int = None
+        self._DeviceId:str = None
         self._IsMuted:bool = None
         self._Target:int = None
         
@@ -43,6 +44,7 @@ class Volume(SoundTouchModelRequest):
 
         else:
 
+            self._DeviceId = root.get('deviceID')
             self._Actual = int(_xmlFind(root, 'actualvolume', default='0'))
             self._IsMuted = bool(_xmlFind(root, 'muteenabled', default='false') == 'true')
             self._Target = int(_xmlFind(root, 'targetvolume', default='0'))
@@ -58,10 +60,16 @@ class Volume(SoundTouchModelRequest):
 
     @property
     def Actual(self) -> int:
-        """ The actual value of the volume level. """
+        """ Actual value of the volume level. """
         return self._Actual
 
 
+    @property
+    def DeviceId(self):
+        """ Device identifier the configuration information was obtained from. """
+        return self._DeviceId
+
+    
     @property
     def IsMuted(self) -> bool:
         """ True if the device is muted; otherwise, False. """
@@ -70,34 +78,54 @@ class Volume(SoundTouchModelRequest):
 
     @property
     def Target(self) -> int:
-        """ The targeted value of the volume level. """
+        """ Targeted value of the volume level. """
         return self._Target
 
 
+    def ToElement(self, isRequestBody:bool=False) -> Element:
+        """ 
+        Overridden.  
+        Returns an xmltree Element node representation of the class. 
+
+        Args:
+            isRequestBody (bool):
+                True if the element should only return attributes needed for a POST
+                request body; otherwise, False to return all attributes.
+        """
+        elm = Element('volume')
+        if isRequestBody == True:
+            
+            elm.text = str(self.Actual)
+            
+        else:
+
+            if self._DeviceId and len(self._DeviceId) > 0: elm.set('deviceID', str(self._DeviceId))
+                           
+            if self._Target is not None:
+                elmNode = Element('targetvolume')
+                elmNode.text = str(self._Target)
+                elm.append(elmNode)
+                
+            if self._Actual is not None:
+                elmNode = Element('actualvolume')
+                elmNode.text = str(self._Actual)
+                elm.append(elmNode)
+                
+            if self._IsMuted is not None:
+                elmNode = Element('muteenabled')
+                elmNode.text = str(self._IsMuted).lower()
+                elm.append(elmNode)
+                
+        return elm
+
+        
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.
         """
         msg:str = 'Volume:'
-        msg = '%s actual=%d' % (msg, self._Actual)
-        msg = '%s target=%d' % (msg, self._Target)
-        msg = '%s isMuted=%s' % (msg, str(self._IsMuted).lower())
+        msg = '%s Actual=%d' % (msg, self._Actual)
+        msg = '%s Target=%d' % (msg, self._Target)
+        msg = '%s IsMuted=%s' % (msg, str(self._IsMuted).lower())
         return msg 
-
-
-    def ToXmlRequestBody(self, encoding:str='utf-8') -> str:
-        """ 
-        Overridden.
-        Returns a POST request body, which is used to update the device configuration.
-        
-        Args:
-            encoding (str):
-                encode type (e.g. 'utf-8', 'unicode', etc).  
-                Default is 'utf-8'.
-
-        Returns:
-            An xml string that can be used in a POST request to update the
-            device configuration.
-        """
-        return '<volume>%d</volume>' % self._Actual
     

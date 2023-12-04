@@ -46,7 +46,7 @@ class DSPMonoStereoItem:
 
     @property
     def DeviceId(self) -> str:
-        """ Device identifier. """
+        """ Device identifier the configuration information was obtained from. """
         return self._DeviceId
 
     
