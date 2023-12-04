@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.22 ] - 2023/12/04
+
+  * Updated rebuilt documentation index.
+
 ###### [ 1.0.21 ] - 2023/12/04
 
   * Added method `SoundTouchClient`.`GetMusicServiceStations` - Gets a list of your stored stations from the specified music service (e.g. PANDORA, etc).  This has only been tested with Pandora at this point, so not sure if it will work for Spotify, Amazon Music, etc.
