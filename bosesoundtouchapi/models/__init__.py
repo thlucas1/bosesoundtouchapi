@@ -17,7 +17,7 @@ from .dspmonostereoitem import DSPMonoStereoItem
 from .infonetworkconfig import InfoNetworkConfig
 from .mediaserverlist import MediaServerList, MediaServer
 from .musicserviceaccount import MusicServiceAccount
-from .navigate import Navigate
+from .navigate import Navigate, NavigateMenuTypes, NavigateSortTypes
 from .navigateresponse import NavigateResponse, NavigateItem
 from .networkinfo import NetworkInfo, NetworkInfoInterface
 from .networkstatus import NetworkStatus, NetworkStatusInterface
@@ -31,7 +31,11 @@ from .producthdmiassignmentcontrols import ProductHdmiAssignmentControls
 from .rebroadcastlatencymode import RebroadcastLatencyMode
 from .recentlist import RecentList, Recent
 from .removestation import RemoveStation
+from .search import Search, SearchTerm
+from .searchfiltertypes import SearchFilterTypes
+from .searchresponse import SearchResponse
 from .searchresult import SearchResult
+from .searchsorttypes import SearchSortTypes
 from .searchstation import SearchStation
 from .searchstationresults import SearchStationResults, SearchStationSongs, SearchStationArtists
 from .serviceAvailability import ServiceAvailability, Service
@@ -66,7 +70,7 @@ __all__ = [
     'InfoNetworkConfig',
     'MediaServerList', 'MediaServer',
     'MusicServiceAccount',
-    'Navigate',
+    'Navigate', 'NavigateMenuTypes', 'NavigateSortTypes',
     'NavigateResponse', 'NavigateItem',
     'NetworkInfo', 'NetworkInfoInterface',
     'NetworkStatus', 'NetworkStatusInterface',
@@ -80,7 +84,11 @@ __all__ = [
     'RebroadcastLatencyMode',
     'RecentList', 'Recent',
     'RemoveStation',
+    'Search', 'SearchTerm',
+    'SearchFilterTypes',
+    'SearchResponse',
     'SearchResult',
+    'SearchSortTypes',
     'SearchStation',
     'SearchStationResults', 'SearchStationSongs', 'SearchStationArtists',
     'ServiceAvailability', 'Service',

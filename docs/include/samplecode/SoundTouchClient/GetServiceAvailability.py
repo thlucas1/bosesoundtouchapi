@@ -24,7 +24,7 @@ try:
         print("\nCached configuration, direct:\n%s" % config.ToString(True))
         
     # sort the list (in place) by ServiceType, ascending order.
-    config.Services.sort(key=lambda x: x.ServiceType or "", reverse=False)
+    config.Services.sort(key=lambda x: (x.ServiceType or "").lower(), reverse=False)
     print("\nList sorted by ServiceType:\n%s" % config.ToString(True))
            
     # sort the list (in place) by IsAvailable, ascending order.

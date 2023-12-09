@@ -13,12 +13,19 @@ try:
     nowPlaying:NowPlayingStatus = client.GetNowPlayingStatus(True)
     print("(before): '%s' - '%s'" % (nowPlaying.ContentItem.Name, nowPlaying.ContentItem.Location))
 
-    # disable repeat (all / one) processing for the current media playlist.
-    client.MediaRepeatOff()
+    # are repeat functions allowed for currently playing media?
+    if nowPlaying.IsRepeatEnabled:
 
-    # get current nowPlaying status.
-    nowPlaying:NowPlayingStatus = client.GetNowPlayingStatus(True)
-    print("(after):  '%s' - '%s'" % (nowPlaying.ContentItem.Name, nowPlaying.ContentItem.Location))
+        # disable repeat (all / one) processing for the current media playlist.
+        client.MediaRepeatOff()
+
+        # get current nowPlaying status.
+        nowPlaying:NowPlayingStatus = client.GetNowPlayingStatus(True)
+        print("(after):  '%s' - '%s'" % (nowPlaying.ContentItem.Name, nowPlaying.ContentItem.Location))
+
+    else:
+        
+        print("\n** Repeat functions not available for currently playing media")
 
 except Exception as ex:
 

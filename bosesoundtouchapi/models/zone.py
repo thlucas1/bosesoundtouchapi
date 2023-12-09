@@ -3,7 +3,7 @@ from typing import Iterator
 from xml.etree.ElementTree import Element, tostring
 
 # our package imports.
-from bosesoundtouchapi.bstutils import export
+from bosesoundtouchapi.bstutils import export, _xmlGetAttrBool
 from bosesoundtouchapi.soundtoucherror import SoundTouchError
 from .zonemember import ZoneMember
 
@@ -65,7 +65,7 @@ class Zone:
             
             self._MasterDeviceId = root.get('master')
             self._MasterIpAddress = root.get('senderIPAddress')
-            self._IsZoneMaster = bool(root.get('senderIsMaster', default='false') == 'true')
+            self._IsZoneMaster = _xmlGetAttrBool(root, 'senderIsMaster')
             
             for member in root.findall('member'):
                 self._Members.append(ZoneMember(root=member))
@@ -181,9 +181,9 @@ class Zone:
                 include the base list.
         """
         msg:str = 'Zone:'
-        if self._MasterDeviceId and len(self._MasterDeviceId) > 0: msg = '%s masterDeviceId="%s"' % (msg, str(self._MasterDeviceId))
-        if self._MasterIpAddress and len(self._MasterIpAddress) > 0: msg = '%s masterIpAddress="%s"' % (msg, str(self._MasterIpAddress))
-        if self._IsZoneMaster: msg = '%s isZoneMaster=%s' % (msg, str(self._IsZoneMaster).lower())
+        if self._MasterDeviceId is not None and len(self._MasterDeviceId) > 0: msg = '%s masterDeviceId="%s"' % (msg, str(self._MasterDeviceId))
+        if self._MasterIpAddress is not None and len(self._MasterIpAddress) > 0: msg = '%s masterIpAddress="%s"' % (msg, str(self._MasterIpAddress))
+        if self._IsZoneMaster is not None: msg = '%s isZoneMaster=%s' % (msg, str(self._IsZoneMaster).lower())
         msg = "%s (%d items)" % (msg, self.__len__())
         
         if includeItems == True:

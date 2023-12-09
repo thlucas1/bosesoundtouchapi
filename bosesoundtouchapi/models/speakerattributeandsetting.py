@@ -1,10 +1,10 @@
 # external package imports.
 from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
 from ..bstappmessages import BSTAppMessages
-from ..bstutils import export
+from ..bstutils import export, _xmlGetAttrBool
 from ..soundtoucherror import SoundTouchError
 from ..soundtouchmodelrequest import SoundTouchModelRequest
 
@@ -60,10 +60,10 @@ class SpeakerAttributeAndSetting(SoundTouchModelRequest):
         else:
 
             self._ControlType = str(root.tag)
-            self._Active = bool(root.get('active', default='false') == 'true')
-            self._Available = bool(root.get('available', default='false') == 'true')
-            self._Controllable = bool(root.get('controllable', default='false') == 'true')
-            self._Wireless = bool(root.get('wireless', default='false') == 'true')
+            self._Active = _xmlGetAttrBool(root, 'active')
+            self._Available = _xmlGetAttrBool(root, 'available')
+            self._Controllable = _xmlGetAttrBool(root, 'controllable')
+            self._Wireless = _xmlGetAttrBool(root, 'wireless')
 
 
     def __repr__(self) -> str:

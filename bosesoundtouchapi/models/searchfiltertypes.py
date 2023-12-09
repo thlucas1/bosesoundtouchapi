@@ -2,12 +2,12 @@
 from enum import Enum
 
 # our package imports.
-from .bstutils import export
+from ..bstutils import export
 
 @export
-class SoundTouchFilterTypes(Enum):
+class SearchFilterTypes(Enum):
     """
-    Filter Types enumeration.
+    Search Filter Types enumeration.
     """
     
     Album = "album"

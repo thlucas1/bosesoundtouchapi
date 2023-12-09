@@ -1,9 +1,8 @@
 # external package imports.
-from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export, _xmlFind, _xmlGetAttrBool
 from ..soundtouchmodelrequest import SoundTouchModelRequest
 from ..soundtouchsources import SoundTouchSources
 
@@ -18,7 +17,7 @@ class ContentItem(SoundTouchModelRequest):
 
     Instances of this class can be used to switch the input source of media.
     """
-    def __init__(self, source:str=None, itemType:str=None, location:str=None, sourceAccount:str=None, 
+    def __init__(self, source:str=None, typeValue:str=None, location:str=None, sourceAccount:str=None, 
                  isPresetable:bool=None, name:str=None, containerArt:str=None,
                  root:Element=None
                  ) -> None:
@@ -28,7 +27,7 @@ class ContentItem(SoundTouchModelRequest):
         Args:
             source (str):
                 source input.
-            itemType (str):
+            typeValue (str):
                 type of item.
             location (str):
                 a direct link to the media (if present).
@@ -47,12 +46,12 @@ class ContentItem(SoundTouchModelRequest):
         self._ContainerArt:str = None
         self._IsNavigate:bool = None
         self._IsPresetable:bool = None
-        self._ItemType:str = None
         self._Location:str = None
         self._Name:str = None
         self._Offset:int = None
         self._Source:str = None
         self._SourceAccount:str = None
+        self._TypeValue:str = None
 
         if (root is None):
             
@@ -61,23 +60,23 @@ class ContentItem(SoundTouchModelRequest):
 
             self._ContainerArt = containerArt
             self._IsPresetable = isPresetable
-            self._ItemType = itemType
             self._Location = location
             self._Name = name
             self._Source = source
             self._SourceAccount = sourceAccount
+            self._TypeValue = typeValue
 
         else:
 
             self._ContainerArt = _xmlFind(root, "containerArt")
-            self._IsNavigate = root.get("isNavigate", default='false') == 'true'
-            self._IsPresetable = root.get("isPresetable", default='false') == 'true'
-            self._ItemType = root.get("type")
+            self._IsNavigate = _xmlGetAttrBool(root, "isNavigate")
+            self._IsPresetable = _xmlGetAttrBool(root, "isPresetable")
             self._Location = root.get("location")
             self._Name = _xmlFind(root, "itemName")
             self._Offset = root.get("offset")
             self._Source = root.get("source")
             self._SourceAccount = root.get("sourceAccount")
+            self._TypeValue = root.get("type")
             
         
     def __repr__(self) -> str:
@@ -107,9 +106,9 @@ class ContentItem(SoundTouchModelRequest):
 
 
     @property
-    def ItemType(self) -> str:
+    def TypeValue(self) -> str:
         """ Specifies the type of this item. """
-        return self._ItemType
+        return self._TypeValue
 
 
     @property
@@ -135,7 +134,7 @@ class ContentItem(SoundTouchModelRequest):
         """ 
         Media source type. 
         
-        This value is defined at `bosesoundtouchapi.soundtouchsource.SoundTouchSources`. 
+        This value is defined at `bosesoundtouchapi.soundtouchsources.SoundTouchSources`. 
         """
         return self._Source
 
@@ -158,11 +157,11 @@ class ContentItem(SoundTouchModelRequest):
         """
         elm = Element('ContentItem')
         if self._Source is not None and len(self._Source) > 0: elm.set('source', str(self._Source))
-        if self._ItemType is not None and len(self._ItemType) > 0: elm.set('type', str(self._ItemType))
+        if self._TypeValue is not None and len(self._TypeValue) > 0: elm.set('type', str(self._TypeValue))
         if self._Location is not None and len(self._Location) > 0: elm.set('location', str(self._Location))
         if self._SourceAccount is not None and len(self._SourceAccount) > 0: elm.set('sourceAccount', str(self._SourceAccount))
-        if self._IsNavigate: elm.set('isNavigate', str(self._IsNavigate).lower())
-        if self._IsPresetable: elm.set('isPresetable', str(self._IsPresetable).lower())
+        if self._IsNavigate is not None: elm.set('isNavigate', str(self._IsNavigate).lower())
+        if self._IsPresetable is not None: elm.set('isPresetable', str(self._IsPresetable).lower())
         if self._Offset is not None and self._Offset > 0: elm.set('offset', str(self._Offset))
 
         if self._Name is not None: 
@@ -185,11 +184,11 @@ class ContentItem(SoundTouchModelRequest):
         msg:str = 'ContentItem:'
         if self._Name is not None and len(self._Name) > 0: msg = '%s Name="%s"' % (msg, str(self._Name))
         if self._Source is not None and len(self._Source) > 0: msg = '%s Source="%s"' % (msg, str(self._Source))
-        if self._ItemType is not None and len(self._ItemType) > 0: msg = '%s Type="%s"' % (msg, str(self._ItemType))
+        if self._TypeValue is not None and len(self._TypeValue) > 0: msg = '%s Type="%s"' % (msg, str(self._TypeValue))
         if self._Location is not None and len(self._Location) > 0: msg = '%s Location="%s"' % (msg, str(self._Location))
         if self._SourceAccount is not None and len(self._SourceAccount) > 0: msg = '%s SourceAccount="%s"' % (msg, str(self._SourceAccount))
         if self._Offset is not None and self._Offset > 0: msg = '%s Offset="%s"' % (msg, str(self._Offset))
-        msg = '%s IsPresetable="%s"' % (msg, str(self._IsPresetable).lower())
+        if self._IsPresetable is not None: msg = '%s IsPresetable="%s"' % (msg, str(self._IsPresetable).lower())
         if self._IsNavigate is not None: msg = '%s IsNavigate="%s"' % (msg, str(self._IsNavigate).lower())
         if self._ContainerArt is not None and len(self._ContainerArt) > 0: msg = '%s ContainerArt="%s"' % (msg, str(self._ContainerArt))
         return msg 

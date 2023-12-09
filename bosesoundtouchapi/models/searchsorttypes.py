@@ -2,34 +2,34 @@
 from enum import Enum
 
 # our package imports.
-from .bstutils import export
+from ..bstutils import export
 
 @export
-class SoundTouchSortOrders(Enum):
+class SearchSortTypes(Enum):
     """
-    Sort Orders enumeration.
+    Search Sort Types enumeration.
     """
     
-    album = "album"
+    Album = "album"
     """ Sort by album name. """
     
-    artist = "artist"
+    Artist = "artist"
     """ Sort by artist name. """
     
-    composer = "composer"
+    Composer = "composer"
     """ Sort by composer name. """
     
-    dateCreated = "dateCreated"
+    DateCreated = "dateCreated"
     """ Sort by date created. """
     
-    genre = "genre"
+    Genre = "genre"
     """ Sort by genre name. """
     
-    playlist = "playlist"
+    Playlist = "playlist"
     """ Sort by playlist name. """
     
-    stationName = "stationName"
+    StationName = "stationName"
     """ Sort by station name. """
     
-    track = "track"
+    Track = "track"
     """ Sort by track name. """

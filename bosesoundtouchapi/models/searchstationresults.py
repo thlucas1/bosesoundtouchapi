@@ -39,9 +39,9 @@ class SearchStationResults:
         
         else:
 
-            self._DeviceId = root.get('deviceID', default=None)
-            self._Source = root.get('source', default=None)
-            self._SourceAccount = root.get('sourceAccount', default=None)
+            self._DeviceId = root.get('deviceID')
+            self._Source = root.get('source')
+            self._SourceAccount = root.get('sourceAccount')
             
             if (root.tag == 'results'):
                 rootSongs = root.find('songs')
@@ -67,7 +67,7 @@ class SearchStationResults:
 
 
     @property
-    def DeviceId(self):
+    def DeviceId(self) -> str:
         """ Device identifier the configuration information was obtained from. """
         return self._DeviceId
 

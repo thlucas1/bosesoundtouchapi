@@ -1,9 +1,8 @@
 # external package imports.
-from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind
+from ..bstutils import export, _xmlFindBool
 
 @export
 class SystemTimeout:
@@ -31,7 +30,7 @@ class SystemTimeout:
 
         else:
 
-            self._IsPowersavingEnabled = bool(_xmlFind(root, 'powersaving_enabled', default='false') == 'true')
+            self._IsPowersavingEnabled = _xmlFindBool(root, 'powersaving_enabled')
 
 
     def __repr__(self) -> str:
@@ -53,5 +52,5 @@ class SystemTimeout:
         Returns a displayable string representation of the class.
         """
         msg:str = 'SystemTimeout:'
-        msg = '%s powersavingEnabled=%s' % (msg, str(self._IsPowersavingEnabled).lower())
+        if self._IsPowersavingEnabled is not None: msg = '%s PowersavingEnabled=%s' % (msg, str(self._IsPowersavingEnabled).lower())
         return msg 

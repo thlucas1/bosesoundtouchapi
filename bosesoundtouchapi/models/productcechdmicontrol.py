@@ -34,7 +34,7 @@ class ProductCecHdmiControl(SoundTouchModelRequest):
         elif root.tag == 'productcechdmicontrol':
 
             # base fields.
-            self._CecMode = root.get('cecmode', default=None)
+            self._CecMode = root.get('cecmode')
 
 
     def __repr__(self) -> str:

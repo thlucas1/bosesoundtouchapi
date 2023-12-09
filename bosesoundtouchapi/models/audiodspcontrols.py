@@ -1,9 +1,8 @@
 # external package imports.
-from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export
+from ..bstutils import export, _xmlGetAttrInt
 from ..soundtouchaudiomodes import SoundTouchAudioModes
 from ..soundtouchmodelrequest import SoundTouchModelRequest
 from ..soundtoucherror import SoundTouchError
@@ -64,9 +63,9 @@ class AudioDspControls(SoundTouchModelRequest):
         elif root.tag == 'audiodspcontrols':
 
             # base fields.
-            self._AudioMode = root.get('audiomode', default=None)
-            self._SupportedAudioModes = root.get('supportedaudiomodes', default=None)
-            self._VideoSyncAudioDelay = int(root.get('videosyncaudiodelay', default=0))
+            self._AudioMode = root.get('audiomode')
+            self._SupportedAudioModes = root.get('supportedaudiomodes')
+            self._VideoSyncAudioDelay = _xmlGetAttrInt(root, 'videosyncaudiodelay')
             
 
     def __repr__(self) -> str:
@@ -141,9 +140,9 @@ class AudioDspControls(SoundTouchModelRequest):
         Returns a displayable string representation of the class.
         """
         msg:str = 'AudioDspControls:'
-        msg = '%s AudioMode="%s"' % (msg, str(self._AudioMode))
-        msg = '%s SupportedAudioModes="%s"' % (msg, str(self._SupportedAudioModes))
-        msg = '%s VideoSyncAudioDelay=%s' % (msg, str(self._VideoSyncAudioDelay))
+        if self._AudioMode is not None: msg = '%s AudioMode="%s"' % (msg, str(self._AudioMode))
+        if self._SupportedAudioModes is not None: msg = '%s SupportedAudioModes="%s"' % (msg, str(self._SupportedAudioModes))
+        if self._VideoSyncAudioDelay is not None: msg = '%s VideoSyncAudioDelay=%s' % (msg, str(self._VideoSyncAudioDelay))
         return msg 
 
 

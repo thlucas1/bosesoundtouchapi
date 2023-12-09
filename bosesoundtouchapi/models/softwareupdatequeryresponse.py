@@ -2,7 +2,7 @@
 from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind
+from ..bstutils import export, _xmlFind, _xmlFindInt, _xmlFindBool
 
 @export
 class SoftwareUpdateQueryResponse:
@@ -36,10 +36,10 @@ class SoftwareUpdateQueryResponse:
         else:
 
             self._DeviceId = root.get('deviceID')
-            self._CanAbort = _xmlFind(root, "canAbort") == 'true'
+            self._CanAbort = _xmlFindBool(root, "canAbort")
             self._FailureCode = _xmlFind(root, 'failureCode')
             self._FailureId = _xmlFind(root, 'failureId')
-            self._PercentComplete = int(_xmlFind(root, 'percentComplete'))
+            self._PercentComplete = _xmlFindInt(root, 'percentComplete')
             self._State = _xmlFind(root, 'state')
 
 

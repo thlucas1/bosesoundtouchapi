@@ -1,9 +1,8 @@
 # external package imports.
-from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export, _xmlFind, _xmlGetAttrInt
 from .contentitem import ContentItem
 
 @export
@@ -40,7 +39,7 @@ class NowPlayingStatus:
         self._ConnectionDeviceName:str = None
         self._ConnectionStatus:str = None
         self._Description:str = None
-        self._Duration:str = None
+        self._Duration:int = 0
         self._Position:int = 0
         self._Genre:str = None
         self._IsAdvertisement:bool = False
@@ -55,7 +54,7 @@ class NowPlayingStatus:
         self._Rating:str = None
         self._RepeatSetting:str = None
         self._SessionId:str = None
-        self._ShuffleSetting = None
+        self._ShuffleSetting:str = None
         self._StationLocation:str = None
         self._StationName:str = None
         self._StreamType:str = None
@@ -81,16 +80,9 @@ class NowPlayingStatus:
                 self._ContentItem = ContentItem(root=elmContentItem)
 
             self._Album = _xmlFind(root, "album")
-            self._ArtImageStatus = _xmlFindAttr(root, "art", "artImageStatus")
-            if self._ArtImageStatus == "IMAGE_PRESENT": 
-                self._ArtUrl = _xmlFind(root, "art")
             self._Artist = _xmlFind(root, "artist")
             self._ArtistId = _xmlFind(root, "artistID")
-            self._ConnectionDeviceName = _xmlFindAttr(root, "connectionStatusInfo", "deviceName")
-            self._ConnectionStatus = _xmlFindAttr(root, "connectionStatusInfo", "status")
             self._Description = _xmlFind(root, "description")
-            self._Duration = int(_xmlFindAttr(root, "time", "total", default='0'))
-            self._Position = int(_xmlFind(root, "time", default='0'))
             self._Genre = _xmlFind(root, "genre")
             self._IsAdvertisement = _xmlFind(root, "isAdvertisement", default=False, defaultNoText=True)
             self._IsFavorite = _xmlFind(root, "isFavorite", default=False, defaultNoText=True)
@@ -110,7 +102,25 @@ class NowPlayingStatus:
             self._StreamType = _xmlFind(root, "streamType")
             self._Track = _xmlFind(root, "track")
             self._TrackId = _xmlFind(root, "trackID")
+
+            # art node.
+            elmNode = root.find('art')
+            if (elmNode != None):
+                self._ArtImageStatus = elmNode.get("artImageStatus")
+                self._ArtUrl = elmNode.text
+
+            # connectionStatusInfo node.
+            elmNode = root.find('connectionStatusInfo')
+            if (elmNode != None):
+                self._ConnectionDeviceName = elmNode.get("deviceName")
+                self._ConnectionStatus = elmNode.get("status")
             
+            # time node.
+            elmNode = root.find('time')
+            if (elmNode != None):
+                self._Duration = _xmlGetAttrInt(elmNode, 'total')
+                self._Position = int(elmNode.text)
+
 
     def __repr__(self) -> str:
         return self.ToString()
@@ -360,7 +370,7 @@ class NowPlayingStatus:
     def Source(self) -> str:
         """ 
         The media source.
-        This should be one of the sources defined in `bosesoundtouchapi.soundtouchsource.SoundTouchSources`. 
+        This should be one of the sources defined in `bosesoundtouchapi.soundtouchsources.SoundTouchSources`. 
         """
         return self._Source
 
@@ -369,7 +379,7 @@ class NowPlayingStatus:
     def SourceAccount(self) -> str:
         """ 
         The media source account.
-        This should be one of the sources defined in `bosesoundtouchapi.soundtouchsource.SoundTouchSources`. 
+        This should be one of the sources defined in `bosesoundtouchapi.soundtouchsources.SoundTouchSources`. 
         """
         return self._SourceAccount
 

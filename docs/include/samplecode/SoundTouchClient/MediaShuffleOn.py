@@ -13,12 +13,19 @@ try:
     nowPlaying:NowPlayingStatus = client.GetNowPlayingStatus(True)
     print("(before): '%s' - '%s'" % (nowPlaying.ContentItem.Name, nowPlaying.ContentItem.Location))
 
-    # enable shuffling of the current media playlist. 
-    client.MediaShuffleOn()
+    # are shuffle functions allowed for currently playing media?
+    if nowPlaying.IsShuffleEnabled:
 
-    # get current nowPlaying status.
-    nowPlaying:NowPlayingStatus = client.GetNowPlayingStatus(True)
-    print("(after):  '%s' - '%s'" % (nowPlaying.ContentItem.Name, nowPlaying.ContentItem.Location))
+        # enable shuffling of the current media playlist. 
+        client.MediaShuffleOn()
+
+        # get current nowPlaying status.
+        nowPlaying:NowPlayingStatus = client.GetNowPlayingStatus(True)
+        print("(after):  '%s' - '%s'" % (nowPlaying.ContentItem.Name, nowPlaying.ContentItem.Location))
+
+    else:
+        
+        print("\n** Shuffle functions not available for currently playing media")
 
 except Exception as ex:
 

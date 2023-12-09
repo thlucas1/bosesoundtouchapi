@@ -38,7 +38,7 @@ class RecentList:
         else:
 
             for recent in root.findall('recent'):
-                self.append(Recent(root=recent))
+                self._Recents.append(Recent(root=recent))
                 
             # sort items on CreatedOn property, descending order (latest first).
             if len(self._Recents) > 0:
@@ -71,17 +71,6 @@ class RecentList:
         The list of `Recent` items. 
         """
         return self._Recents
-
-
-    def append(self, value: Recent):
-        """
-        Append a new `Recent` item to the list.
-        
-        Args:
-            value:
-                The `Recent` object to append.
-        """
-        self._Recents.append(value)
 
 
     def ToDictionary(self, encoding:str='utf-8') -> dict:

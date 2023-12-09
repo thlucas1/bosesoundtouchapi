@@ -1,9 +1,8 @@
 # external package imports.
-from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind
+from ..bstutils import export, _xmlFindInt
 from ..soundtouchmodelrequest import SoundTouchModelRequest
 
 @export
@@ -39,8 +38,8 @@ class Bass(SoundTouchModelRequest):
         else:
 
             self._DeviceId = root.get('deviceID')
-            self._Actual = int(_xmlFind(root, 'actualbass', default=0))
-            self._Target = int(_xmlFind(root, 'targetbass', default=0))
+            self._Actual = _xmlFindInt(root, 'actualbass')
+            self._Target = _xmlFindInt(root, 'targetbass')
 
 
     def __repr__(self) -> str:
@@ -58,7 +57,7 @@ class Bass(SoundTouchModelRequest):
 
 
     @property
-    def DeviceId(self):
+    def DeviceId(self) -> str:
         """ Device identifier the configuration information was obtained from. """
         return self._DeviceId
 
@@ -106,7 +105,7 @@ class Bass(SoundTouchModelRequest):
         Returns a displayable string representation of the class.
         """
         msg:str = 'Bass:'
-        msg = '%s Actual=%d' % (msg, self._Actual)
-        msg = '%s Target=%d' % (msg, self._Target)
+        if self._Actual is not None: msg = '%s Actual=%d' % (msg, self._Actual)
+        if self._Target is not None: msg = '%s Target=%d' % (msg, self._Target)
         return msg 
     

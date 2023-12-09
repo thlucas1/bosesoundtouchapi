@@ -24,7 +24,7 @@ try:
         print("\nCached configuration, direct:\n%s" % mediaServerList.ToString(True))
         
     # sort the list (in place) by ServerId, ascending order.
-    mediaServerList.MediaServers.sort(key=lambda x: x.ServerId or "", reverse=False)
+    mediaServerList.MediaServers.sort(key=lambda x: (x.ServerId or "").lower(), reverse=False)
     print("\nList sorted by ServerId:\n%s" % mediaServerList.ToString(True))
 
 except Exception as ex:

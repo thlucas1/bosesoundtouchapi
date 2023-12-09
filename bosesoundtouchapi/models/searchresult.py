@@ -11,7 +11,7 @@ class SearchResult:
     SoundTouch device SearchResult configuration object.
        
     This class contains the attributes and sub-items that represent a
-    single search result item configuration of the device.
+    single search result item configuration of the device.  
     """
 
     def __init__(self, root:Element) -> None:
@@ -36,9 +36,9 @@ class SearchResult:
         
         else:
 
-            self._Source = root.get('source', default=None)
-            self._SourceAccount = root.get('sourceAccount', default=None)
-            self._Token = root.get('token', default=None)
+            self._Source = root.get('source')
+            self._SourceAccount = root.get('sourceAccount')
+            self._Token = root.get('token')
             
             self._Artist = _xmlFind(root, 'artist')
             self._Logo = _xmlFind(root, 'logo')

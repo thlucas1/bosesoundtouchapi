@@ -1,9 +1,8 @@
 # external package imports.
-from typing import Iterator
 from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFindAttr
+from ..bstutils import export, _xmlGetAttrBool
 
 @export
 class DSPMonoStereoItem:
@@ -33,7 +32,10 @@ class DSPMonoStereoItem:
         else:
 
             self._DeviceId = root.get('deviceID')
-            self._IsMonoEnabled = bool(_xmlFindAttr(root, 'mono', 'enable', default='false') == 'true')
+            
+            elmNode = root.find('mono')
+            if (elmNode != None):
+                self._IsMonoEnabled = _xmlGetAttrBool(elmNode, 'enable')
 
 
     def __repr__(self) -> str:
@@ -66,5 +68,5 @@ class DSPMonoStereoItem:
         """
         msg:str = 'DSPMonoStereoItem:'
         if self._DeviceId and len(self._DeviceId) > 0: msg = '%s deviceId="%s"' % (msg, str(self._DeviceId))
-        msg = '%s mono=%s' % (msg, str(self._IsMonoEnabled).lower())
+        if self._IsMonoEnabled is not None: msg = '%s MonoEnabled=%s' % (msg, str(self._IsMonoEnabled).lower())
         return msg

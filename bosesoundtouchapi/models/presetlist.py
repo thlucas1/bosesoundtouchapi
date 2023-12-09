@@ -34,7 +34,7 @@ class PresetList:
         else:
 
             for preset in root.findall('preset'):
-                self.append(Preset(root=preset))
+                self._Presets.append(Preset(root=preset))
 
 
     def __getitem__(self, key) -> Preset:
@@ -63,17 +63,6 @@ class PresetList:
         The list of `Preset` items. 
         """
         return self._Presets
-
-
-    def append(self, value: Preset):
-        """
-        Append a new `Preset` item to the list.
-        
-        Args:
-            value:
-                The `Preset` object to append.
-        """
-        self._Presets.append(value)
 
 
     def ToDictionary(self, encoding:str='utf-8') -> dict:

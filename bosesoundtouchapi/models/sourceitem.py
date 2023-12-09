@@ -1,9 +1,8 @@
 # external package imports.
-from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export, _xmlGetAttrBool
 
 @export
 class SourceItem:
@@ -38,8 +37,8 @@ class SourceItem:
         else:
 
             # base fields.
-            self._IsLocal = bool(root.get('isLocal', default='false') == 'true')
-            self._IsMultiroomAllowed = bool(root.get('multiroomallowed', default='false') == 'true')
+            self._IsLocal = _xmlGetAttrBool(root,'isLocal')
+            self._IsMultiroomAllowed = _xmlGetAttrBool(root, 'multiroomallowed')
             self._Source = root.get('source')
             self._SourceAccount = root.get('sourceAccount')
             self._Status = root.get('status')
@@ -65,10 +64,6 @@ class SourceItem:
 
     def __lt__(self, other):
         try:
-            # the following comparison will fail if the property value is None!  
-            # use the following syntax when calling a sort method that uses lambda searches:
-            # epColl.sort(Source=lambda x: x.Source or "", reverse=False)     <- GOOD syntax
-            # epColl.sort(Source=lambda x: x.Source, reverse=False)           <- BAD syntax, as the "x.Source" property may be None, and will cause this to fail!
             return self.Source < other.Source
         except Exception as ex:
             if (isinstance(self, SourceItem )) and (isinstance(other, SourceItem )):
@@ -152,7 +147,7 @@ class SourceItem:
         if self._Source is not None and len(self._Source) > 0: msg = '%s source="%s"' % (msg, str(self._Source))
         if self._SourceAccount is not None and len(self._SourceAccount) > 0: msg = '%s sourceAccount="%s"' % (msg, str(self._SourceAccount))
         if self._Status is not None and len(self._Status) > 0: msg = '%s status="%s"' % (msg, str(self._Status))
-        msg = '%s isLocal=%s' % (msg, str(self._IsLocal).lower())
-        msg = '%s multiroomAllowed=%s' % (msg, str(self._IsMultiroomAllowed).lower())
+        if self._IsLocal is not None: msg = '%s isLocal=%s' % (msg, str(self._IsLocal).lower())
+        if self._IsMultiroomAllowed is not None: msg = '%s multiroomAllowed=%s' % (msg, str(self._IsMultiroomAllowed).lower())
         if self._FriendlyName is not None and len(self._FriendlyName) > 0: msg = '%s friendlyName="%s"' % (msg, str(self._FriendlyName))
         return msg 

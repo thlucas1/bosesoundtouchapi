@@ -24,7 +24,7 @@ try:
         print("\nCached configuration, direct:\n%s" % recentList.ToString(True))
 
     # sort the list (in place) by Name, ascending order.
-    recentList.Recents.sort(key=lambda x: x.Name or "", reverse=False)
+    recentList.Recents.sort(key=lambda x: (x.Name or "").lower(), reverse=False)
     print("\nList sorted by Name:\n%s" % recentList.ToString(True))
         
 except Exception as ex:

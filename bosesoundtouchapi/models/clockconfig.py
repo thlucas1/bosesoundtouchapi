@@ -1,9 +1,8 @@
 # external package imports.
-from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export, _xmlGetAttrBool, _xmlGetAttrInt
 
 @export
 class ClockConfig:
@@ -36,12 +35,15 @@ class ClockConfig:
 
         else:
 
-            self._BrightnessLevel = int(_xmlFindAttr(root, 'clockConfig', 'brightnessLevel', default='0'))
-            self._TimeFormat = _xmlFindAttr(root, 'clockConfig', 'timeFormat')
-            self._TimeZoneInfo = _xmlFindAttr(root, 'clockConfig', 'timezoneInfo')
-            self._UserEnable = _xmlFindAttr(root, 'clockConfig', 'userEnable', default='false') == True
-            self._UserOffsetMinute = int(_xmlFindAttr(root, 'clockConfig', 'userOffsetMinute', default='0'))
-            self._UserUtcTime = int(_xmlFindAttr(root, 'clockConfig', 'userUtcTime', default='0'))
+            # clockConfig node fields.
+            elmNode = root.find('clockConfig')
+            if (elmNode != None):
+                self._BrightnessLevel = _xmlGetAttrInt(elmNode, 'brightnessLevel')
+                self._TimeFormat = elmNode.get('timeFormat')
+                self._TimeZoneInfo = elmNode.get('timezoneInfo')
+                self._UserEnable = _xmlGetAttrBool(elmNode, 'userEnable')
+                self._UserOffsetMinute = _xmlGetAttrInt(elmNode, 'userOffsetMinute')
+                self._UserUtcTime = _xmlGetAttrInt(elmNode, 'userUtcTime')
 
 
     def __repr__(self) -> str:
@@ -96,9 +98,9 @@ class ClockConfig:
         Returns a displayable string representation of the class.
         """
         msg:str = 'ClockConfig:'
-        if self._TimeZoneInfo and len(self._TimeZoneInfo) > 0: msg = '%s timezoneInfo="%s"' % (msg, str(self._TimeZoneInfo))
+        if self._TimeZoneInfo is not None and len(self._TimeZoneInfo) > 0: msg = '%s timezoneInfo="%s"' % (msg, str(self._TimeZoneInfo))
         msg = '%s userEnable=%s' % (msg, str(self._UserEnable).lower())
-        if self._TimeFormat and len(self._TimeFormat) > 0: msg = '%s timeFormat="%s"' % (msg, str(self._TimeFormat))
+        if self._TimeFormat is not None and len(self._TimeFormat) > 0: msg = '%s timeFormat="%s"' % (msg, str(self._TimeFormat))
         msg = '%s userOffsetMinute=%d' % (msg, self._UserOffsetMinute)
         msg = '%s brightnessLevel=%d' % (msg, self._BrightnessLevel)
         msg = '%s userUtcTime=%d' % (msg, self._UserUtcTime)

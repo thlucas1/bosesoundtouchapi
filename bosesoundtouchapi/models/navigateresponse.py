@@ -4,7 +4,7 @@ from xml.etree.ElementTree import Element, tostring
 import xmltodict
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export, _xmlFindInt
 from ..soundtouchsources import SoundTouchSources
 from .navigateitem import NavigateItem
 
@@ -29,6 +29,7 @@ class NavigateResponse:
         self._Items:list[NavigateItem] = []
         self._Source:str = None
         self._SourceAccount:str = None
+        self._TotalItems:int = None
         
         if (root is None):
             
@@ -36,17 +37,14 @@ class NavigateResponse:
         
         elif root.tag == 'navigateResponse':
                 
-            self._Source = root.get('source', default=None)
-            self._SourceAccount = root.get('sourceAccount', default=None)
+            self._Source = root.get('source')
+            self._SourceAccount = root.get('sourceAccount')
+            self._TotalItems = _xmlFindInt(root, 'totalItems')
             
             rootItems = root.find('items')
             if rootItems is not None:
                 for item in rootItems.findall('item'):
                     self._Items.append(NavigateItem(root=item))
-
-            # sort items on Name property, descending order.
-            if len(self._Items) > 0:
-                self._Items.sort(key=lambda x: x.Name or "", reverse=False)
 
 
     def __iter__(self) -> Iterator:
@@ -63,6 +61,17 @@ class NavigateResponse:
 
     def __str__(self) -> str:
         return self.ToString()
+
+
+    @property
+    def ItemCount(self) -> int:
+        """ 
+        The number of items in the `Items` list.  
+        
+        Note that this could be different than the `TotalItems` property if
+        the user is limiting the returned results.
+        """
+        return len(self._Items)
 
 
     @property
@@ -88,21 +97,39 @@ class NavigateResponse:
     @property
     def TotalItems(self) -> int:
         """ 
-        The total number of items in the list.
+        The total number of items in the list, as reported by the music service.
         """
-        return len(self._Items)
+        return self._TotalItems
 
 
-    def Contains(self, source:str, location:str) -> NavigateItem:
+    def GetItemByName(self, name:str) -> NavigateItem:
         """
-        Searches the items collection for an item with the specified Source and Location
+        Searches the items collection for an item with the specified Name
+        and returns the matching item if found; otherwise, None is returned.
+        
+        Args:
+            name (str):
+                Name value to search for (case-sensitive).
+        """
+        result:NavigateItem = None
+        item:NavigateItem
+        for item in self._Items:
+            if item.Name == name:
+                result = item
+                break
+        return result
+
+
+    def ContainsLocation(self, source:str, location:str) -> NavigateItem:
+        """
+        Searches the items collection for an item with the specified Source and ContentItem.Location
         property values and returns the item if found; otherwise, None is returned.
         
         Args:
             source (str):
                 Music Service Source value to search for.
             location (str):
-                Location value to search for.
+                ContentItem.Location value to search for.
         """
         if isinstance(source, SoundTouchSources):
             source = str(source.value)
@@ -166,14 +193,11 @@ class NavigateResponse:
         msg:str = 'NavigateResponse:'
         msg = '%s Source="%s"' % (msg, str(self._Source))
         msg = '%s SourceAccount="%s"' % (msg, str(self._SourceAccount))
+        if self._TotalItems is not None: msg = '%s TotalItems="%s"' % (msg, str(self.TotalItems))
         
-        if includeItems == False:
+        if includeItems == True:
             
-            msg = '%s TotalItems=%s' % (msg, self.TotalItems)
-            
-        else:
-            
-            msg = "%s\n(%d items)" % (msg, self.TotalItems)
+            msg = "%s\n(%d items)" % (msg, self.ItemCount)
             item:NavigateItem
             for item in self._Items:
                 msg = "%s\n- %s" % (msg, item.ToString())

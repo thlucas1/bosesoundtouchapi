@@ -4,7 +4,17 @@ from xml.etree.ElementTree import Element, tostring
 
 # our package imports.
 from ..bstutils import export, _xmlFind
+from ..soundtoucherror import SoundTouchError
 from .contentitem import ContentItem
+from .mediaitemcontainer import MediaItemContainer
+
+# get smartinspect logger reference; create a new session for this module name.
+import logging
+from smartinspectpython.siauto import SIAuto, SISession
+_logsi:SISession = SIAuto.Si.GetSession(__package__)
+if (_logsi == None):
+    _logsi = SIAuto.Si.AddSession(__package__, True)
+_logsi.SystemLogger = logging.getLogger(__package__)
 
 @export
 class NavigateItem:
@@ -15,11 +25,31 @@ class NavigateItem:
     single source item configuration of the device.
     """
 
-    def __init__(self, root:Element) -> None:
+    def __init__(self, source:str=None, sourceAccount:str=None, 
+                 name:str=None, typeValue:str=None, contentItem:ContentItem=None,
+                 location:str=None,
+                 root:Element=None
+                 ) -> None:
         """
         Initializes a new instance of the class.
         
         Args:
+            source (str):
+                Music service source to navigate (e.g. "PANDORA", "STORED_MUSIC", etc).
+            sourceAccount (str):
+                Music service source account (e.g. the music service user-id).
+            name (str):
+                Parent container name to navigate, if navigating for child containers.  
+                Specify null if navigating a root container.
+            typeValue (str):
+                Parent container type to navigate, if navigating for child containers.  
+                Specify null if navigating a root container.
+            contentItem (ContentItem):
+                Parent container ContentItem to navigate, if navigating for child containers.  
+                Specify null if navigating a root container.
+            location (str):
+                Parent container location to navigate, if navigating for child containers.  
+                This argument will not be used if the contentItem argument is specified.
             root (Element):
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
@@ -31,8 +61,10 @@ class NavigateItem:
         self._Format:str = None
         self._Location:str = None
         self._Logo:str = None
+        self._MediaItemContainer:MediaItemContainer = None
         self._Mime:str = None
         self._Name:str = None
+        self._Playable:int = None
         self._Reliability:str = None
         self._Token:str = None
         self._TypeValue:str = None
@@ -46,8 +78,29 @@ class NavigateItem:
         # availability     STS.Availability.Enum
 
         if (root is None):
-            
-            pass
+                       
+            # validations.
+            if (contentItem is not None) and (not isinstance(contentItem, ContentItem)):
+                raise SoundTouchError('contentItem argument was not of type ContentItem', logsi=_logsi)
+
+            # if name, type, or contentItem specified, then all three are required.
+            if (name is not None) or (typeValue is not None) or (contentItem is not None):
+                if name is None:
+                    raise SoundTouchError('name argument is required if a parent container is to be navigated.', logsi=_logsi)
+                if typeValue is None:
+                    raise SoundTouchError('typeValue argument is required if a parent container is to be navigated.', logsi=_logsi)
+                if contentItem is None and location is None:
+                    raise SoundTouchError('contentItem argument is required if a parent container is to be navigated.', logsi=_logsi)
+
+            # if location specified, then build a content item (if one was not specified).
+            if contentItem is None and location is not None:
+                contentItem = ContentItem(source, None, location, sourceAccount, True)
+
+            self._ContentItem = contentItem
+            self._Name = name
+            self._Source = source
+            self._SourceAccount = sourceAccount
+            self._TypeValue = typeValue
         
         else:
 
@@ -59,15 +112,20 @@ class NavigateItem:
             self._Logo = _xmlFind(root, 'logo')
             self._Mime = _xmlFind(root, 'mime')
             self._Name = _xmlFind(root, 'name')
+            self._Playable = root.get('Playable')
             self._Reliability = _xmlFind(root, 'reliability')
             self._Token = _xmlFind(root, 'token')
             self._TypeValue = _xmlFind(root, 'type')
             self._Url = _xmlFind(root, 'url')
             self._UtcTime = _xmlFind(root, 'utctime')
 
-            rootCI:Element = root.find('ContentItem')
-            if rootCI is not None:
-                self._ContentItem:ContentItem = ContentItem(root=rootCI)
+            elmNode:Element = root.find('ContentItem')
+            if elmNode is not None:
+                self._ContentItem:ContentItem = ContentItem(root=elmNode)
+
+            elmNode:Element = root.find('mediaItemContainer')
+            if elmNode is not None:
+                self._MediaItemContainer:MediaItemContainer = MediaItemContainer(root=elmNode)
 
             
     def __repr__(self) -> str:
@@ -110,7 +168,10 @@ class NavigateItem:
 
     @property
     def ContentItem(self) -> ContentItem:
-        """ _ContentItem value. """
+        """ 
+        Parent container ContentItem to navigate, if navigating for child containers.  
+        Specify null if navigating a root container.
+        """
         return self._ContentItem
 
 
@@ -139,6 +200,12 @@ class NavigateItem:
 
 
     @property
+    def MediaItemContainer(self) -> MediaItemContainer:
+        """ MediaItemContainer value. """
+        return self._MediaItemContainer
+
+
+    @property
     def Mime(self) -> str:
         """ Mime value. """
         return self._Mime
@@ -148,6 +215,12 @@ class NavigateItem:
     def Name(self) -> str:
         """ Name value. """
         return self._Name
+
+
+    @property
+    def Playable(self) -> str:
+        """ Playable value. """
+        return self._Playable
 
 
     @property
@@ -190,6 +263,7 @@ class NavigateItem:
                 request body; otherwise, False to return all attributes.
         """
         elm = Element('item')
+        if self._Playable is not None: elm.set('Playable', str(self._Playable))
 
         if self._Name is not None and len(self._Name) > 0:
             elmNode = Element('name')
@@ -282,4 +356,6 @@ class NavigateItem:
         if self._Url is not None and len(self._Url) > 0: msg = '%s Url="%s"' % (msg, str(self._Url))
         if self._UtcTime is not None and len(self._UtcTime) > 0: msg = '%s UtcTime="%s"' % (msg, str(self._UtcTime))
         if self._ContentItem is not None: msg = '%s %s' % (msg, str(self._ContentItem))
+        if self._Playable is not None: msg = '%s Playable="%s"' % (msg, str(self._Playable))
+        if self._MediaItemContainer is not None: msg = '%s %s' % (msg, str(self._MediaItemContainer))
         return msg 

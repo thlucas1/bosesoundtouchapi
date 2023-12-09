@@ -1,10 +1,9 @@
 # external package imports.
 import time
-from typing import Iterator
 from xml.etree.ElementTree import Element, tostring
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export, _xmlGetAttrInt
 from ..soundtouchmodelrequest import SoundTouchModelRequest
 from ..soundtouchsources import SoundTouchSources
 from .contentitem import ContentItem
@@ -52,9 +51,9 @@ class Preset(SoundTouchModelRequest):
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        self._PresetId:int = None
-        self._CreatedOn:int = None
-        self._UpdatedOn:int = None
+        self._PresetId:int = 0
+        self._CreatedOn:int = 0
+        self._UpdatedOn:int = 0
         self._ContentItem:ContentItem = ContentItem()
 
         if (root is None):
@@ -62,12 +61,15 @@ class Preset(SoundTouchModelRequest):
             if isinstance(source, SoundTouchSources):
                 source = str(source.value)
 
-            self._PresetId = int(presetId) if presetId else 0
-            self._CreatedOn = int(createdOn) if createdOn else 0
-            self._UpdatedOn = int(updatedOn) if updatedOn else 0
+            if isinstance(presetId, int):
+                self._PresetId = int(presetId) 
+            if isinstance(createdOn, int):
+                self._CreatedOn = int(createdOn)
+            if isinstance(updatedOn, int):
+                self._UpdatedOn = int(updatedOn)
 
             self._ContentItem._Source = source
-            self._ContentItem._ItemType = typeValue
+            self._ContentItem._TypeValue = typeValue
             self._ContentItem._Location = location
             self._ContentItem._SourceAccount = sourceAccount
             self._ContentItem._IsPresetable = isPresetable
@@ -83,9 +85,9 @@ class Preset(SoundTouchModelRequest):
 
         else:
 
-            self._CreatedOn = int(root.get("createdOn", default=0))
-            self._PresetId = int(root.get("id"))
-            self._UpdatedOn = int(root.get("updatedOn", default=0))
+            self._CreatedOn = _xmlGetAttrInt(root, 'createdOn')
+            self._PresetId = _xmlGetAttrInt(root, 'id')
+            self._UpdatedOn = _xmlGetAttrInt(root, 'updatedOn')
 
             rootCI:Element = root.find('ContentItem')
             if rootCI is not None:
@@ -125,17 +127,17 @@ class Preset(SoundTouchModelRequest):
 
 
     @property
-    def CreatedOn(self) -> int:
-        """ Date and time (in epoch format) of when the preset was created. """
-        return self._CreatedOn
-
-
-    @property
     def ContainerArt(self) -> str:
         """ Content item's container art url. """
         if self._ContentItem is None:
             return None
         return self._ContentItem._ContainerArt
+
+
+    @property
+    def CreatedOn(self) -> int:
+        """ Date and time (in epoch format) of when the preset was created. """
+        return self._CreatedOn
 
 
     @property
@@ -147,11 +149,11 @@ class Preset(SoundTouchModelRequest):
 
 
     @property
-    def ItemType(self) -> str:
+    def TypeValue(self) -> str:
         """ Specifies the type of the content item. """
         if self._ContentItem is None:
             return None
-        return self._ContentItem._ItemType
+        return self._ContentItem._TypeValue
 
 
     @property
@@ -181,7 +183,7 @@ class Preset(SoundTouchModelRequest):
         """ 
         Content item source type. 
         
-        This value is defined at `bosesoundtouchapi.soundtouchsource.SoundTouchSources`. 
+        This value is defined at `bosesoundtouchapi.soundtouchsources.SoundTouchSources`. 
         """
         if self._ContentItem is None:
             return None
@@ -229,10 +231,10 @@ class Preset(SoundTouchModelRequest):
         Returns a displayable string representation of the class.
         """
         msg:str = 'Preset:'
-        if self._PresetId is not None: msg = '%s Id="%s"' % (msg, str(self._PresetId))
-        if self._CreatedOn is not None and self._CreatedOn > 0: msg = '%s CreatedOn="%s"' % (msg, str(self._CreatedOn))
-        if self._UpdatedOn is not None and self._UpdatedOn > 0: msg = '%s UpdatedOn="%s"' % (msg, str(self._UpdatedOn))
+        msg = '%s Id="%s"' % (msg, str(self._PresetId))
         if self._ContentItem is not None: msg = '%s %s' % (msg, str(self._ContentItem))
+        msg = '%s CreatedOn="%s"' % (msg, str(self._CreatedOn))
+        msg = '%s UpdatedOn="%s"' % (msg, str(self._UpdatedOn))
         return msg 
 
 

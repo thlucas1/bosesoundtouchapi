@@ -1,8 +1,8 @@
 # external package imports.
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export, _xmlFind, _xmlFindInt
 from ..soundtouchmodelrequest import SoundTouchModelRequest
 from ..bstconst import (
     BOSE_DEVELOPER_APPKEY,
@@ -70,7 +70,7 @@ class PlayInfo(SoundTouchModelRequest):
             self._Message = _xmlFind(root, 'message')
             self._Reason = _xmlFind(root, 'reason')
             self._Url = _xmlFind(root, 'url')
-            self._Volume = int(_xmlFind(root, 'volume', default=0))
+            self._Volume = _xmlFindInt(root, 'volume')
 
         
     def __repr__(self) -> str:
@@ -137,9 +137,16 @@ class PlayInfo(SoundTouchModelRequest):
             elmNode.text = self._Url
             elm.append(elmNode)
             
-        if self._Volume > 0:
+        # volume should be omitted if it is zero.
+        if self._Volume is not None and self._Volume > 0:
             elmNode = Element('volume')
-            elmNode.text = str(self._Volume)
+            # SoundTouch will fail the request if volume level is less than 10 or greater than 70.
+            if (self._Volume < 10): 
+                elmNode.text = "10"
+            elif (self._Volume > 70): 
+                elmNode.text = "70"
+            else: 
+                elmNode.text = str(self._Volume)
             elm.append(elmNode)
             
         if self._AppKey is not None:
@@ -170,12 +177,12 @@ class PlayInfo(SoundTouchModelRequest):
         Returns a displayable string representation of the class.
         """
         msg:str = 'PlayItem:'
-        msg = '%s volume=%s' % (msg, str(self._Volume))
-        if self._AppKey and len(self._AppKey) > 0: msg = '%s appKey="%s"' % (msg, str(self._AppKey))
-        if self._Service and len(self._Service) > 0: msg = '%s service="%s"' % (msg, str(self._Service))
-        if self._Message and len(self._Message) > 0: msg = '%s message="%s"' % (msg, str(self._Message))
-        if self._Reason and len(self._Reason) > 0: msg = '%s reason="%s"' % (msg, str(self._Reason))
-        if self._Url and len(self._Url) > 0: msg = '%s url="%s"' % (msg, str(self._Url))
+        if self._Volume is not None: msg = '%s volume=%s' % (msg, str(self._Volume))
+        if self._AppKey is not None and len(self._AppKey) > 0: msg = '%s appKey="%s"' % (msg, str(self._AppKey))
+        if self._Service is not None and len(self._Service) > 0: msg = '%s service="%s"' % (msg, str(self._Service))
+        if self._Message is not None and len(self._Message) > 0: msg = '%s message="%s"' % (msg, str(self._Message))
+        if self._Reason is not None and len(self._Reason) > 0: msg = '%s reason="%s"' % (msg, str(self._Reason))
+        if self._Url is not None and len(self._Url) > 0: msg = '%s url="%s"' % (msg, str(self._Url))
         return msg 
 
 

@@ -6,6 +6,8 @@ from xml.etree.ElementTree import Element, tostring
 from ..bstutils import export
 from ..soundtouchmodelrequest import SoundTouchModelRequest
 from ..soundtouchsources import SoundTouchSources
+from .searchfiltertypes import SearchFilterTypes
+from .searchsorttypes import SearchSortTypes
 
 @export
 class SearchStation(SoundTouchModelRequest):
@@ -16,7 +18,8 @@ class SearchStation(SoundTouchModelRequest):
     SearchStation criteria.
     """
 
-    def __init__(self, source:str=None, sourceAccount:str=None, searchText:str=None,
+    def __init__(self, source:str=None, sourceAccount:str=None, searchText:str=None, 
+                 sortType:SearchSortTypes=None, filterType:SearchFilterTypes=None,
                  root:Element=None
                  ) -> None:
         """
@@ -29,6 +32,10 @@ class SearchStation(SoundTouchModelRequest):
                 Music service source account (e.g. the music service user-id).
             searchText (str):
                 Text to search for in the Music service.
+            sortType (SearchSortTypes|str):
+                Sort type used by the Music Service to sort the returned items by.
+            filterType (SearchFilterTypes|str):
+                Filter type used by the Music Service to filter the returned items by.
             root (Element):
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
@@ -38,28 +45,35 @@ class SearchStation(SoundTouchModelRequest):
                 startItem argument was not of type int.  
         """
         
-        # <search source="PANDORA" sourceAccount="thlucas@yahoo.com">
-        #   Zach Williams
-        # </search>
-
+        self._FilterType:str = None
         self._SearchText:str = None
+        self._SortType:str = None
         self._Source:str = None
         self._SourceAccount:str = None
         
         if (root is None):
             
+            # convert enums to strings.
             if isinstance(source, SoundTouchSources):
                 source = str(source.value)
-                
+            if isinstance(sortType, SearchSortTypes):
+                sortType = str(sortType.value)
+            if isinstance(filterType, SearchFilterTypes):
+                filterType = str(filterType.value)
+               
+            self._FilterType = filterType
             self._SearchText = searchText
+            self._SortType = sortType
             self._Source = source
             self._SourceAccount = sourceAccount
         
         else:
 
+            self._FilterType = root.get('filter')
+            self._SortType = root.get('sortOrder')
+            self._Source = root.get('source')
+            self._SourceAccount = root.get('sourceAccount')
             self._SearchText = root.text
-            self._Source = root.get('source', default=None)
-            self._SourceAccount = root.get('sourceAccount', default=None)
             
 
     def __repr__(self) -> str:
@@ -68,6 +82,21 @@ class SearchStation(SoundTouchModelRequest):
 
     def __str__(self) -> str:
         return self.ToString()
+
+
+    @property
+    def FilterType(self) -> str:
+        """ Filter type used by the Music Service to filter the returned items by. """
+        return self._FilterType
+
+    @FilterType.setter
+    def FilterType(self, value:str):
+        """ 
+        Sets the FilterType property value.
+        """
+        if isinstance(value, SearchFilterTypes):
+            value = value.value
+        self._FilterType = value
 
 
     @property
@@ -83,6 +112,21 @@ class SearchStation(SoundTouchModelRequest):
         if value is not None:
             if isinstance(value, str):
                 self._SearchText = value
+
+
+    @property
+    def SortType(self) -> str:
+        """ Sort type used by the Music Service to sort the returned items by. """
+        return self._SortType
+
+    @SortType.setter
+    def SortType(self, value:str):
+        """ 
+        Sets the SortType property value.
+        """
+        if isinstance(value, SearchSortTypes):
+            value = value.value
+        self._SortType = value
 
 
     @property
@@ -130,6 +174,8 @@ class SearchStation(SoundTouchModelRequest):
         elm = Element('search')
         if self._Source and len(self._Source) > 0: elm.set('source', str(self._Source))
         if self._SourceAccount and len(self._SourceAccount) > 0: elm.set('sourceAccount', str(self._SourceAccount))
+        if self._SortType and len(self._SortType) > 0: elm.set('sortOrder', str(self._SortType))
+        if self._FilterType and len(self._FilterType) > 0: elm.set('filter', str(self._FilterType))
 
         if self._SearchText and len(self._SearchText) > 0: 
             elm.text = self._SearchText
@@ -145,5 +191,7 @@ class SearchStation(SoundTouchModelRequest):
         msg = '%s Source="%s"' % (msg, str(self._Source))
         msg = '%s SourceAccount="%s"' % (msg, str(self._SourceAccount))
         msg = '%s SearchText="%s"' % (msg, str(self._SearchText))
+        if self._SortType is not None and len(self._SortType) > 0: msg = '%s SortType="%s"' % (msg, str(self._SortType))
+        if self._FilterType is not None: msg = '%s FilterType=%s' % (msg, str(self._FilterType))
         return msg 
     

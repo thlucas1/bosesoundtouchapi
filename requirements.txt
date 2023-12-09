@@ -1,6 +1,6 @@
 # pip>=22.0.4
 # setuptools>=58.1.0
-smartinspectPython==3.0.28
+smartinspectPython==3.0.30
 tinytag==1.10.0
 urllib3
 websocket-client==1.6.4

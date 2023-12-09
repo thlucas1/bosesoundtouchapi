@@ -56,10 +56,10 @@ class MusicServiceAccount(SoundTouchModelRequest):
         
         elif root.tag == 'credentials':
 
-            self._Source = root.get('source', default=None)
-            self._DisplayName = root.get('displayName', default=None)
-            self._Password = _xmlFind(root, 'pass', default=None)
-            self._UserAccount = _xmlFind(root, 'user', default=None)
+            self._Source = root.get('source')
+            self._DisplayName = root.get('displayName')
+            self._Password = _xmlFind(root, 'pass')
+            self._UserAccount = _xmlFind(root, 'user')
 
 
     def __repr__(self) -> str:

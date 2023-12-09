@@ -1,9 +1,9 @@
 # external package imports.
 from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export
 from .mediaserver import MediaServer
 
 @export
@@ -38,7 +38,7 @@ class MediaServerList:
 
             # sort items on FriendlyName property, ascending order.
             if len(self._MediaServers) > 0:
-                self._MediaServers.sort(key=lambda x: x.FriendlyName or "", reverse=False)
+                self._MediaServers.sort(key=lambda x: (x.FriendlyName or "").lower(), reverse=False)
 
 
     def __getitem__(self, key) -> MediaServer:

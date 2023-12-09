@@ -1,9 +1,8 @@
 # external package imports.
-from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind
+from ..bstutils import export, _xmlFindInt, _xmlFindBool
 from ..soundtouchmodelrequest import SoundTouchModelRequest
 
 @export
@@ -43,12 +42,12 @@ class Balance(SoundTouchModelRequest):
         else:
 
             self._DeviceId = root.get('deviceID')
-            self._Actual = int(_xmlFind(root, 'actualBalance', default=0))
-            self._Default = int(_xmlFind(root, 'balanceDefault', default=0))
-            self._IsAvailable = _xmlFind(root, 'balanceAvailable', default='false') == 'true'
-            self._Maximum = int(_xmlFind(root, 'balanceMax', default=0))
-            self._Minimum = int(_xmlFind(root, 'balanceMin', default=0))
-            self._Target = int(_xmlFind(root, 'targetBalance', default=0))
+            self._Actual = _xmlFindInt(root, 'actualBalance')
+            self._Default = _xmlFindInt(root, 'balanceDefault')
+            self._IsAvailable = _xmlFindBool(root, 'balanceAvailable')
+            self._Maximum = _xmlFindInt(root, 'balanceMax')
+            self._Minimum = _xmlFindInt(root, 'balanceMin')
+            self._Target = _xmlFindInt(root, 'targetBalance')
 
 
     def __repr__(self) -> str:
@@ -72,7 +71,7 @@ class Balance(SoundTouchModelRequest):
 
 
     @property
-    def DeviceId(self):
+    def DeviceId(self) -> str:
         """ Device identifier the configuration information was obtained from. """
         return self._DeviceId
 
@@ -114,7 +113,7 @@ class Balance(SoundTouchModelRequest):
         elm = Element('balance')
         if isRequestBody == True:
             
-            elm.text = str(self.Actual)
+            elm.text = str(self._Actual or 0)
             
         else:
             
@@ -158,10 +157,10 @@ class Balance(SoundTouchModelRequest):
         Returns a displayable string representation of the class.
         """
         msg:str = 'Balance:'
-        msg = '%s available=%s' % (msg, str(self._IsAvailable).lower())
-        msg = '%s actual=%d' % (msg, self._Actual)
-        msg = '%s target=%d' % (msg, self._Target)
-        msg = '%s default=%d' % (msg, self._Default)
-        msg = '%s min=%d' % (msg, self._Minimum)
-        msg = '%s max=%d' % (msg, self._Maximum)
+        if self._IsAvailable is not None: msg = '%s Available=%s' % (msg, str(self._IsAvailable).lower())
+        if self._Actual is not None: msg = '%s Actual=%d' % (msg, self._Actual)
+        if self._Target is not None: msg = '%s Target=%d' % (msg, self._Target)
+        if self._Default is not None: msg = '%s Default=%d' % (msg, self._Default)
+        if self._Minimum is not None: msg = '%s Min=%d' % (msg, self._Minimum)
+        if self._Maximum is not None: msg = '%s Max=%d' % (msg, self._Maximum)
         return msg 

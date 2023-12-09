@@ -1,9 +1,9 @@
 # external package imports.
 from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export, _xmlFind, _xmlFindBool
 
 @export
 class Capabilities:
@@ -48,13 +48,13 @@ class Capabilities:
         else:
 
             self._DeviceId = root.get('deviceID')
-            self._IsBcoResetCapable = _xmlFind(root, 'bcoresetCapable', default='false') == 'true'
-            self._IsClockDisplayCapable = _xmlFind(root, 'clockDisplay', default='false') == 'true'
-            self._IsDisablePowerSavingCapable = _xmlFind(root, 'disablePowerSaving', default='false') == 'true'
-            self._IsDualModeCapable = _xmlFind(root, './networkConfig/dualMode', default='false') == 'true'
-            self._IsLightSwitchCapable = _xmlFind(root, 'lightswitch', default='false') == 'true'
-            self._IsLrStereoCapable = _xmlFind(root, 'lrStereoCapable', default='false') == 'true'
-            self._IsWebSocketApiProxyCapable = _xmlFind(root, './networkConfig/wsapiproxy', default='false') == 'true'
+            self._IsBcoResetCapable = _xmlFindBool(root, 'bcoresetCapable', default=False)
+            self._IsClockDisplayCapable = _xmlFindBool(root, 'clockDisplay', default=False)
+            self._IsDisablePowerSavingCapable = _xmlFindBool(root, 'disablePowerSaving', default=False)
+            self._IsDualModeCapable = _xmlFindBool(root, './networkConfig/dualMode', default=False)
+            self._IsLightSwitchCapable = _xmlFindBool(root, 'lightswitch', default=False)
+            self._IsLrStereoCapable = _xmlFindBool(root, 'lrStereoCapable', default=False)
+            self._IsWebSocketApiProxyCapable = _xmlFindBool(root, './networkConfig/wsapiproxy', default=False)
 
             self._Capabilities = {}
             for cap in root.findall('capability'):

@@ -14,7 +14,7 @@ try:
     nowPlaying:NowPlayingStatus = client.GetNowPlayingStatus(True)
     print("\nCurrent Now Playing Status:\n%s" % nowPlaying.ToString())
 
-    # does nowPlaying item support ratings?
+    # are rating functions allowed for currently playing media?
     if nowPlaying.IsRatingEnabled:
                 
         # rate the currently playing media.

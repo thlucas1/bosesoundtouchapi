@@ -1,10 +1,9 @@
 # external package imports.
-from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
 from ..bstappmessages import BSTAppMessages
-from ..bstutils import export
+from ..bstutils import export, _xmlGetAttrInt
 from ..soundtoucherror import SoundTouchError
 from ..soundtouchmodelrequest import SoundTouchModelRequest
 
@@ -87,10 +86,10 @@ class ControlLevelInfo(SoundTouchModelRequest):
 
             # base fields.
             self._ControlType = str(root.tag)
-            self._Value = int(root.get('value', default=0))
-            self._MinValue = int(root.get('minValue', default=0))
-            self._MaxValue = int(root.get('maxValue', default=0))
-            self._Step = int(root.get('step', default=0))
+            self._Value = _xmlGetAttrInt(root, 'value')
+            self._MinValue = _xmlGetAttrInt(root, 'minValue')
+            self._MaxValue = _xmlGetAttrInt(root, 'maxValue')
+            self._Step = _xmlGetAttrInt(root, 'step')
 
 
     def __repr__(self) -> str:

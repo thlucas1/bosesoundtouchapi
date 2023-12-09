@@ -2,7 +2,7 @@
 from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind
+from ..bstutils import export, _xmlFindBool, _xmlFindInt
 from ..soundtouchmodelrequest import SoundTouchModelRequest
 
 @export
@@ -39,15 +39,15 @@ class Volume(SoundTouchModelRequest):
         if (root is None):
 
             self._Actual = int(actual) if actual else 0
-            self._IsMuted = isMuted == 'true' if isMuted else False
+            self._IsMuted = isMuted
             self._Target = int(target) if target else 0
 
         else:
 
             self._DeviceId = root.get('deviceID')
-            self._Actual = int(_xmlFind(root, 'actualvolume', default='0'))
-            self._IsMuted = bool(_xmlFind(root, 'muteenabled', default='false') == 'true')
-            self._Target = int(_xmlFind(root, 'targetvolume', default='0'))
+            self._Actual = _xmlFindInt(root, 'actualvolume')
+            self._IsMuted = _xmlFindBool(root, 'muteenabled')
+            self._Target = _xmlFindInt(root, 'targetvolume')
 
 
     def __repr__(self) -> str:
@@ -65,7 +65,7 @@ class Volume(SoundTouchModelRequest):
 
 
     @property
-    def DeviceId(self):
+    def DeviceId(self) -> str:
         """ Device identifier the configuration information was obtained from. """
         return self._DeviceId
 
@@ -124,8 +124,8 @@ class Volume(SoundTouchModelRequest):
         Returns a displayable string representation of the class.
         """
         msg:str = 'Volume:'
-        msg = '%s Actual=%d' % (msg, self._Actual)
-        msg = '%s Target=%d' % (msg, self._Target)
-        msg = '%s IsMuted=%s' % (msg, str(self._IsMuted).lower())
+        if self._Actual is not None:msg = '%s Actual=%d' % (msg, self._Actual)
+        if self._Target is not None: msg = '%s Target=%d' % (msg, self._Target)
+        if self._IsMuted is not None: msg = '%s IsMuted=%s' % (msg, str(self._IsMuted).lower())
         return msg 
     

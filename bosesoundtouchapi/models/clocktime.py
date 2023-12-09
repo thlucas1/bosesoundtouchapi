@@ -1,9 +1,8 @@
 # external package imports.
-from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFindAttr
+from ..bstutils import export, _xmlGetAttrInt
 
 @export
 class ClockTime:
@@ -46,22 +45,23 @@ class ClockTime:
 
         else:
 
-            # base fields.
-            self._UtcTime = int(root.get('utcTime', default='0'))
-            self._CueMusic = int(root.get('cueMusic', default='0'))
+            self._UtcTime = _xmlGetAttrInt(root, 'utcTime')
+            self._CueMusic = _xmlGetAttrInt(root, 'cueMusic')
             self._TimeFormat = root.get('timeFormat')
-            self._Brightness = int(root.get('brightness', default='0'))
-            self._ClockError = int(root.get('clockError', default='0'))
-            self._UtcSyncTime = int(root.get('utcSyncTime', default='0'))
+            self._Brightness = _xmlGetAttrInt(root, 'brightness')
+            self._ClockError = _xmlGetAttrInt(root, 'clockError')
+            self._UtcSyncTime = _xmlGetAttrInt(root, 'utcSyncTime')
 
             # localtime node fields.
-            self._Year = int(_xmlFindAttr(root, 'localTime', 'year', default='0'))
-            self._Month = int(_xmlFindAttr(root, 'localTime', 'month', default='0'))
-            self._Day = int(_xmlFindAttr(root, 'localTime', 'dayOfMonth', default='0'))
-            self._DayOfWeek = int( _xmlFindAttr(root, 'localTime', 'dayOfWeek', default='0'))
-            self._Hour = int(_xmlFindAttr(root, 'localTime', 'hour', default='0'))
-            self._Minute = int(_xmlFindAttr(root, 'localTime', 'minute', default='0'))
-            self._Second = int(_xmlFindAttr(root, 'localTime', 'second', default='0'))
+            elmNode = root.find('localTime')
+            if (elmNode != None):
+                self._Year = _xmlGetAttrInt(elmNode, 'year')
+                self._Month = _xmlGetAttrInt(elmNode, 'month')
+                self._Day = _xmlGetAttrInt(elmNode, 'dayOfMonth')
+                self._DayOfWeek = _xmlGetAttrInt(elmNode, 'dayOfWeek')
+                self._Hour = _xmlGetAttrInt(elmNode, 'hour')
+                self._Minute = _xmlGetAttrInt(elmNode, 'minute')
+                self._Second = _xmlGetAttrInt(elmNode, 'second')
 
 
     def __repr__(self) -> str:
@@ -158,11 +158,12 @@ class ClockTime:
         Returns a displayable string representation of the class.
         """
         msg:str = 'ClockTime:'
-        msg = '%s localTime="%02d/%02d/%02d %02d:%02d:%02d"' % (msg, self._Year, self._Month, self._Day, self._Hour, self._Minute, self._Second)
-        if self._TimeFormat and len(self._TimeFormat) > 0: msg = '%s timeFormat="%s"' % (msg, str(self._TimeFormat))
-        msg = '%s utcTime=%d' % (msg, self._UtcTime)
-        msg = '%s cueMusic=%d' % (msg, self._CueMusic)
-        msg = '%s brightness=%d' % (msg, self._Brightness)
-        msg = '%s clockError=%d' % (msg, self._ClockError)
-        msg = '%s utcSyncTime=%d' % (msg, self._UtcSyncTime)
+        if self._Year is not None: msg = '%s LocalTime="%02d/%02d/%02d %02d:%02d:%02d"' % (msg, self._Year, self._Month, self._Day, self._Hour, self._Minute, self._Second)
+        if self._DayOfWeek is not None: msg = '%s DayOfWeek=%d' % (msg, self._DayOfWeek)
+        if self._TimeFormat is not None and len(self._TimeFormat) > 0: msg = '%s TimeFormat="%s"' % (msg, str(self._TimeFormat))
+        if self._UtcTime is not None: msg = '%s UtcTime=%d' % (msg, self._UtcTime)
+        if self._CueMusic is not None: msg = '%s CueMusic=%d' % (msg, self._CueMusic)
+        if self._Brightness is not None: msg = '%s Brightness=%d' % (msg, self._Brightness)
+        if self._ClockError is not None: msg = '%s ClockError=%d' % (msg, self._ClockError)
+        if self._UtcSyncTime is not None: msg = '%s UtcSyncTime=%d' % (msg, self._UtcSyncTime)
         return msg 

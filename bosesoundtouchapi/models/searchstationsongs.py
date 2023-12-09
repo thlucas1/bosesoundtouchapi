@@ -4,7 +4,7 @@ from xml.etree.ElementTree import Element, tostring
 import xmltodict
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export
 from ..soundtouchsources import SoundTouchSources
 from .searchresult import SearchResult
 
@@ -67,7 +67,7 @@ class SearchStationSongs:
     @property
     def TotalItems(self) -> int:
         """ 
-        The total number of items in the list.
+        The total number of items in the list, as reported by the music service.
         """
         return len(self._Items)
 

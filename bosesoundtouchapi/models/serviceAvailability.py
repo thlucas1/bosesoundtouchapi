@@ -34,11 +34,11 @@ class ServiceAvailability:
 
             elmServices:Element = root.find('services')
             for service in elmServices.findall('service'):
-                self.append(Service(root=service))
+                self._Services.append(Service(root=service))
             
             # sort items on ServiceType property, ascending order.
             if len(self._Services) > 0:
-                self._Services.sort(key=lambda x: x.ServiceType or "", reverse=False)
+                self._Services.sort(key=lambda x: (x.ServiceType or "").lower(), reverse=False)
 
 
     def __getitem__(self, key) -> Service:
@@ -75,17 +75,6 @@ class ServiceAvailability:
         The list of `Service` items. 
         """
         return self._Services
-
-
-    def append(self, value:Service):
-        """
-        Append a new `Service` item to the list.
-        
-        Args:
-            value:
-                The `Service` object to append.
-        """
-        self._Services.append(value)
 
 
     def ToString(self, includeItems:bool=True) -> str:

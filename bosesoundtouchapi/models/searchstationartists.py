@@ -4,7 +4,7 @@ from xml.etree.ElementTree import Element, tostring
 import xmltodict
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export
 from ..soundtouchsources import SoundTouchSources
 from .searchresult import SearchResult
 
@@ -57,19 +57,19 @@ class SearchStationArtists:
 
 
     @property
+    def ItemCount(self) -> int:
+        """ 
+        The number of items in the `Items` list.  
+        """
+        return len(self._Items)
+
+
+    @property
     def Items(self) -> list[SearchResult]:
         """ 
         The list of `SearchResult` items. 
         """
         return self._Items
-
-
-    @property
-    def TotalItems(self) -> int:
-        """ 
-        The total number of items in the list.
-        """
-        return len(self._Items)
 
 
     def ContainsName(self, source:str, value:str) -> SearchResult:

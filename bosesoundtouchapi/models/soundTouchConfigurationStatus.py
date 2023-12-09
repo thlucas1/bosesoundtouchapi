@@ -31,7 +31,7 @@ class SoundTouchConfigurationStatus:
         else:
 
             # base fields.
-            self._Status = root.get('status', default=None)
+            self._Status = root.get('status')
 
 
     def __repr__(self) -> str:

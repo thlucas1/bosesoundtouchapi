@@ -6,6 +6,23 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.23 ] - 2023/12/09
+
+  * Added method `SoundTouchClient`.`GetMusicLibraryItems` - Gets a list of music library data from the specified music library (e.g. STORED_MUSIC, etc).
+  * Added method `SoundTouchClient`.`PowerStandbyLowPower` - Sets power to low-power standby, if the device is currently powered on.
+  * Added model `MediaItemContainer` - media item container configuration.
+  * Added model `NavigateMenuTypes` - navigate menu types enumeration.
+  * Added model `NavigateSortTypes` - navigate sort types enumeration.
+  * Added model `Search` - search configuration.
+  * Added model `SearchFilterTypes` - search filter types enumeration.
+  * Added model `SearchResponse` - search response configuration.
+  * Added model `SearchSortTypes` - search sort types enumeration.
+  * Added model `SearchTerm` - search terms configuration.
+  * Removed class `SoundTouchMenuTypes` - replaced with NavigateMenuTypes model.
+  * Removed class `SoundTouchSortOrders` - replaced with SearchSortTypes model.
+  * Changed all sort references to account for lower-case values, so they are properly sorted.  Prior behavior was placing lower-case results after all upper-case results.
+  * Removed quite a few unused import references (too many to list).
+
 ###### [ 1.0.22 ] - 2023/12/04
 
   * Updated rebuilt documentation index.

@@ -1,9 +1,8 @@
 # external package imports.
-from typing import Iterator
 from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind
+from ..bstutils import export, _xmlFind, _xmlFindBool
 
 @export
 class NetworkStatusInterface:
@@ -38,13 +37,13 @@ class NetworkStatusInterface:
 
         else:
 
-            self._FrequencyKhz:str = _xmlFind(root, 'frequencyKHz')
-            self._Kind:str = _xmlFind(root, 'kind')
-            self._MacAddress:str = _xmlFind(root, 'mac-addr')
-            self._Name:str = _xmlFind(root, 'name')
-            self._Rssi:str = _xmlFind(root, 'rssi')
-            self._IsRunning:bool = bool(_xmlFind(root, 'running', default='false') == 'true')
-            self._Ssid:str = _xmlFind(root, 'ssid')
+            self._FrequencyKhz = _xmlFind(root, 'frequencyKHz')
+            self._Kind = _xmlFind(root, 'kind')
+            self._MacAddress = _xmlFind(root, 'mac-addr')
+            self._Name = _xmlFind(root, 'name')
+            self._Rssi = _xmlFind(root, 'rssi')
+            self._IsRunning = _xmlFindBool(root, 'running')
+            self._Ssid = _xmlFind(root, 'ssid')
 
             for binding in root.find('bindings'):
                 self._Bindings.append(_xmlFind(binding, 'ipv4address'))

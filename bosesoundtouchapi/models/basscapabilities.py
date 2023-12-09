@@ -1,9 +1,8 @@
 # external package imports.
-from typing import Iterator
 from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind
+from ..bstutils import export, _xmlFindInt, _xmlFindBool
 
 @export
 class BassCapabilities:
@@ -34,10 +33,10 @@ class BassCapabilities:
         
         else:
 
-            self._Default = int(_xmlFind(root, 'bassDefault', default=0))
-            self._IsAvailable = _xmlFind(root, 'bassAvailable', default='false') == 'true'
-            self._Maximum = int(_xmlFind(root, 'bassMax', default=0))
-            self._Minimum = int(_xmlFind(root, 'bassMin', default=0))
+            self._Default = _xmlFindInt(root, 'bassDefault')
+            self._IsAvailable = _xmlFindBool(root, 'bassAvailable')
+            self._Maximum = _xmlFindInt(root, 'bassMax')
+            self._Minimum = _xmlFindInt(root, 'bassMin')
 
 
     def __repr__(self) -> str:
@@ -77,8 +76,8 @@ class BassCapabilities:
         Returns a displayable string representation of the class.
         """
         msg:str = 'BassCapabilities:'
-        msg = '%s available=%s' % (msg, str(self._IsAvailable).lower())
-        msg = '%s min=%d' % (msg, self._Minimum)
-        msg = '%s max=%d' % (msg, self._Maximum)
-        msg = '%s default=%d' % (msg, self._Default)
+        if self._IsAvailable is not None: msg = '%s Available=%s' % (msg, str(self._IsAvailable).lower())
+        if self._Minimum is not None: msg = '%s Min=%d' % (msg, self._Minimum)
+        if self._Maximum is not None: msg = '%s Max=%d' % (msg, self._Maximum)
+        if self._Default is not None: msg = '%s Default=%d' % (msg, self._Default)
         return msg 

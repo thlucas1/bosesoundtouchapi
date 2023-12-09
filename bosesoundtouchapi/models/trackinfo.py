@@ -32,7 +32,7 @@ class TrackInfo:
         
         elif root.tag == 'trackInfo':
 
-            self._DeviceId = root.get('deviceID', default=None)
+            self._DeviceId = root.get('deviceID')
             self._TrackInfo = root.text
 
 
@@ -56,10 +56,9 @@ class TrackInfo:
         Track information value. 
         
         This information can differ slightly from the NowPlaying "Track" information, as it
-        contains the track name plus an extended details about the track.  The extended 
+        contains the track name plus extended details about the track.  The extended 
         details are delimited by a semi-colon; a semi-colon is still present after the track
         name if there is no extended data present.  For example(s):
-        
         ```
         Who You Are To Me (feat. Lady A);vocal duets;upbeat lyrics;paired vocal harmony;  
         A Marshmallow World;  <- no extended track info

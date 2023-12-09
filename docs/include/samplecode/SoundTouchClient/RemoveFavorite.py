@@ -14,7 +14,7 @@ try:
     nowPlaying:NowPlayingStatus = client.GetNowPlayingStatus(True)
     print("\nCurrent Now Playing Status:\n%s" % nowPlaying.ToString())
 
-    # does nowPlaying item support favorites?
+    # are favorite functions allowed for currently playing media?
     if nowPlaying.IsFavoriteEnabled:
                 
         # remove the currently playing media from the device favorites.

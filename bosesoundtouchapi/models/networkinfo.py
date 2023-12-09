@@ -1,9 +1,9 @@
 # external package imports.
 from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export, _xmlGetAttrInt
 from .networkinfointerface import NetworkInfoInterface
 
 @export
@@ -33,10 +33,10 @@ class NetworkInfo:
 
         else:
 
-            self._WifiProfileCount = int(root.get('wifiProfileCount', default='0'))
+            self._WifiProfileCount = _xmlGetAttrInt(root, 'wifiProfileCount')
             
             for interface in root.find('interfaces'):
-                self.append(NetworkInfoInterface(interface))
+                self._Interfaces.append(NetworkInfoInterface(interface))
 
 
     def __getitem__(self, key) -> NetworkInfoInterface:
@@ -72,17 +72,6 @@ class NetworkInfo:
     def WifiProfileCount(self) -> int:
         """ Number of wireless (wifi) network interfaces defined. """
         return self._WifiProfileCount
-
-
-    def append(self, value:NetworkInfoInterface):
-        """
-        Append a new `NetworkInfoInterface` item to the list.
-        
-        Args:
-            value:
-                The `NetworkInfoInterface` object to append.
-        """
-        self._Interfaces.append(value)
 
 
     def ToString(self, includeItems:bool=False) -> str:

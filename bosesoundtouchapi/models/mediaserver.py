@@ -1,9 +1,8 @@
 # external package imports.
-from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export
 
 @export
 class MediaServer:
@@ -67,10 +66,6 @@ class MediaServer:
 
     def __lt__(self, other):
         try:
-            # the following comparison will fail if the property value is None!  
-            # use the following syntax when calling a sort method that uses lambda searches:
-            # epColl.sort(FriendlyName=lambda x: x.FriendlyName or "", reverse=False)     <- GOOD syntax
-            # epColl.sort(FriendlyName=lambda x: x.FriendlyName, reverse=False)           <- BAD syntax, as the "x.FriendlyName" property may be None, and will cause this to fail!
             return self.FriendlyName < other.FriendlyName
         except Exception as ex:
             if (isinstance(self, MediaServer )) and (isinstance(other, MediaServer )):

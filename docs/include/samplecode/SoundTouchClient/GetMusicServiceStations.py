@@ -11,12 +11,22 @@ try:
     client:SoundTouchClient = SoundTouchClient(device)
 
     # get my collection of PANDORA music service stations.
-    criteria:Navigate = Navigate(SoundTouchSources.PANDORA, "YourMusicServiceUserId", SoundTouchMenuTypes.radioStations, 1, 100)
+    criteria:Navigate = Navigate(SoundTouchSources.PANDORA, "YourMusicServiceUserId")
     results:NavigateResponse = client.GetMusicServiceStations(criteria)
     print("\nMy %s Music Service Stations:\n%s" % (results.Source, results.ToString(True)))
         
-    # sort the list (in place) by Name, descending order.
-    results.Items.sort(key=lambda x: x.Name or "", reverse=True)
+    # get my PANDORA music service content - sort by date created, descending.
+    criteria:Navigate = Navigate(SoundTouchSources.PANDORA, "thlucas@yahoo.com")
+    results:NavigateResponse = client.GetMusicServiceStations(criteria)
+    print("\nMy %s Music Service Stations (sorted by DateCreated DESC):\n%s" % (results.Source, results.ToString(True)))
+
+    # get my PANDORA music service content - sort by station name, ascending.
+    criteria:Navigate = Navigate(SoundTouchSources.PANDORA, "thlucas@yahoo.com", sortType=NavigateSortTypes.StationName)
+    results:NavigateResponse = client.GetMusicServiceStations(criteria)
+    print("\nMy %s Music Service Stations (sorted by StationName ASC):\n%s" % (results.Source, results.ToString(True)))
+
+    # sort the results (in place) by Name, descending order.
+    results.Items.sort(key=lambda x: (x.Name or "").lower(), reverse=True)
     print("\nList sorted by Name descending:\n%s" % results.ToString(True))
         
 except Exception as ex:

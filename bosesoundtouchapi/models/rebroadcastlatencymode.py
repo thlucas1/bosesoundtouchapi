@@ -3,7 +3,7 @@ from typing import Iterator
 from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export
+from ..bstutils import export, _xmlGetAttrBool
 
 @export
 class RebroadcastLatencyMode:
@@ -34,8 +34,8 @@ class RebroadcastLatencyMode:
         elif root.tag == 'rebroadcastlatencymode':
 
             # base fields.
-            self._Mode = root.get('mode', default=None)
-            self._Controllable = bool(root.get('controllable', default='false') == 'true')
+            self._Mode = root.get('mode')
+            self._Controllable = _xmlGetAttrBool(root, 'controllable')
 
 
     def __repr__(self) -> str:

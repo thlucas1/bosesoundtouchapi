@@ -13,7 +13,12 @@ class SoundTouchKeys(Enum):
     """
 
     ADD_FAVORITE = 'ADD_FAVORITE'
-    """ Adds the currently playing media to the device favorites. """
+    """ 
+    Adds the currently playing media to the device favorites. 
+    
+    Note that this key is reserved for source music services that
+    support favorites (e.g. PANDORA, SPOTIFY, etc).   
+    """
     
     AUX_INPUT = 'AUX_INPUT'
     """ Switches the device source to AUX input. """
@@ -61,7 +66,12 @@ class SoundTouchKeys(Enum):
     """ Move to the previous track in the current media playlist. """
     
     REMOVE_FAVORITE = 'REMOVE_FAVORITE'
-    """ Removes the currently playing media from the device favorites. """
+    """ 
+    Removes the currently playing media from the device favorites. 
+    
+    Note that this key is reserved for source music services that
+    support favorites (e.g. PANDORA, SPOTIFY, etc).   
+    """
     
     REPEAT_ALL = 'REPEAT_ALL'
     """ Enables the repeat all setting for a playlist. """
@@ -85,16 +95,16 @@ class SoundTouchKeys(Enum):
     """
     Sets a thumbs down rating for the currently playing media.
         
-    Note that the THUMBS_DOWN key is reserved for source music services
-    that support ratings (e.g. PANDORA, SPOTIFY, etc).
+    Note that this key is reserved for source music services that
+    support ratings (e.g. PANDORA, SPOTIFY, etc).
     """
 
     THUMBS_UP = 'THUMBS_UP'
     """
     Sets a thumbs up rating for the currently playing media.
         
-    Note that the THUMBS_UP key is reserved for source music services
-    that support ratings (e.g. PANDORA, SPOTIFY, etc).
+    Note that this key is reserved for source music services that
+    support ratings (e.g. PANDORA, SPOTIFY, etc).
     """
 
     VOLUME_DOWN = 'VOLUME_DOWN'

@@ -1,9 +1,9 @@
 # external package imports.
 from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export
 from .surveyresultitem import SurveyResultItem
 
 @export
@@ -40,7 +40,7 @@ class PerformWirelessSiteSurveyResponse:
 
             # sort items on FriendlyName property, ascending order.
             if len(self._SurveyResultItems) > 0:
-                self._SurveyResultItems.sort(key=lambda x: x.Ssid or "", reverse=False)
+                self._SurveyResultItems.sort(key=lambda x: (x.Ssid or "").lower(), reverse=False)
 
 
     def __getitem__(self, key) -> SurveyResultItem:
@@ -69,17 +69,6 @@ class PerformWirelessSiteSurveyResponse:
         The list of `SurveyResultItem` items. 
         """
         return self._SurveyResultItems
-
-
-    def append(self, value: SurveyResultItem):
-        """
-        Append a new `SurveyResultItem` item to the list.
-        
-        Args:
-            value:
-                The `SurveyResultItem` object to append.
-        """
-        self._SurveyResultItems.append(value)
 
 
     def ToString(self, includeItems:bool=False) -> str:

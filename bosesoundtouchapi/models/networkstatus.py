@@ -40,7 +40,7 @@ class NetworkStatus:
             self._SerialNumber = _xmlFind(root_device, 'deviceSerialNumber')
         
             for interface in root_device.find('interfaces'):
-                self.append(NetworkStatusInterface(interface))
+                self._Interfaces.append(NetworkStatusInterface(interface))
             
 
     def __getitem__(self, key) -> NetworkStatusInterface:
@@ -82,17 +82,6 @@ class NetworkStatus:
     def SerialNumber(self) -> str:
         """ The device serial number, as assigned by the manufacturer. """
         return self._SerialNumber
-
-
-    def append(self, value:NetworkStatusInterface):
-        """
-        Append a new `NetworkStatusInterface` item to the list.
-        
-        Args:
-            value:
-                The `NetworkStatusInterface` object to append.
-        """
-        self._Interfaces.append(value)
 
 
     def ToString(self, includeItems:bool=False) -> str:

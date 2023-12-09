@@ -10,64 +10,64 @@ class SoundTouchItemTypes(Enum):
     Item Types enumeration.
     """
     
-    activity = "activity"
+    Activity = "activity"
 
-    album = "album"
+    Album = "album"
 
-    allTracks = "allTracks"
+    AllTracks = "allTracks"
 
-    artist = "artist"
+    Artist = "artist"
 
-    artistHeader = "artistHeader"
+    ArtistHeader = "artistHeader"
 
-    artistRadio = "artistRadio"
+    ArtistRadio = "artistRadio"
 
-    artistStation = "artistStation"
+    ArtistStation = "artistStation"
 
-    chart = "chart"
+    Chart = "chart"
 
-    composer = ""
+    Composer = ""
 
-    directory = "dir"
+    Directory = "dir"
 
-    display = "display"
+    Display = "display"
 
-    episode = "episode"
+    Episode = "episode"
 
-    genre = "genre"
+    Genre = "genre"
 
-    locale = "locale"
+    Locale = "locale"
 
-    playall = "playall"
+    Playall = "playall"
 
-    playlist = "playlist"
+    Playlist = "playlist"
 
-    podcast = "podcast"
+    Podcast = "podcast"
 
-    previous = "previous"
+    Previous = "previous"
 
-    radio = "radio"
+    Radio = "radio"
 
-    recommendation = "recommendation"
+    Recommendation = "recommendation"
 
-    station = "station"
+    Station = "station"
 
-    stationurl = "stationurl"
+    StationUrl = "stationurl"
 
-    themedRadio = "themedRadio"
+    ThemedRadio = "themedRadio"
 
-    topAlbum = "topAlbum"
+    TopAlbum = "topAlbum"
 
-    topArtist = "topArtist"
+    TopArtist = "topArtist"
 
-    topTrack = "topTrack"
+    TopTrack = "topTrack"
 
-    track = "track"
+    Track = "track"
 
-    tracklist = "tracklist"
+    Tracklist = "tracklist"
 
-    tracklistRadio = "tracklistRadio"
+    TracklistRadio = "tracklistRadio"
 
-    tracklisturl = "tracklisturl"
+    TracklistUrl = "tracklisturl"
 
-    user = "user"
+    User = "user"

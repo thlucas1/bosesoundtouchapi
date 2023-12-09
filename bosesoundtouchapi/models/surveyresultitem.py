@@ -1,9 +1,8 @@
 # external package imports.
-from typing import Iterator
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export, _xmlGetAttrBool
 
 @export
 class SurveyResultItem:
@@ -36,7 +35,7 @@ class SurveyResultItem:
         else:
 
             # base fields.
-            self._Secure = root.get("secure") == 'true'
+            self._Secure = _xmlGetAttrBool(root, 'secure')
             self._SecurityTypes = []
             self._SignalStrength = root.get('signalStrength')
             self._Ssid = root.get('ssid')
@@ -105,7 +104,7 @@ class SurveyResultItem:
         """
         msg:str = 'SurveyResultItem:'
         if self._Ssid is not None and len(self._Ssid) > 0: msg = '%s ssid="%s"' % (msg, str(self._Ssid))
-        if self._Secure is not None: msg = '%s secure="%s"' % (msg, str(self._Secure))
+        if self._Secure is not None: msg = '%s secure="%s"' % (msg, str(self._Secure).lower())
         if self._SignalStrength is not None: msg = '%s signalStrength="%s"' % (msg, str(self._SignalStrength))
         if self._SecurityTypes is not None and len(self._SecurityTypes) > 0: msg = '%s securityTypes="%s"' % (msg, str(self._SecurityTypes))
         return msg

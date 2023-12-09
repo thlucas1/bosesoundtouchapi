@@ -4,7 +4,7 @@ from xml.etree.ElementTree import Element, tostring
 import xmltodict
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlFindAttr
+from ..bstutils import export
 from .sourceitem import SourceItem
 
 @export
@@ -36,16 +36,16 @@ class SourceList:
             # base fields.
             if (root.tag == 'sources'):
                 for item in root:
-                    self.append(SourceItem(root=item))
+                    self._SourceItems.append(SourceItem(root=item))
             else:
                 source_item_list = root.find('sources')
                 if source_item_list:
                     for item in root.find('sources'):
-                        self.append(SourceItem(root=item))
+                        self._SourceItems.append(SourceItem(root=item))
 
             # sort items on Source property, descending order.
             if len(self._SourceItems) > 0:
-                self._SourceItems.sort(key=lambda x: x.Source or "", reverse=False)
+                self._SourceItems.sort(key=lambda x: (x.Source or "").lower(), reverse=False)
 
 
     def __getitem__(self, key) -> SourceItem:
@@ -79,17 +79,6 @@ class SourceList:
         The list of `SourceItem` items. 
         """
         return self._SourceItems
-
-
-    def append(self, value: SourceItem):
-        """
-        Append a new `SourceItem` item to the list.
-        
-        Args:
-            value:
-                The `SourceItem` object to append.
-        """
-        self._SourceItems.append(value)
 
 
     def ToDictionary(self, encoding:str='utf-8') -> dict:

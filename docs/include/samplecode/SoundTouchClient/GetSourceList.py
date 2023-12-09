@@ -38,7 +38,7 @@ try:
         print("\nCached configuration, direct:\n%s" % sourceList.ToString(True))
         
     # sort the list (in place) by SourceAccount, ascending order.
-    sourceList.SourceItems.sort(key=lambda x: x.SourceAccount or "", reverse=False)
+    sourceList.SourceItems.sort(key=lambda x: (x.SourceAccount or "").lower(), reverse=False)
     print("\nList sorted by SourceAccount:\n%s" % sourceList.ToString(True))
                        
 except Exception as ex:

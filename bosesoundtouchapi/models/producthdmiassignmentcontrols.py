@@ -33,7 +33,7 @@ class ProductHdmiAssignmentControls:
         elif root.tag == 'producthdmiassignmentcontrols':
 
             # base fields.
-            self._HdmiInputSelection01 = root.get('hdmiinputselection_01', default=None)
+            self._HdmiInputSelection01 = root.get('hdmiinputselection_01')
 
     def __repr__(self) -> str:
         return self.ToString()

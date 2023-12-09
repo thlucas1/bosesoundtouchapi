@@ -31,7 +31,7 @@ class BlueToothInfo:
         
         elif root.tag == 'BluetoothInfo':
 
-            self._MacAddress = root.get('BluetoothMACAddress', default=None)
+            self._MacAddress = root.get('BluetoothMACAddress')
 
 
     def __repr__(self) -> str:

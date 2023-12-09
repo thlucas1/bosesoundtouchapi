@@ -3,7 +3,7 @@ from typing import Iterator
 from xml.etree.ElementTree import Element, tostring
 
 # our package imports.
-from ..bstutils import export, _xmlFind
+from ..bstutils import export, _xmlFind, _xmlGetAttrBool
 
 @export
 class Service:
@@ -34,9 +34,9 @@ class Service:
         else:
 
             # base fields.
-            self._IsAvailable = bool(root.get('isAvailable', default='false') == 'true')
-            self._Reason = root.get('reason', default=None)
-            self._ServiceType = root.get('type', default=None)
+            self._IsAvailable = _xmlGetAttrBool(root, 'isAvailable')
+            self._Reason = root.get('reason')
+            self._ServiceType = root.get('type')
 
 
     def __repr__(self) -> str:

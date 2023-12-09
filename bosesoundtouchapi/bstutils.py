@@ -124,35 +124,6 @@ class Event:
     __len__  = getHandlerCount
 
 
-def _xmlFind(root:Element, tag:str, default=None) -> str:
-    """
-    Finds the specified xml node tag in the Element object, and returns it's inner text value.
-    
-    Args:
-        root (xml.etree.ElementTree.Element)
-            The Element object to search.
-        tag (str):
-            The xml node tag to search for.
-        default:
-            A default value to assign if the xml node tag was not found.
-            
-    Returns:
-        The text value of the specified xml node tag if found; otherwise, the default value.
-    """
-    if root is None:
-        return default
-
-    # if root IS the tag, then process the root.
-    if root.tag == tag:
-        return root.text
-
-    # try to find the tag - if not found then return default value; otherwise return the text.
-    result = root.find(tag)
-    if result is None:
-        return default
-    return result.text
-
-
 def _xmlFind(root:Element, tag:str, default=None, defaultNoText=None) -> str:
     """
     Finds the specified xml node tag in the Element object, and returns it's inner text value.
@@ -194,35 +165,93 @@ def _xmlFind(root:Element, tag:str, default=None, defaultNoText=None) -> str:
     return result.text
 
 
-def _xmlFindAttr(root:Element, tag:str, name:str, default=None) -> str:
+def _xmlFindBool(root:Element, name:str, default:bool=None) -> bool:
     """
-    Finds the specified attribute for an xml node tag in the Element object, and returns 
-    it's value.
+    Finds the specified xml node name in the root Element object and returns its value
+    as a boolean.  The default argument is returned if the xml node name is not found.
     
     Args:
         root (xml.etree.ElementTree.Element)
             The Element object to search.
-        tag (str):
-            The xml node tag to search for.
         name (str):
-            The xml node attribute name to search for.
-        default:
-            A default value to assign if the xml node tag attribute name was not found.
+            The xml node name to search for.
+        default (bool):
+            A default value to assign if the xml node name was not found.
             
     Returns:
-        The text value of the specified xml node tag attribute name if found; 
+        The boolean value assigned to the specified xml node name if found; 
         otherwise, the default value.
     """
-    if root is None:
+    elmNode = root.find(name)
+    if elmNode is None or elmNode.text is None:
         return default
+    return elmNode.text.lower() in ('true', '1', 'yes', 'on')
 
-    # if root IS the tag, then process the root.
-    if root.tag == tag:
-        return root.get(name, default)
 
-    # try to find the tag - if not found then return default value; otherwise return the text.
-    result = root.find(tag)
-    if result is None:
-        return default
-    return result.get(name, default)
+def _xmlFindInt(root:Element, name:str, default:int=None) -> int:
+    """
+    Finds the specified xml node name in the root Element object and returns its value
+    as a integer.  The default argument is returned if the xml node name is not found.
     
+    Args:
+        root (xml.etree.ElementTree.Element)
+            The Element object to search.
+        name (str):
+            The xml node name to search for.
+        default (int):
+            A default value to assign if the xml node name was not found.
+            
+    Returns:
+        The integer value assigned to the specified xml node name if found; 
+        otherwise, the default value.
+    """
+    elmNode = root.find(name)
+    if elmNode is None or elmNode.text is None:
+        return default
+    return int(elmNode.text)
+
+
+def _xmlGetAttrBool(root:Element, name:str, default:bool=None) -> bool:
+    """
+    Finds the specified xml attribute name in the root Element object and returns its value
+    as a boolean.  The default argument is returned if the xml attribute name is not found.
+
+    Args:
+        root (xml.etree.ElementTree.Element)
+            The Element object to search.
+        name (str):
+            The xml attribute name to search for.
+        default (bool):
+            A default value to assign if the xml attribute name was not found.
+            
+    Returns:
+        The boolean value assigned to the specified xml attribute name if found; 
+        otherwise, the default value.
+    """
+    elmAttr = root.get(name)
+    if elmAttr is None:
+        return default
+    return elmAttr.lower() in ('true', '1', 'yes', 'on')
+
+
+def _xmlGetAttrInt(root:Element, name:str, default:int=None) -> int:
+    """
+    Finds the specified xml attribute name in the root Element object and returns its value
+    as a integer.  The default argument is returned if the xml attribute name is not found.
+
+    Args:
+        root (xml.etree.ElementTree.Element)
+            The Element object to search.
+        name (str):
+            The xml attribute name to search for.
+        default (int):
+            A default value to assign if the xml attribute name was not found.
+            
+    Returns:
+        The integer value assigned to the specified xml attribute name if found; 
+        otherwise, the default value.
+    """
+    elmAttr = root.get(name)
+    if elmAttr is None:
+        return default
+    return int(elmAttr)
