@@ -1,6 +1,6 @@
 # import all classes from the namespace.
 from .addstation import AddStation
-from .audiodspcontrols import AudioDspControls
+from .audiodspcontrols import AudioDspControls, AudioDspAudioModes
 from .audioproductlevelcontrols import AudioProductLevelControls
 from .audioproducttonecontrols import AudioProductToneControls
 from .audiospeakerattributeandsetting import AudioSpeakerAttributeAndSetting
@@ -26,7 +26,7 @@ from .performwirelesssitesurveyresponse import PerformWirelessSiteSurveyResponse
 from .playinfo import PlayInfo
 from .powermanagement import PowerManagement
 from .presetlist import PresetList, Preset
-from .productcechdmicontrol import ProductCecHdmiControl
+from .productcechdmicontrol import ProductCecHdmiControl, ProductCecHdmiModes
 from .producthdmiassignmentcontrols import ProductHdmiAssignmentControls
 from .rebroadcastlatencymode import RebroadcastLatencyMode
 from .recentlist import RecentList, Recent
@@ -53,7 +53,7 @@ from .zone import Zone, ZoneMember
 # all classes to import when "import *" is specified.
 __all__ = [
     'AddStation',
-    'AudioDspControls',
+    'AudioDspControls', 'AudioDspAudioModes',
     'AudioProductLevelControls',
     'AudioProductToneControls',
     'AudioSpeakerAttributeAndSetting',
@@ -79,7 +79,7 @@ __all__ = [
     'PlayInfo',
     'PowerManagement',
     'PresetList', 'Preset',
-    'ProductCecHdmiControl',
+    'ProductCecHdmiControl', 'ProductCecHdmiModes',
     'ProductHdmiAssignmentControls',
     'RebroadcastLatencyMode',
     'RecentList', 'Recent',

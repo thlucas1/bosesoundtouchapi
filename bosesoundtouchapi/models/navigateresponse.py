@@ -174,6 +174,8 @@ class NavigateResponse:
                 request body; otherwise, False to return all attributes.
         """
         elm = Element('items')
+        elm.set('totalItems', str(self._TotalItems))
+        elm.set('itemCount', str(self.ItemCount))
         
         item:NavigateItem
         for item in self._Items:

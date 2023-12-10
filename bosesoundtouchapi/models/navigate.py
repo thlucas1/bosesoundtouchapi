@@ -102,11 +102,11 @@ class Navigate(SoundTouchModelRequest):
 
             # for STORED_MUSIC sources, ensure we have limits specified.
             if source == SoundTouchSources.STORED_MUSIC.value:
-                if startItem is None:
+                if startItem is None or startItem < 1:
                     startItem = 1
-                if numItems is None:
+                if numItems is None or startItem < 1:
                     numItems = 1000
-
+                
             self._ContainerItem = containerItem
             self._MenuType = menuType
             self._NumItems = numItems

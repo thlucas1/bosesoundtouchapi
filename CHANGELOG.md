@@ -6,6 +6,15 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+soundtouchhdmicecmodes.py
+###### [ 1.0.24 ] - 2023/12/09
+
+  * Added method `SoundTouchClient`.`SearchMusicLibrary` - Searches a specified music library container (e.g. STORED_MUSIC, etc).
+  * Added model `AudioDspAudioModes` - media product cec hdmi modes enumeration.
+  * Added model `ProductCecHdmiModes` - media product cec hdmi modes enumeration.
+  * Removed class `SoundTouchAudioModes` - replaced with AudioDspAudioModes model.
+  * Removed class `SoundTouchHdmiCecModes` - replaced with NavigateMenuTypes model.
+
 ###### [ 1.0.23 ] - 2023/12/09
 
   * Added method `SoundTouchClient`.`GetMusicLibraryItems` - Gets a list of music library data from the specified music library (e.g. STORED_MUSIC, etc).

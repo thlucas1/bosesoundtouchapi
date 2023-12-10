@@ -2,12 +2,12 @@
 from enum import Enum
 
 # our package imports.
-from .bstutils import export
+from ..bstutils import export
 
 @export
-class SoundTouchHdmiCecModes(Enum):
+class ProductCecHdmiModes(Enum):
     """
-    SoundTouch HDMI CEC Modes.
+    Product CEC HDMI Modes enumeration.
     """
     
     ALTERNATE = 'CEC_MODE_ALTERNATE'
@@ -34,6 +34,6 @@ class SoundTouchHdmiCecModes(Enum):
     @staticmethod    
     def ToString(value) -> str:
         """ Returns the enum.value (instead of classname.value) as a string. """
-        if isinstance(value, SoundTouchHdmiCecModes):
+        if isinstance(value, ProductCecHdmiModes):
             return value.value
         return str(value)

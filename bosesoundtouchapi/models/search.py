@@ -29,8 +29,9 @@ class Search(SoundTouchModelRequest):
     """
 
     def __init__(self, source:str=None, sourceAccount:str=None, 
-                 searchTerm:SearchTerm=None, searchItem:NavigateItem=None,
+                 searchTerm:SearchTerm=None, containerItem:NavigateItem=None,
                  startItem:int=None, numItems:int=None, sortType:SearchSortTypes=None, 
+                 containerTitle:str=None,
                  root:Element=None
                  ) -> None:
         """
@@ -38,19 +39,22 @@ class Search(SoundTouchModelRequest):
         
         Args:
             source (str):
-                Music service source to Search (e.g. "PANDORA", "SPOTIFY", etc).
+                Music library source to Search (e.g. "STORED_MUSIC", etc).
             sourceAccount (str):
-                Music service source account (e.g. the music service user-id).
+                Music library source account (e.g. the Music Library user-id).
             searchTerm (SearchTerm):
                 Search term object that controls what and how to search for.
-            searchItem (NavigateItem):
-                Navigate item that controls what should be searched.
+            containerItem (NavigateItem):
+                Music llibrary container item to search.  
             startItem (int):
                 Starting item number to return information for.
             numItems (int):
                 Number of items to return.
             sortType (SearchSortTypes|str):
-                Sort type used by the Music Service to sort the returned items by.
+                Sort type used by the Music Library to sort the returned items by.
+            containerTitle (str):
+                Title to assign to the `ContainerTitle`; also supports formatting - see the
+                `ContainerTitleFormatString` property for more details.
             root (Element):
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
@@ -60,12 +64,15 @@ class Search(SoundTouchModelRequest):
                 startItem argument was not of type int.  
         """
         self._NumItems:int = None
-        self._SearchItem:NavigateItem = None
+        self._ContainerItem:NavigateItem = None
         self._SearchTerm:SearchTerm = None
         self._SortType:str = None
         self._Source:str = None
         self._SourceAccount:str = None
         self._StartItem:int = None
+        
+        # helper attributes (not part of the xml definition).
+        self._ContainerTitleFormatString:str = None
         
         if (root is None):
             
@@ -82,11 +89,22 @@ class Search(SoundTouchModelRequest):
                 raise SoundTouchError('startItem argument was not of type int', logsi=_logsi)
             if not isinstance(searchTerm, SearchTerm):
                 raise SoundTouchError('searchTerm argument was not of type SearchTerm', logsi=_logsi)
-            if not isinstance(searchItem, NavigateItem):
-                raise SoundTouchError('searchItem argument was not of type SearchTerm', logsi=_logsi)
+            if not isinstance(containerItem, NavigateItem):
+                raise SoundTouchError('containerItem argument was not of type NavigateItem', logsi=_logsi)
+
+            # helper properties (not part of xml declaration).
+            self._ContainerTitleFormatString = containerTitle
+
+            # for STORED_MUSIC sources, ensure we have limits specified.
+            # startItem is required; otherwise, the search fails.
+            if source == SoundTouchSources.STORED_MUSIC.value:
+                if startItem is None or startItem < 1:
+                    startItem = 1
+                if numItems is None or startItem < 1:
+                    numItems = 1000
 
             self._NumItems = numItems
-            self._SearchItem = searchItem
+            self._ContainerItem = containerItem
             self._SearchTerm = searchTerm
             self._SortType = sortType
             self._Source = source
@@ -116,19 +134,92 @@ class Search(SoundTouchModelRequest):
 
 
     @property
-    def SearchItem(self) -> NavigateItem:
-        """ Navigate item that controls what should be searched. """
-        return self._SearchItem
+    def ContainerItem(self) -> NavigateItem:
+        """ Music llibrary container item to search. """
+        return self._ContainerItem
 
-    @SearchItem.setter
-    def SearchItem(self, value:NavigateItem):
+    @ContainerItem.setter
+    def ContainerItem(self, value:NavigateItem):
         """ 
-        Sets the SearchItem property value.
+        Sets the ContainerItem property value.
         """
         if value is not None:
             if not isinstance(value, NavigateItem):
                 return
-        self._SearchItem = value
+        self._ContainerItem = value
+
+
+    @property
+    def ContainerTitle(self) -> str:
+        """ 
+        Returns formatted container title information for the navigation criteria.
+        Format is controlled by the `ContainerTitleFormatString` property value.
+        
+        This allows the caller to easily retrieve (and format) information for display
+        about the current navigation path without having to check for null values.
+        """
+        result = self.ContainerTitleFormatString
+
+        source:str = self._Source or ''
+        sourceAccount:str = self._SourceAccount or ''
+        name:str = "Root"
+        location:str = "0"
+        searchterm:str = "*not specified*"
+
+        SOURCE:str = '{source}'
+        SOURCEACCOUNT:str = '{sourceaccount}'
+        NAME:str = '{name}'
+        LOCATION:str = '{location}'
+        SEARCHTERM:str = '{searchterm}'
+
+        if self._SearchTerm is not None:
+            searchterm = "\"%s\"" % self._SearchTerm.SearchText
+            
+        if self._ContainerItem is not None:
+            name = self._ContainerItem._Name or ''
+            if self._ContainerItem._ContentItem is not None:
+                location = self._ContainerItem._ContentItem._Location or ''
+            
+        if result.find(SOURCE) > -1:
+            result = result.replace(SOURCE, source)
+        if result.find(SOURCEACCOUNT) > -1:
+            result = result.replace(SOURCEACCOUNT, sourceAccount)
+        if result.find(NAME) > -1:
+            result = result.replace(NAME, name)
+        if result.find(LOCATION) > -1:
+            result = result.replace(LOCATION, location)
+        if result.find(SEARCHTERM) > -1:
+            result = result.replace(SEARCHTERM, searchterm)
+
+        return result        
+
+
+    @property
+    def ContainerTitleFormatString(self) -> str:
+        """ 
+        Gets container title format string.
+        
+        This property controls how the `ContainerTitle` property value is formatted.
+        
+        The following keywords are supported:
+        * `{source}` - Music Library source to navigate.  
+        * `{sourceaccount}` - Music Library source account.  
+        * `{name}` - Name of the container to navigate.  
+        * `{location}` - Location of the container to navigate.  
+        
+        Default is "{name} ({source}, '{sourceaccount}', '{location}')".
+        """
+        if self._ContainerTitleFormatString is None:
+            self._ContainerTitleFormatString = "{name} [{location}], for {searchterm}"
+        return self._ContainerTitleFormatString
+
+    @ContainerTitleFormatString.setter
+    def ContainerTitleFormatString(self, value:str):
+        """ 
+        Sets the ContainerTitleFormatString property value.
+        """
+        if value is not None:
+            self._ContainerTitleFormatString = value
 
 
     @property
@@ -163,7 +254,7 @@ class Search(SoundTouchModelRequest):
 
     @property
     def SortType(self) -> str:
-        """ Sort type used by the Music Service to sort the returned items by. """
+        """ Sort type used by the Music Library to sort the returned items by. """
         return self._SortType
 
     @SortType.setter
@@ -178,7 +269,7 @@ class Search(SoundTouchModelRequest):
 
     @property
     def Source(self) -> str:
-        """ Music service source to Search (e.g. "PANDORA", "SPOTIFY", etc). """
+        """ Music library source to Search (e.g. "STORED_MUSIC", etc). """
         return self._Source
 
     @Source.setter
@@ -193,7 +284,7 @@ class Search(SoundTouchModelRequest):
 
     @property
     def SourceAccount(self) -> str:
-        """ Music service source account (e.g. the music service user-id). """
+        """ Music library source account (e.g. the Music Library user-id). """
         return self._SourceAccount
 
     @SourceAccount.setter
@@ -206,7 +297,11 @@ class Search(SoundTouchModelRequest):
 
     @property
     def StartItem(self) -> int:
-        """ Starting item number to return information for. """
+        """ 
+        Starting item number to return information for. 
+        
+        StartItem is required, otherwise the search fails.
+        """
         return self._StartItem
 
     @StartItem.setter
@@ -247,8 +342,8 @@ class Search(SoundTouchModelRequest):
             elmNode = self._SearchTerm.ToElement()
             elm.append(elmNode)
             
-        if self._SearchItem is not None:
-            elmNode = self._SearchItem.ToElement()
+        if self._ContainerItem is not None:
+            elmNode = self._ContainerItem.ToElement()
             elm.append(elmNode)
             
         return elm
@@ -262,8 +357,8 @@ class Search(SoundTouchModelRequest):
         msg = '%s Source="%s"' % (msg, str(self._Source))
         msg = '%s SourceAccount="%s"' % (msg, str(self._SourceAccount))
         if self._SortType is not None and len(self._SortType) > 0: msg = '%s SortType="%s"' % (msg, str(self._SortType))
-        if self._StartItem is not None: msg = '%s StartItem=%s' % (msg, str(self._StartItem))
+        msg = '%s StartItem=%s' % (msg, str(self._StartItem))
         if self._NumItems is not None: msg = '%s NumItems=%s' % (msg, str(self._NumItems))
         if self._SearchTerm is not None: msg = '%s %s' % (msg, str(self._SearchTerm))
-        if self._SearchItem is not None: msg = '%s %s' % (msg, str(self._SearchItem))
+        if self._ContainerItem is not None: msg = '%s %s' % (msg, str(self._ContainerItem))
         return msg 

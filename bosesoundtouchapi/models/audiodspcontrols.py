@@ -3,9 +3,9 @@ from xml.etree.ElementTree import Element
 
 # our package imports.
 from ..bstutils import export, _xmlGetAttrInt
-from ..soundtouchaudiomodes import SoundTouchAudioModes
 from ..soundtouchmodelrequest import SoundTouchModelRequest
 from ..soundtoucherror import SoundTouchError
+from .audiodspaudiomodes import AudioDspAudioModes
 
 # get smartinspect logger reference; create a new session for this module name.
 import logging
@@ -25,14 +25,14 @@ class AudioDspControls(SoundTouchModelRequest):
     Audio DSP Controls configuration of the device.      
     """
 
-    def __init__(self, audioMode:str=None, videoSyncAudioDelay:int=None,
+    def __init__(self, audioMode:AudioDspAudioModes=None, videoSyncAudioDelay:int=None,
                  root:Element=None
                  ) -> None:
         """
         Initializes a new instance of the class.
         
         Args:
-            audioMode (str):
+            audioMode (AudioDspAudioModes|str):
                 Audio mode value (e.g. "AUDIO_MODE_NORMAL", "AUDIO_MODE_DIALOG", etc).
             videoSyncAudioDelay (int):
                 Video syncronization audio delay value.
@@ -87,7 +87,7 @@ class AudioDspControls(SoundTouchModelRequest):
         Sets the AudioMode property value.
         """
         if value != None:
-            if isinstance(value, SoundTouchAudioModes):
+            if isinstance(value, AudioDspAudioModes):
                 self._AudioMode = value.value
             elif isinstance(value, str):
                 self._AudioMode = value

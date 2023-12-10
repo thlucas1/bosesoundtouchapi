@@ -22,9 +22,9 @@ try:
 
     # for testing purposes, toggle the audio mode.
     # if the mode is currently "AUDIO_MODE_NORMAL" then we will use "AUDIO_MODE_DIALOG", or vice versa.
-    cfgUpdate.AudioMode = SoundTouchAudioModes.NORMAL
+    cfgUpdate.AudioMode = AudioDspAudioModes.Normal
     if cfgUpdate.AudioMode == cfgBefore.AudioMode:
-        cfgUpdate.AudioMode = SoundTouchAudioModes.DIALOG
+        cfgUpdate.AudioMode = AudioDspAudioModes.Dialog
     print("\nSetting audio dsp controls AudioMode to '%s' (from '%s') ..." % (cfgUpdate.AudioMode, cfgBefore.AudioMode))
 
     # set audio dsp controls to specific audio mode.

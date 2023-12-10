@@ -50,6 +50,7 @@
     <Compile Include="bosesoundtouchapi\models\navigateresponse.py" />
     <Compile Include="bosesoundtouchapi\models\navigateitem.py" />
     <Compile Include="bosesoundtouchapi\models\navigatesorttypes.py" />
+    <Compile Include="bosesoundtouchapi\models\audiodspaudiomodes.py" />
     <Compile Include="bosesoundtouchapi\models\trackinfo.py" />
     <Compile Include="bosesoundtouchapi\models\controllevelinfo.py" />
     <Compile Include="bosesoundtouchapi\models\softwareupdatecheckresponse.py" />
@@ -69,9 +70,8 @@
     <Compile Include="bosesoundtouchapi\models\speakerattributeandsetting.py" />
     <Compile Include="bosesoundtouchapi\models\service.py" />
     <Compile Include="bosesoundtouchapi\models\soundtouchconfigurationstatus.py" />
-    <Compile Include="bosesoundtouchapi\soundtouchaudiomodes.py" />
     <Compile Include="bosesoundtouchapi\soundtouchdiscovery.py" />
-    <Compile Include="bosesoundtouchapi\soundtouchhdmicecmodes.py" />
+    <Compile Include="bosesoundtouchapi\models\productcechdmimodes.py" />
     <Compile Include="bosesoundtouchapi\soundtouchitemtypes.py" />
     <Compile Include="bosesoundtouchapi\models\searchfiltertypes.py" />
     <Compile Include="bosesoundtouchapi\models\searchsorttypes.py" />
@@ -138,6 +138,7 @@
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetAudioProductToneControls.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetAudioDspControls.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\AddMusicServiceStation.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SearchMusicLibrary.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetMusicLibraryItems.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\PowerStandbyLowPower.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SearchMusicServiceStations.py" />

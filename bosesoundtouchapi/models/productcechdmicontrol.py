@@ -1,10 +1,10 @@
 # external package imports.
-from xml.etree.ElementTree import Element, tostring
+from xml.etree.ElementTree import Element
 
 # our package imports.
 from ..bstutils import export
 from ..soundtouchmodelrequest import SoundTouchModelRequest
-from ..soundtouchhdmicecmodes import SoundTouchHdmiCecModes
+from .productcechdmimodes import ProductCecHdmiModes
 
 @export
 class ProductCecHdmiControl(SoundTouchModelRequest):
@@ -50,7 +50,7 @@ class ProductCecHdmiControl(SoundTouchModelRequest):
         """ 
         The HDMI CEC mode value.
        
-        See `SoundTouchProductCecHdmiModes` for more information.
+        See `ProductCecHdmiModes` for more information.
         """
         return self._CecMode
     
@@ -60,7 +60,7 @@ class ProductCecHdmiControl(SoundTouchModelRequest):
         Sets the CecMode property value.
         """
         if value != None:
-            if isinstance(value, SoundTouchHdmiCecModes):
+            if isinstance(value, ProductCecHdmiModes):
                 self._CecMode = value.value
             elif isinstance(value, str):
                 self._CecMode = value

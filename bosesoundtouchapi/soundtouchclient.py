@@ -1198,7 +1198,7 @@ class SoundTouchClient:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("NavigateResponse", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("navigate", navigate.ContainerTitle, self._Device.DeviceName))
         result:NavigateResponse = self.Put(SoundTouchNodes.navigate, navigate, NavigateResponse)
         return result
 
@@ -1232,7 +1232,7 @@ class SoundTouchClient:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("NavigateResponse", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("navigate", navigate.ContainerTitle, self._Device.DeviceName))
         result:NavigateResponse = self.Put(SoundTouchNodes.navigate, navigate, NavigateResponse)
         return result
 
@@ -3130,6 +3130,40 @@ class SoundTouchClient:
             self.SetVolumeLevel(volume.Actual)
             
         return
+
+
+    def SearchMusicLibrary(self, search:Search) -> SearchResponse:
+        """
+        Searches a specified music library container (e.g. STORED_MUSIC, etc).
+        
+        Args:
+            search (Navigate):
+                Criteria used to search the music library.
+
+        Returns:
+            A `SearchResponse` object that contains the response.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `search` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SearchMusicLibrary.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.search.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("search", search.ContainerTitle, self._Device.DeviceName))
+        result:SearchResponse = self.Put(SoundTouchNodes.search, search, SearchResponse)
+        return result
 
 
     def SearchMusicServiceStations(self, searchStation:SearchStation) -> SearchStationResults:
