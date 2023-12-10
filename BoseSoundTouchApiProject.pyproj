@@ -32,6 +32,7 @@
     <Compile Include="bosesoundtouchapi\firmware\soundtouchfirmwareproduct.py" />
     <Compile Include="bosesoundtouchapi\firmware\soundtouchfirmwarerelease.py" />
     <Compile Include="bosesoundtouchapi\firmware\__init__.py" />
+    <Compile Include="bosesoundtouchapi\models\keystates.py" />
     <Compile Include="bosesoundtouchapi\models\mediaitemcontainer.py" />
     <Compile Include="bosesoundtouchapi\models\searchresponse.py" />
     <Compile Include="bosesoundtouchapi\models\search.py" />

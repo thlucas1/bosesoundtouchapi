@@ -127,5 +127,6 @@ class Volume(SoundTouchModelRequest):
         if self._Actual is not None:msg = '%s Actual=%d' % (msg, self._Actual)
         if self._Target is not None: msg = '%s Target=%d' % (msg, self._Target)
         if self._IsMuted is not None: msg = '%s IsMuted=%s' % (msg, str(self._IsMuted).lower())
+        if self._DeviceId is not None: msg = '%s DeviceId="%s"' % (msg, self._DeviceId)
         return msg 
     

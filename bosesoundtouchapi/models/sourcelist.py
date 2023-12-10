@@ -25,6 +25,7 @@ class SourceList:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._DeviceId:str = None
         self._SourceItems:list[SourceItem] = []
         
         if (root is None):
@@ -35,11 +36,13 @@ class SourceList:
 
             # base fields.
             if (root.tag == 'sources'):
+                self._DeviceId = root.get('deviceID')
                 for item in root:
                     self._SourceItems.append(SourceItem(root=item))
             else:
                 source_item_list = root.find('sources')
-                if source_item_list:
+                if source_item_list is not None:
+                    self._DeviceId = root.get('deviceID')
                     for item in root.find('sources'):
                         self._SourceItems.append(SourceItem(root=item))
 
@@ -73,6 +76,12 @@ class SourceList:
         return self.ToString()
 
 
+    @property
+    def DeviceId(self) -> str:
+        """ Device identifier the configuration information was obtained from. """
+        return self._DeviceId
+
+    
     @property
     def SourceItems(self) -> list[SourceItem]:
         """ 
@@ -112,6 +121,7 @@ class SourceList:
                 request body; otherwise, False to return all attributes.
         """
         elm = Element('sources')
+        if self._DeviceId and len(self._DeviceId) > 0: elm.set('deviceID', str(self._DeviceId))
         
         item:SourceItem
         for item in self:
@@ -159,6 +169,7 @@ class SourceList:
                 include the base list.
         """
         msg:str = 'SourceList:'
+        if self._DeviceId is not None: msg = '%s DeviceId="%s"' % (msg, self._DeviceId)
         msg = "%s (%d items)" % (msg, self.__len__())
         
         if includeItems == True:

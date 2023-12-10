@@ -310,14 +310,15 @@ class SoundTouchClient:
         return result
 
 
-    def Action(self, keyName:SoundTouchKeys) -> None:
+    def Action(self, keyName:SoundTouchKeys, keyState:KeyStates=KeyStates.Both) -> None:
         """
         Tries to imitate a pressed key.
 
         Args:
-            keyName (SoundTouchKeys): 
+            keyName (SoundTouchKeys|str): 
                 The specified key to press.
-                A string is also accepted for this argument.
+            keyState (KeyStates|str): 
+                Key state to select (press, release, or both).
 
         This method can be used to invoke different actions by using the different
         keys defined in `bosesoundtouchapi.soundtouchkeys.SoundTouchKeys`.
@@ -333,11 +334,18 @@ class SoundTouchClient:
         if isinstance(keyName, SoundTouchKeys):
             key = keyName.value
             
-        _logsi.LogVerbose(MSG_TRACE_ACTION_KEY % (key, self._Device.DeviceName))
+        state:str = str(keyState)
+        if isinstance(keyState, KeyStates):
+            state = keyState.value
+            
+        xmlRequest = f'<key state="%s" sender="Gabbo">{key}</key>'
         
-        temp = f'<key state="%s" sender="Gabbo">{key}</key>'
-        self.Put(SoundTouchNodes.key, temp % 'press')
-        self.Put(SoundTouchNodes.key, temp % 'release')
+        # send press or release or both based upon state argument.
+        _logsi.LogVerbose(MSG_TRACE_ACTION_KEY % (key, state, self._Device.DeviceName))
+        if state in ['press','both']:
+            self.Put(SoundTouchNodes.key, xmlRequest % 'press')
+        if state in ['release','both']:
+            self.Put(SoundTouchNodes.key, xmlRequest % 'release')
 
 
     def AddFavorite(self) -> None:
@@ -360,7 +368,7 @@ class SoundTouchClient:
 
         # can the nowPlaying item be a favorite?
         if nowPlaying.IsFavoriteEnabled:
-            self.Action(SoundTouchKeys.ADD_FAVORITE)
+            self.Action(SoundTouchKeys.ADD_FAVORITE, KeyStates.Press)
         else:
             _logsi.LogVerbose(MSG_TRACE_FAVORITE_NOT_ENABLED % nowPlaying.ToString())
 
@@ -531,7 +539,9 @@ class SoundTouchClient:
 
     def Bookmark(self) -> None:
         """ 
-        Bookmarks the currently playing media
+        Bookmarks the currently playing media.
+        
+        This function is only supported by the Pandora Music Service.
 
         <details>
           <summary>Sample Code</summary>
@@ -540,15 +550,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        # # get current nowPlaying status.
-        # nowPlaying:NowPlayingStatus = self.GetNowPlayingStatus(True)
-
-        # # can the nowPlaying item be rated?
-        # if nowPlaying.IsRatingEnabled:
-        #     self.Action(SoundTouchKeys.BOOKMARK)
-        # else:
-        #     _logsi.LogVerbose(MSG_TRACE_BOOKMARKS_NOT_ENABLED % nowPlaying.ToString())
-        self.Action(SoundTouchKeys.BOOKMARK)
+        self.Action(SoundTouchKeys.BOOKMARK, KeyStates.Press)
 
 
     def ClearBluetoothPaired(self) -> SoundTouchMessage:
@@ -1185,6 +1187,24 @@ class SoundTouchClient:
                 If the device is not capable of supporting `navigate` functions,
                 as determined by a query to the cached `supportedURLs` web-services api.  
 
+        Use the `GetSourceList` method to get the `source` and `sourceAccount` values for 
+        the specific NAS Music Library you wish to navigate.
+                
+        A returned `NavigateResponse` item can be used to play the item's media content by 
+        passing its `ContentItem` value to the `PlayContentItem` method.
+
+        Music library containers can be traversed by issuing calls to a child container's 
+        `ContentItem`, starting at the Root container.  
+
+        Music library containers can also be traversed by issuing calls that start at a specific 
+        container.  For example, lets say you like to listen to songs from your favorite album; 
+        you could navigate the container directly if you know the source, sourceAccount, and 
+        location values.
+        
+        Note that some SoundTouch devices do not support this functionality.  This method will 
+        first query the device supportedUris to determine if it supports the function; if so, 
+        then the request is made to the device; if not, then a `SoundTouchError` is raised.
+        
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -1219,6 +1239,10 @@ class SoundTouchClient:
                 If the device is not capable of supporting `navigate` functions,
                 as determined by a query to the cached `supportedURLs` web-services api.  
 
+        Note that some SoundTouch devices do not support this functionality.  This method will 
+        first query the device supportedUris to determine if it supports the function; if so, 
+        then the request is made to the device; if not, then a `SoundTouchError` is raised.
+        
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -2059,7 +2083,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.NEXT_TRACK)
+        self.Action(SoundTouchKeys.NEXT_TRACK, KeyStates.Press)
 
 
     def MediaPause(self) -> None:
@@ -2073,7 +2097,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.PAUSE)
+        self.Action(SoundTouchKeys.PAUSE, KeyStates.Press)
 
 
     def MediaPlay(self) -> None:
@@ -2087,7 +2111,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.PLAY)
+        self.Action(SoundTouchKeys.PLAY, KeyStates.Press)
 
 
     def MediaPlayPause(self) -> None:
@@ -2101,7 +2125,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.PLAY_PAUSE)
+        self.Action(SoundTouchKeys.PLAY_PAUSE, KeyStates.Press)
 
 
     def MediaPreviousTrack(self) -> None:
@@ -2115,7 +2139,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.PREV_TRACK)
+        self.Action(SoundTouchKeys.PREV_TRACK, KeyStates.Press)
 
 
     def MediaRepeatAll(self) -> None:
@@ -2129,7 +2153,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.REPEAT_ALL)
+        self.Action(SoundTouchKeys.REPEAT_ALL, KeyStates.Press)
 
 
     def MediaRepeatOff(self) -> None:
@@ -2143,7 +2167,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.REPEAT_OFF)
+        self.Action(SoundTouchKeys.REPEAT_OFF, KeyStates.Press)
 
 
     def MediaRepeatOne(self) -> None:
@@ -2157,7 +2181,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.REPEAT_ONE)
+        self.Action(SoundTouchKeys.REPEAT_ONE, KeyStates.Press)
 
 
     def MediaResume(self) -> None:
@@ -2171,7 +2195,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.PLAY)
+        self.Action(SoundTouchKeys.PLAY, KeyStates.Both)
 
 
     def MediaShuffleOff(self) -> None:
@@ -2185,7 +2209,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.SHUFFLE_OFF)
+        self.Action(SoundTouchKeys.SHUFFLE_OFF, KeyStates.Press)
 
 
     def MediaShuffleOn(self) -> None:
@@ -2199,7 +2223,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.SHUFFLE_ON)
+        self.Action(SoundTouchKeys.SHUFFLE_ON, KeyStates.Press)
 
 
     def MediaStop(self) -> None:
@@ -2213,7 +2237,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.STOP)
+        self.Action(SoundTouchKeys.STOP, KeyStates.Both)
 
 
     def Mute(self) -> None:
@@ -2227,7 +2251,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.MUTE)
+        self.Action(SoundTouchKeys.MUTE, KeyStates.Press)
 
 
     def MuteOff(self, refresh: bool=True) -> None:
@@ -2256,7 +2280,7 @@ class SoundTouchClient:
         volume:Volume = self.GetVolume(refresh)
         if (volume):
             if (volume.IsMuted):
-                self.Action(SoundTouchKeys.MUTE)
+                self.Action(SoundTouchKeys.MUTE, KeyStates.Press)
 
 
     def MuteOn(self, refresh: bool=True) -> None:
@@ -2285,7 +2309,7 @@ class SoundTouchClient:
         volume:Volume = self.GetVolume(refresh)
         if (volume):
             if (not volume.IsMuted):
-                self.Action(SoundTouchKeys.MUTE)
+                self.Action(SoundTouchKeys.MUTE, KeyStates.Press)
                 
 
     def PlayContentItem(self, item:ContentItem, delay:int=5) -> SoundTouchMessage:
@@ -2583,7 +2607,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.POWER)
+        self.Action(SoundTouchKeys.POWER, KeyStates.Both)
 
 
     def PowerOff(self, refresh: bool=True) -> None:
@@ -2614,7 +2638,7 @@ class SoundTouchClient:
         stat:NowPlayingStatus = self.GetNowPlayingStatus(refresh)
         if (stat):
             if (stat.Source not in ["STANDBY", None]):
-                self.Action(SoundTouchKeys.POWER)
+                self.Action(SoundTouchKeys.POWER, KeyStates.Both)
 
 
     def PowerOn(self, refresh: bool=True) -> None:
@@ -2643,7 +2667,7 @@ class SoundTouchClient:
         stat:NowPlayingStatus = self.GetNowPlayingStatus(refresh)
         if (stat):
             if (stat.Source in ["STANDBY", None]):
-                self.Action(SoundTouchKeys.POWER)
+                self.Action(SoundTouchKeys.POWER, KeyStates.Both)
 
 
     def PowerStandby(self) -> None:
@@ -2883,7 +2907,7 @@ class SoundTouchClient:
 
         # can the nowPlaying item be a favorite?
         if nowPlaying.IsFavoriteEnabled:
-            self.Action(SoundTouchKeys.REMOVE_FAVORITE)
+            self.Action(SoundTouchKeys.REMOVE_FAVORITE, KeyStates.Press)
         else:
             _logsi.LogVerbose(MSG_TRACE_FAVORITE_NOT_ENABLED % nowPlaying.ToString())
 
@@ -3148,6 +3172,25 @@ class SoundTouchClient:
                 If the device is not capable of supporting `search` functions,
                 as determined by a query to the cached `supportedURLs` web-services api.  
 
+        Use the `GetSourceList` method to get the `source` and `sourceAccount` values for 
+        the specific NAS Music Library you wish to navigate.
+                
+        A returned `SearchResponse` item can be used to play the item's media content by 
+        passing its `ContentItem` value to the `PlayContentItem` method.
+
+        You must pay close attention to the `filter` attribute on the `SearchTerm` node, 
+        as the SoundTouch webservices API is very picky on what filter types are allowed 
+        for a container.  
+
+        The `StartItem` node is required; otherwise, the search fails.
+
+        Music library containers can found using the `GetMusicLibraryItems` method.  Use 
+        a returned `NavigateResponse` item's `ContentItem` node in the request.
+
+        Note that some SoundTouch devices do not support this functionality.  This method will 
+        first query the device supportedUris to determine if it supports the function; if so, 
+        then the request is made to the device; if not, then a `SoundTouchError` is raised.
+        
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -3186,6 +3229,10 @@ class SoundTouchClient:
         The `AddMusicServiceStation` method can be used to add a result item (song or artist)
         from the results of this method.
         
+        Note that some SoundTouch devices do not support this functionality.  This method will 
+        first query the device supportedUris to determine if it supports the function; if so, 
+        then the request is made to the device; if not, then a `SoundTouchError` is raised.
+                
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -3478,7 +3525,7 @@ class SoundTouchClient:
                 Default is 3; value range is 0 - 10.
 
         This method does nothing if there is no preset at the specified preset index.
-
+        
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -3487,7 +3534,7 @@ class SoundTouchClient:
         </details>
         """
         delay = self._ValidateDelay(delay, 3, 10)
-        self.Action(SoundTouchKeys.PRESET_1)
+        self.Action(SoundTouchKeys.PRESET_1, KeyStates.Release)
         
         if delay > 0:
             _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
@@ -3515,7 +3562,7 @@ class SoundTouchClient:
         </details>
         """
         delay = self._ValidateDelay(delay, 3, 10)
-        self.Action(SoundTouchKeys.PRESET_2)
+        self.Action(SoundTouchKeys.PRESET_2, KeyStates.Release)
         
         if delay > 0:
             _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
@@ -3543,7 +3590,7 @@ class SoundTouchClient:
         </details>
         """
         delay = self._ValidateDelay(delay, 3, 10)
-        self.Action(SoundTouchKeys.PRESET_3)
+        self.Action(SoundTouchKeys.PRESET_3, KeyStates.Release)
         
         if delay > 0:
             _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
@@ -3571,7 +3618,7 @@ class SoundTouchClient:
         </details>
         """
         delay = self._ValidateDelay(delay, 3, 10)
-        self.Action(SoundTouchKeys.PRESET_4)
+        self.Action(SoundTouchKeys.PRESET_4, KeyStates.Release)
         
         if delay > 0:
             _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
@@ -3599,7 +3646,7 @@ class SoundTouchClient:
         </details>
         """
         delay = self._ValidateDelay(delay, 3, 10)
-        self.Action(SoundTouchKeys.PRESET_5)
+        self.Action(SoundTouchKeys.PRESET_5, KeyStates.Release)
         
         if delay > 0:
             _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
@@ -3627,7 +3674,7 @@ class SoundTouchClient:
         </details>
         """
         delay = self._ValidateDelay(delay, 3, 10)
-        self.Action(SoundTouchKeys.PRESET_6)
+        self.Action(SoundTouchKeys.PRESET_6, KeyStates.Release)
         
         if delay > 0:
             _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
@@ -4069,7 +4116,7 @@ class SoundTouchClient:
 
         # can the nowPlaying item be rated?
         if nowPlaying.IsRatingEnabled:
-            self.Action(SoundTouchKeys.THUMBS_DOWN)
+            self.Action(SoundTouchKeys.THUMBS_DOWN, KeyStates.Press)
         else:
             _logsi.LogVerbose(MSG_TRACE_RATING_NOT_ENABLED % nowPlaying.ToString())
 
@@ -4099,7 +4146,7 @@ class SoundTouchClient:
 
         # can the nowPlaying item be rated?
         if nowPlaying.IsRatingEnabled:
-            self.Action(SoundTouchKeys.THUMBS_UP)
+            self.Action(SoundTouchKeys.THUMBS_UP, KeyStates.Press)
         else:
             _logsi.LogVerbose(MSG_TRACE_RATING_NOT_ENABLED % nowPlaying.ToString())
 
@@ -4128,13 +4175,13 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.VOLUME_DOWN)
+        self.Action(SoundTouchKeys.VOLUME_DOWN, KeyStates.Both)
 
 
     def VolumeUp(self) -> None:
         """ 
         Increase the volume of the device by one. 
-
+       
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -4142,4 +4189,4 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.VOLUME_UP)
+        self.Action(SoundTouchKeys.VOLUME_UP, KeyStates.Both)

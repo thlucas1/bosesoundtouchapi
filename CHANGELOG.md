@@ -6,14 +6,20 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
-soundtouchhdmicecmodes.py
-###### [ 1.0.24 ] - 2023/12/09
+###### [ 1.0.25 ] - 2023/12/10
+
+  * Added model `KeyStates` - key states enumeration.
+  * Updated methods in `SoundTouchClient` class that send remote keypress commands, based upon 2019 SoundTouch API reference specifications.  For example, the client used to send both press and release keys when a preset was selected; this was actually issuing a set preset command (via key press) and then selecting the preset (via key release).
+
+###### [ 1.0.24 ] - 2023/12/10
 
   * Added method `SoundTouchClient`.`SearchMusicLibrary` - Searches a specified music library container (e.g. STORED_MUSIC, etc).
   * Added model `AudioDspAudioModes` - media product cec hdmi modes enumeration.
+  * Added model `KeyStates` - key states enumeration.
   * Added model `ProductCecHdmiModes` - media product cec hdmi modes enumeration.
   * Removed class `SoundTouchAudioModes` - replaced with AudioDspAudioModes model.
   * Removed class `SoundTouchHdmiCecModes` - replaced with NavigateMenuTypes model.
+  * Updated methods in `SoundTouchClient` class that send remote keypress commands, based upon 2019 SoundTouch API reference specifications.  For example, the client used to send both press and release keys when a preset was selected; this was actually issuing a set preset command (via key press) and then selecting the preset (via key release).
 
 ###### [ 1.0.23 ] - 2023/12/09
 

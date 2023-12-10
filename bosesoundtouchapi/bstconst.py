@@ -4,7 +4,7 @@
 # constants are placed in this file if they are used across multiple files.
 # the only exception to this is for the VERSION constant, which is placed here for convenience.
 
-VERSION:str = "1.0.24"
+VERSION:str = "1.0.25"
 """ 
 Current version of the Bose SoundTouch API Python3 Library. 
 """
@@ -45,7 +45,7 @@ Bose Developer application key used for notifications.
 
 # application trace messages.
 
-MSG_TRACE_ACTION_KEY:str = "Sending '%s' key press and release action to SoundTouch device: '%s'"
+MSG_TRACE_ACTION_KEY:str = "Sending '%s' key (state=%s) action to SoundTouch device: '%s'"
 """
 Sending '%s' key press and release to SoundTouch device: '%s'
 """

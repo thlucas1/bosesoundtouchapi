@@ -15,6 +15,7 @@ from .contentitem import ContentItem
 from .controllevelinfo import ControlLevelInfo
 from .dspmonostereoitem import DSPMonoStereoItem
 from .infonetworkconfig import InfoNetworkConfig
+from .keystates import KeyStates
 from .mediaserverlist import MediaServerList, MediaServer
 from .musicserviceaccount import MusicServiceAccount
 from .navigate import Navigate, NavigateMenuTypes, NavigateSortTypes
@@ -68,6 +69,7 @@ __all__ = [
     'ControlLevelInfo',
     'DSPMonoStereoItem',
     'InfoNetworkConfig',
+    'KeyStates',
     'MediaServerList', 'MediaServer',
     'MusicServiceAccount',
     'Navigate', 'NavigateMenuTypes', 'NavigateSortTypes',
