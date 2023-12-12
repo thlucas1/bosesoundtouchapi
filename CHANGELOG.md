@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.27 ] - 2023/12/12
+
+  * Updated code to include pretty print of raw xml responses for easier debugging.
+
 ###### [ 1.0.26 ] - 2023/12/12
 
   * Added method `SoundTouchClient`.`CreateGroupStereoPair` - Creates a new left / right stereo pair speaker group configuration for the device.

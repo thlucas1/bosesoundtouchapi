@@ -248,7 +248,7 @@ class SoundTouchWebSocket:
         root = xmltree.fromstring(message)
         
         if _logsi.IsOn(SILevel.Verbose):
-            _logsi.LogXml(SILevel.Verbose, "SoundTouch web socket event listener OnMessage event: '%s' - %s" % (root.tag, message), message)
+            _logsi.LogXml(SILevel.Verbose, "SoundTouch web socket event listener OnMessage event: '%s' - %s" % (root.tag, message), message, prettyPrint=True)
 
         # the SoundTouch device can send different types of notifications, which
         # need to be processed differently.
@@ -412,7 +412,7 @@ class SoundTouchWebSocket:
             for listener in self.GetListenerGroup('*'):
                 if (event != None) and (isinstance(event, xmltree.Element)):
                     eventEncoded = xmltree.tostring(event, encoding="unicode")
-                    _logsi.LogXml(SILevel.Verbose, "SoundTouch device status update NOTIFY (*): '%s'" % (category), eventEncoded)
+                    _logsi.LogXml(SILevel.Verbose, "SoundTouch device status update NOTIFY (*): '%s'" % (category), eventEncoded, prettyPrint=True)
                 try:
                     listener(self._Client, event)
                 except Exception as ex: 
@@ -424,7 +424,7 @@ class SoundTouchWebSocket:
             for listener in self.GetListenerGroup(category):
                 if (event != None) and (isinstance(event, xmltree.Element)):
                     eventEncoded = xmltree.tostring(event, encoding="unicode")
-                    _logsi.LogXml(SILevel.Verbose, "SoundTouch device status update NOTIFY: '%s'" % (category), eventEncoded)
+                    _logsi.LogXml(SILevel.Verbose, "SoundTouch device status update NOTIFY: '%s'" % (category), eventEncoded, prettyPrint=True)
                 try:
                     listener(self._Client, event)
                 except Exception as ex: 

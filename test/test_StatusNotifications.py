@@ -32,7 +32,7 @@ class EventHandlerClass:
         if (args != None):
             ElementTree.indent(args)  # for pretty printing
             argsEncoded = ElementTree.tostring(args, encoding="unicode")
-            _logsi.LogXml(SILevel.Message, "SoundTouch device information event: '%s'" % (args.tag), argsEncoded, SIColors.LightGreen)
+            _logsi.LogXml(SILevel.Message, "SoundTouch device information event: '%s'" % (args.tag), argsEncoded, SIColors.LightGreen, prettyPrint=True)
             print("\n'%s' status update:\n%s" % (client.Device.DeviceName, argsEncoded))
 
 
@@ -61,7 +61,7 @@ class EventHandlerClass:
         if (args != None):
             ElementTree.indent(args)  # for pretty printing
             argsEncoded = ElementTree.tostring(args, encoding="unicode")
-            _logsi.LogXml(SILevel.Message, "SoundTouch device status update: '%s'" % (args.tag), argsEncoded, SIColors.LightGreen)
+            _logsi.LogXml(SILevel.Message, "SoundTouch device status update: '%s'" % (args.tag), argsEncoded, SIColors.LightGreen, prettyPrint=True)
             print("\n'%s' status update:\n%s" % (client.Device.DeviceName, argsEncoded))
         
 
@@ -69,7 +69,7 @@ class EventHandlerClass:
         if (args != None):
             ElementTree.indent(args)  # for pretty printing
             argsEncoded = ElementTree.tostring(args, encoding="unicode")
-            _logsi.LogXml(SILevel.Message, "SoundTouch device status update: '%s'" % (args.tag), argsEncoded, SIColors.LightGreen)
+            _logsi.LogXml(SILevel.Message, "SoundTouch device status update: '%s'" % (args.tag), argsEncoded, SIColors.LightGreen, prettyPrint=True)
             print("\n'%s' status update:\n%s" % (client.Device.DeviceName, argsEncoded))
             
             config:Volume = Volume(root=args[0])
@@ -80,7 +80,7 @@ class EventHandlerClass:
         if (args != None):
             ElementTree.indent(args)  # for pretty printing
             argsEncoded = ElementTree.tostring(args, encoding="unicode")
-            _logsi.LogXml(SILevel.Message, "SoundTouch device status update: '%s'" % (args.tag), argsEncoded, SIColors.LightGreen)
+            _logsi.LogXml(SILevel.Message, "SoundTouch device status update: '%s'" % (args.tag), argsEncoded, SIColors.LightGreen, prettyPrint=True)
             print("\n'%s' status update:\n%s" % (client.Device.DeviceName, argsEncoded))
             
             config:NowPlayingStatus = NowPlayingStatus(root=args[0])
@@ -96,7 +96,7 @@ try:
     socket:SoundTouchWebSocket = None
 
     # create SoundTouch device instance.
-    device:SoundTouchDevice = SoundTouchDevice("192.168.1.131") # Bose SoundTouch 10
+    device:SoundTouchDevice = SoundTouchDevice("192.168.1.132") # Bose SoundTouch 10
     #device:SoundTouchDevice = SoundTouchDevice("192.168.1.130") # Bose SoundTouch 300
             
     # create SoundTouch client instance from device.
@@ -114,7 +114,7 @@ try:
         ehc:EventHandlerClass = EventHandlerClass()
                 
         # add our listener(s) that will handle SoundTouch device status updates.
-        #socket.AddListener(SoundTouchNotifyCategorys.ALL, ehc.OnSoundTouchUpdateEvent)
+        socket.AddListener(SoundTouchNotifyCategorys.ALL, ehc.OnSoundTouchUpdateEvent)
         # socket.AddListener(SoundTouchNotifyCategorys.connectionStateUpdated, ehc.OnSoundTouchUpdateEvent)
         # socket.AddListener(SoundTouchNotifyCategorys.criticalErrorUpdate, ehc.OnSoundTouchUpdateEvent)
         # socket.AddListener(SoundTouchNotifyCategorys.errorNotification, ehc.OnSoundTouchUpdateEvent)
