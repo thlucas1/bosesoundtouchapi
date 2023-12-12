@@ -17,7 +17,7 @@ class ContentItem(SoundTouchModelRequest):
 
     Instances of this class can be used to switch the input source of media.
     """
-    def __init__(self, source:str=None, typeValue:str=None, location:str=None, sourceAccount:str=None, 
+    def __init__(self, source:SoundTouchSources=None, typeValue:str=None, location:str=None, sourceAccount:str=None, 
                  isPresetable:bool=None, name:str=None, containerArt:str=None,
                  root:Element=None
                  ) -> None:
@@ -25,7 +25,7 @@ class ContentItem(SoundTouchModelRequest):
         Initializes a new instance of the class.
         
         Args:
-            source (str):
+            source (SoundTouchSources|str):
                 source input.
             typeValue (str):
                 type of item.
@@ -106,12 +106,6 @@ class ContentItem(SoundTouchModelRequest):
 
 
     @property
-    def TypeValue(self) -> str:
-        """ Specifies the type of this item. """
-        return self._TypeValue
-
-
-    @property
     def Location(self) -> str:
         """ If present, a direct url link to the media. """
         return self._Location
@@ -131,18 +125,20 @@ class ContentItem(SoundTouchModelRequest):
 
     @property
     def Source(self) -> str:
-        """ 
-        Media source type. 
-        
-        This value is defined at `bosesoundtouchapi.soundtouchsources.SoundTouchSources`. 
-        """
+        """ The type or name of the service that is currently playing or to be played. """
         return self._Source
 
 
     @property
     def SourceAccount(self) -> str:
-        """ Source account this content item is played with. """
+        """ The account associated with the Source. """
         return self._SourceAccount
+
+
+    @property
+    def TypeValue(self) -> str:
+        """ Specifies the type of this item. """
+        return self._TypeValue
 
 
     def ToElement(self, isRequestBody:bool=False) -> Element:

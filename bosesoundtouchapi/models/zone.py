@@ -105,7 +105,13 @@ class Zone:
 
     @property
     def MasterDeviceId(self) -> str:
-        """ Master device identifier for this zone. """
+        """ 
+        Master device identifier for this zone. 
+        
+        If a device is the master, the first `ZoneMember` object will describe itself.  
+        If a device is a group member, the master will not be described in a member.   
+        You can determine if a device is the master or not by comparing its MAC Address to master.
+        """
         return self._MasterDeviceId
 
 
@@ -117,7 +123,7 @@ class Zone:
 
     @property
     def Members(self) -> list[ZoneMember]:
-        """ The list of `ZoneMember` objects that are members of this Zone. """
+        """ The list of `ZoneMember` objects that are (or will be) members of this Zone. """
         return self._Members
 
 
@@ -126,19 +132,19 @@ class Zone:
         Add a new member to the list of members for this zone.
         
         Args:
-            value:
+            member:
                 The `ZoneMember` object to append.
             logsi:
                 A SmartInspect logging session, used to log exception messages.
                 
         Raises:
             SoundTouchError:
-                Zone member to be added is not a ZoneMember object.
-                Zone member to be added did not specify a DeviceId.
-                Zone member DeviceId to be added or removed cannot be the master DeviceId.
+                Member to be added is not a ZoneMember object.
+                Member to be added did not specify a DeviceId.
+                Member DeviceId to be added or removed cannot be the master DeviceId.
                 
-        The master SoundTouch device cannot find zone members without their device
-        id.  This method will validate each zone member in the list to ensure that
+        The master SoundTouch device cannot find members without their device
+        id.  This method will validate each member in the list to ensure that
         a device id was supplied.
         """
         if member: 

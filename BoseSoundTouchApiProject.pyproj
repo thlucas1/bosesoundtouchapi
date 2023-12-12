@@ -32,8 +32,10 @@
     <Compile Include="bosesoundtouchapi\firmware\soundtouchfirmwareproduct.py" />
     <Compile Include="bosesoundtouchapi\firmware\soundtouchfirmwarerelease.py" />
     <Compile Include="bosesoundtouchapi\firmware\__init__.py" />
+    <Compile Include="bosesoundtouchapi\models\grouproletypes.py" />
     <Compile Include="bosesoundtouchapi\models\keystates.py" />
     <Compile Include="bosesoundtouchapi\models\mediaitemcontainer.py" />
+    <Compile Include="bosesoundtouchapi\models\groupstatustypes.py" />
     <Compile Include="bosesoundtouchapi\models\searchresponse.py" />
     <Compile Include="bosesoundtouchapi\models\search.py" />
     <Compile Include="bosesoundtouchapi\models\searchterm.py" />
@@ -71,6 +73,8 @@
     <Compile Include="bosesoundtouchapi\models\speakerattributeandsetting.py" />
     <Compile Include="bosesoundtouchapi\models\service.py" />
     <Compile Include="bosesoundtouchapi\models\soundtouchconfigurationstatus.py" />
+    <Compile Include="bosesoundtouchapi\models\grouprole.py" />
+    <Compile Include="bosesoundtouchapi\models\group.py" />
     <Compile Include="bosesoundtouchapi\soundtouchdiscovery.py" />
     <Compile Include="bosesoundtouchapi\models\productcechdmimodes.py" />
     <Compile Include="bosesoundtouchapi\soundtouchitemtypes.py" />
@@ -134,11 +138,14 @@
     <Compile Include="docs\include\samplecode\SoundTouchClient\Action.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\Bookmark.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\ClearBluetoothPaired.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\UpdateGroupStereoPairName.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\CreateGroupStereoPair.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetAudioProductLevelControls.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetAudioSpeakerAttributeAndSetting.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetAudioProductToneControls.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetAudioDspControls.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\AddMusicServiceStation.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetGroupStereoPairStatus.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SearchMusicLibrary.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetMusicLibraryItems.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\PowerStandbyLowPower.py" />
@@ -166,6 +173,7 @@
     <Compile Include="docs\include\samplecode\SoundTouchClient\PlayNotificationTTS.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\PowerStandby.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\AddMusicServiceSources.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SetBalanceLevel.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SetMusicServiceAccount.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\RemoveMusicServiceAccount.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SelectLastWifiSource.py" />
@@ -252,6 +260,7 @@
     <Compile Include="setup.py" />
     <Compile Include="test\testVS_SoundTouchClient_MusicLib_NAS.py" />
     <Compile Include="test\testVS_SoundTouchClient_MusicSvc_Pandora.py" />
+    <Compile Include="test\testVS_SoundTouchClient_Groups.py" />
     <Compile Include="test\testVS_SoundTouchClient_Zones.py" />
     <Compile Include="test\testVS_SoundTouchDiscovery.py" />
     <Compile Include="test\testVS_SoundTouchClient.py" />

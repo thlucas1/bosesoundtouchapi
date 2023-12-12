@@ -377,10 +377,7 @@ class NowPlayingStatus:
 
     @property
     def SourceAccount(self) -> str:
-        """ 
-        The media source account.
-        This should be one of the sources defined in `bosesoundtouchapi.soundtouchsources.SoundTouchSources`. 
-        """
+        """ The account associated with the Source. """
         return self._SourceAccount
 
 

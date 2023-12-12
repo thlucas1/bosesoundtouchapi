@@ -53,15 +53,15 @@ class InfoNetworkConfig:
 
 
     @property
-    def TypeValue(self) -> str:
-        """ Network interface adapter type (e.g. WIFI, ETHERNET). """
-        return self._TypeValue
-
-
-    @property
     def IpAddress(self) -> str:
         """ IPV4 address assigned by the network. """
         return self._IpAddress
+
+
+    @property
+    def TypeValue(self) -> str:
+        """ Network interface adapter type (e.g. WIFI, ETHERNET). """
+        return self._TypeValue
 
 
     def ToString(self) -> str:

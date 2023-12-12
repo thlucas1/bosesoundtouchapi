@@ -14,6 +14,8 @@ from .clocktime import ClockTime
 from .contentitem import ContentItem
 from .controllevelinfo import ControlLevelInfo
 from .dspmonostereoitem import DSPMonoStereoItem
+from .group import Group, GroupStatusTypes
+from .grouprole import GroupRole, GroupRoleTypes
 from .infonetworkconfig import InfoNetworkConfig
 from .keystates import KeyStates
 from .mediaserverlist import MediaServerList, MediaServer
@@ -68,6 +70,8 @@ __all__ = [
     'ContentItem',
     'ControlLevelInfo',
     'DSPMonoStereoItem',
+    'Group', 'GroupStatusTypes',
+    'GroupRole', 'GroupRoleTypes',
     'InfoNetworkConfig',
     'KeyStates',
     'MediaServerList', 'MediaServer',

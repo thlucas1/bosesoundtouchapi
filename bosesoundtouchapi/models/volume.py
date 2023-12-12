@@ -95,7 +95,7 @@ class Volume(SoundTouchModelRequest):
         elm = Element('volume')
         if isRequestBody == True:
             
-            elm.text = str(self.Actual)
+            elm.text = str(self.Target)
             
         else:
 

@@ -284,7 +284,7 @@ class Search(SoundTouchModelRequest):
 
     @property
     def SourceAccount(self) -> str:
-        """ Music library source account (e.g. the Music Library user-id). """
+        """ The account associated with the Source. """
         return self._SourceAccount
 
     @SourceAccount.setter

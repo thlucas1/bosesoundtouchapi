@@ -587,6 +587,54 @@ class SoundTouchClient:
         return self.Get(SoundTouchNodes.clearBluetoothPaired)
 
 
+    def CreateGroupStereoPair(self, group:Group) -> Group:
+        """
+        Creates a new left / right stereo pair speaker group.
+        
+        Args:
+            group (Group):
+                Speaker group configuration object that defines the group.  
+                
+        Raises:
+            SoundTouchError:
+                group argument was not supplied.  
+                group argument is not of type Group.  
+                group argument did not contain any roles.  The group must have at least 
+                two group roles in order to create a group.  
+                
+        The device that issues the call to this method will be the master of the group.
+        
+        The group argument should contain 2 roles (LEFT and RIGHT) with the device
+        information (ip address and device id).
+        
+        The ST-10 is the only SoundTouch product that supports stereo pair groups.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/CreateGroupStereoPair.py
+        ```
+        </details>
+        """
+        # validations.
+        if group is None:
+            raise SoundTouchError('group argument was not supplied', logsi=_logsi)
+        if not isinstance(group, Group):
+            raise SoundTouchError('group argument is not of type Group', logsi=_logsi)
+        if len(group.Roles) != 2:
+            raise SoundTouchError('group argument object did not contain 2 roles; the group must have 2 group roles', logsi=_logsi)
+        if group.Roles[0].DeviceId != group.MasterDeviceId:
+            raise SoundTouchError('group role at index zero must be the master device id', logsi=_logsi)
+
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.addGroup.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        return self.Put(SoundTouchNodes.addGroup, group, Group)
+
+
     def CreateZone(self, zone:Zone, delay:int=3) -> SoundTouchMessage:
         """
         Creates a multiroom zone from a Zone object.
@@ -610,6 +658,10 @@ class SoundTouchClient:
                 one zone member in order to create a zone.  
                 
         The master SoundTouch device cannot find zone members without their device id.
+        
+        The device that issues the call to this method will be the master of the zone.
+        Multiple `ZoneMember` entries can be specified in the `Zone` object, to create
+        a zone with ALL members in one call.
 
         <details>
           <summary>Sample Code</summary>
@@ -1123,6 +1175,37 @@ class SoundTouchClient:
         """
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("DSPMonoStereo", self._Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.DSPMonoStereo, DSPMonoStereoItem, refresh)
+
+
+    def GetGroupStereoPairStatus(self, refresh=True) -> Group:
+        """
+        Gets the current left / right stereo pair speaker group configuration of the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `Group` object that contains the result.
+
+        The ST-10 is the only SoundTouch product that supports stereo pair groups.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetGroupStereoPairStatus.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.getGroup.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Group", self._Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.getGroup, Group, refresh)
 
 
     def GetLanguage(self, refresh=True) -> SimpleConfig:
@@ -1886,6 +1969,7 @@ class SoundTouchClient:
         if not uriPath in self._Device._SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
+        # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("TrackInfo", self._Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.trackInfo, TrackInfo, refresh)
 
@@ -1901,6 +1985,9 @@ class SoundTouchClient:
 
         Returns:
             A `Volume` object that contains volume configuration of the device.
+            
+        The `Target` and `Actual` returned values will only be different when the 
+        volume is changing.
 
         <details>
           <summary>Sample Code</summary>
@@ -2912,6 +2999,59 @@ class SoundTouchClient:
             _logsi.LogVerbose(MSG_TRACE_FAVORITE_NOT_ENABLED % nowPlaying.ToString())
 
 
+    def RemoveGroup(self, delay:int=1) -> SoundTouchMessage:
+        """
+        Removes the given zone.
+        
+        Args:
+            delay (int):
+                Time delay (in seconds) to wait AFTER removing zone members.
+                This delay will give the device time to process the change before another 
+                command is accepted.  
+                Default is 1; value range is 0 - 10.
+                
+        Raises:
+            SoundTouchError:
+                Master zone status could not be retrieved.  
+                Master zone does not exist; zone members cannot be removed.  
+        
+        This method retrieves the current master zone status, and issues a call to
+        `RemoveZoneMembers` to remove all members from the zone.  
+        
+        Note that the master zone itself is also removed; you will need to 
+        reissue a call to the `CreateZone()` method to re-create the master zone.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/RemoveZone.py
+        ```
+        </details>
+        """
+        # validations.
+        delay = self._ValidateDelay(delay, 1, 10)
+        
+        # get master zone status.
+        # we do this to retrieve the master zone device id and its zone members.
+        masterZone:Zone = self.GetZoneStatus(refresh=True)
+        if masterZone is None:
+            raise SoundTouchError('Master zone status could not be retrieved', logsi=_logsi)
+        if len(masterZone.Members) == 0:
+            raise SoundTouchError('Master zone does not exist; zone members cannot be removed', logsi=_logsi)
+        
+        _logsi.LogVerbose("Removing zone members from SoundTouch device: '%s' - %s" % (
+            self._Device.DeviceName, masterZone.ToStringMemberSummary()))
+        
+        # remove the member zones from the device.
+        result = self.Put(SoundTouchNodes.removeZoneSlave, masterZone.ToXmlString())
+
+        if delay > 0:
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            time.sleep(delay)
+
+        return result
+
+
     def RemoveMusicServiceAccount(self, source:str, displayName:str, userAccount:str, password:str=None
                                  ) -> SoundTouchMessage:
         """
@@ -3059,13 +3199,16 @@ class SoundTouchClient:
                 Members argument was not supplied, or has no members.  
                 Members argument contained a list item that is not of type `ZoneMember`.  
         
+        This method must be called by the master device of an existing zone; only the
+        master can remove zone members.
+
         Note that the master zone itself is also removed if there are no zone members
         left after the remove request is complete.  In this case, you will need to 
         reissue a call to the `CreateZone()` method to re-create the master zone.
         
         The SoundTouch device does not return errors if a zone member device id does not
         exist; it simply ignores the invalid member entry and moves on to the next.
-        
+               
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -3883,46 +4026,36 @@ class SoundTouchClient:
         return self.Put(SoundTouchNodes.audioproducttonecontrols, request)
 
 
-    def SetProductCecHdmiControl(self, control:ProductCecHdmiControl) -> SoundTouchMessage:
+    def SetBalanceLevel(self, level:int) -> SoundTouchMessage:
         """
-        Sets the current product cec hdmi control configuration of the device.
-
-        Args:
-            control (ProductCecHdmiControl):
-                A `ProductCecHdmiControl` object that contains product cec hdmi control
-                values to set.
-
-        Raises:
-            SoundTouchError:
-                If the device is not capable of supporting `productcechdmicontrol` functions,
-                as determined by a query to the cached `supportedURLs` web-services api.    
-                If the control argument is None, or not of type `ProductCecHdmiControl`.
-                
-        Note that some SoundTouch devices do not support this functionality.  For example,
-        the ST-300 will support this, but the ST-10 will not.  This method will first query
-        the device supportedUris to determine if it supports the function; if so, then the
-        request is made to the device; if not, then a `SoundTouchError` is raised.
+        Sets the device balance level to the given level.  
         
+        Args:
+            level (int):
+                Balance level to set, usually in the range of -7 (left) to 7 (right).
+
+        This method only works if the device is configured as part of a stereo pair.
+        
+        The argument level range can vary by device; use the `GetBalance` method to
+        determine if the device has the capability to adjust the balance, as well as
+        the allowable range (minimum, maximum, default) levels.
+                
         <details>
           <summary>Sample Code</summary>
         ```python
-        .. include:: ../docs/include/samplecode/SoundTouchClient/SetProductCecHdmiControl.py
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SetBalanceLevel.py
         ```
         </details>
         """
-        # validations.
-        if (control is None) or (not isinstance(control, ProductCecHdmiControl)):
-            raise SoundTouchError('control argument was not supplied, or is not of type ProductCecHdmiControl', logsi=_logsi)
-            
         # check if device supports this uri function; if not then we are done.
-        uriPath:str = SoundTouchNodes.productcechdmicontrol.Path
+        uriPath:str = SoundTouchNodes.balance.Path
         if not uriPath in self._Device._SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("product cec hdmi control", control.ToString(), self._Device.DeviceName))
-        request:ProductCecHdmiControl = control
-        return self.Put(SoundTouchNodes.productcechdmicontrol, request)
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("balance level", str(level), self._Device.DeviceName))
+        request:Balance = Balance(level)
+        return self.Put(SoundTouchNodes.balance, request)
 
 
     def SetBassLevel(self, level:int) -> SoundTouchMessage:
@@ -3931,10 +4064,24 @@ class SoundTouchClient:
         
         Args:
             level (int):
-                Bass level to set, in the range of -9 (no bass) to 0 (full bass).
-                The range can vary by device; use `GetBassCapabilities()` method to
-                retrieve the allowable range for your device.
+                Bass level to set, usually in the range of -9 (no bass) to 0 (full bass).
+
+        The argument level range can vary by device; use the `GetBassCapabilities()` method to
+        retrieve the allowable range for a device.
+                
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SetBassLevel.py
+        ```
+        </details>
         """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.bass.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("bass level", str(level), self._Device.DeviceName))
         request:Bass = Bass(level)
         return self.Put(SoundTouchNodes.bass, request)
@@ -4000,6 +4147,48 @@ class SoundTouchClient:
         # update the SoundTouchDevice object device name to match.
         self._Device._DeviceName = name
         return result
+
+
+    def SetProductCecHdmiControl(self, control:ProductCecHdmiControl) -> SoundTouchMessage:
+        """
+        Sets the current product cec hdmi control configuration of the device.
+
+        Args:
+            control (ProductCecHdmiControl):
+                A `ProductCecHdmiControl` object that contains product cec hdmi control
+                values to set.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `productcechdmicontrol` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.    
+                If the control argument is None, or not of type `ProductCecHdmiControl`.
+                
+        Note that some SoundTouch devices do not support this functionality.  For example,
+        the ST-300 will support this, but the ST-10 will not.  This method will first query
+        the device supportedUris to determine if it supports the function; if so, then the
+        request is made to the device; if not, then a `SoundTouchError` is raised.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SetProductCecHdmiControl.py
+        ```
+        </details>
+        """
+        # validations.
+        if (control is None) or (not isinstance(control, ProductCecHdmiControl)):
+            raise SoundTouchError('control argument was not supplied, or is not of type ProductCecHdmiControl', logsi=_logsi)
+            
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.productcechdmicontrol.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("product cec hdmi control", control.ToString(), self._Device.DeviceName))
+        request:ProductCecHdmiControl = control
+        return self.Put(SoundTouchNodes.productcechdmicontrol, request)
 
 
     def SetVolumeLevel(self, level:int) -> SoundTouchMessage:
@@ -4162,6 +4351,45 @@ class SoundTouchClient:
             msg = "%s Host='%s'" % (msg, self._Device.Host)
             msg = "%s Port='%s'" % (msg, self._Device.Port)
         return msg
+
+
+    def UpdateGroupStereoPairName(self, name:str) -> Group:
+        """
+        Updates the name of the current left / right stereo pair speaker group configuration 
+        for the device.
+
+        Args:
+            name (str):
+                New name to assign to the group.
+
+        Returns:
+            A `Group` object that contains the result.
+
+        The ST-10 is the only SoundTouch product that supports stereo pair groups.
+        
+        An existing left / right stereo pair speaker group must exist prior to calling
+        this method.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/UpdateGroupStereoPairName.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.updateGroup.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # get current group status, and change the name.
+        group:Group = self.GetGroupStereoPairStatus(True)
+        group.Name = name
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("updateGroup", name, self._Device.DeviceName))
+        result:Group = self.Put(SoundTouchNodes.updateGroup, group, Group)
+        return result
 
 
     def VolumeDown(self) -> None:

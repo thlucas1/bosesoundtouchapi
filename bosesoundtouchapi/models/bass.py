@@ -14,15 +14,15 @@ class Bass(SoundTouchModelRequest):
     bass configuration of the device.      
     """
 
-    def __init__(self, actual:int=0,
+    def __init__(self, target:int=0,
                  root:Element=None
                  ) -> None:
         """
         Initializes a new instance of the class.
         
         Args:
-            actual (int):
-                The actual value of the bass level.
+            target (int):
+                Target bass level to set.
             root (Element):
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
@@ -33,7 +33,7 @@ class Bass(SoundTouchModelRequest):
 
         if (root is None):
             
-            self._Actual = int(actual) if actual else 0
+            self._Target = int(target) if target else 0
 
         else:
 
@@ -81,7 +81,8 @@ class Bass(SoundTouchModelRequest):
         elm = Element('bass')
         if isRequestBody == True:
             
-            elm.text = str(self.Actual)
+            if self._Target is not None:
+                elm.text = str(self._Target)
             
         else:
             

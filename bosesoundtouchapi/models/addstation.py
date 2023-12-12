@@ -69,13 +69,13 @@ class AddStation(SoundTouchModelRequest):
 
     @property
     def Source(self) -> str:
-        """ Music service source where the station resides (e.g. "PANDORA", "SPOTIFY", etc). """
+        """ The type or name of the music service where the station resides (e.g. "PANDORA", "SPOTIFY", etc). """
         return self._Source
 
 
     @property
     def SourceAccount(self) -> str:
-        """ Music service source account value to login with. """
+        """ The account associated with the Source. """
         return self._SourceAccount
 
 

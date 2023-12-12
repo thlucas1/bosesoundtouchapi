@@ -71,14 +71,6 @@ class MediaItemContainer:
 
 
     @property
-    def TypeValue(self) -> str:
-        """ Specifies the type of the content item. """
-        if self._ContentItem is None:
-            return None
-        return self._ContentItem._TypeValue
-
-
-    @property
     def Location(self) -> str:
         """ If present, the content item's direct link to the media. """
         if self._ContentItem is None:
@@ -114,10 +106,18 @@ class MediaItemContainer:
 
     @property
     def SourceAccount(self) -> str:
-        """ Source account this content item is played with. """
+        """ The account associated with the Source. """
         if self._ContentItem is None:
             return None
         return self._ContentItem._SourceAccount
+
+
+    @property
+    def TypeValue(self) -> str:
+        """ Specifies the type of the content item. """
+        if self._ContentItem is None:
+            return None
+        return self._ContentItem._TypeValue
 
 
     def ToElement(self, isRequestBody:bool=False) -> Element:

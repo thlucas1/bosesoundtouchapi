@@ -82,18 +82,14 @@ class SourceItem:
     @property
     def IsLocal(self) -> bool:
         """
-        True if the source can play content locally on the device; otherwise, False to
-        indicate the source can only play content remotely.
-        
-        Local source examples are "BLUETOOTH", "NOTIFICATION", "QPLAY", etc.  
-        Remote source examples are "AIRPLAY", "UPNP", "TUNEIN", "SPOTIFY", etc.  
+        True if a local source (e.g. "AUX", "BLUETOOTH", "QPLAY", etc); otherwise, False.
         """
         return self._IsLocal
 
 
     @property
     def IsMultiroomAllowed(self) -> bool:
-        """ True if multiroom playback is allowed for this source; otherwise, False. """
+        """ True if the source can be rebroadcast in a multi-room zone; otherwise, False. """
         return self._IsMultiroomAllowed
 
 
@@ -105,17 +101,13 @@ class SourceItem:
 
     @property
     def SourceAccount(self) -> str:
-        """ 
-        A source account used to play media content, if one is required.
-        
-        Example sources requiring a sourceAccount value are "QPLAY", "SPOTIFY", "AIRPLAY", "ALEXA", etc.
-        """
+        """ The account associated with the Source. """
         return self._SourceAccount
 
 
     @property
     def Status(self) -> str:
-        """ The current status of the source (e.g. "READY", "UNAVAILABLE", etc). """
+        """ Indicates whether the source is available or not, and its current status. """
         return self._Status
 
 

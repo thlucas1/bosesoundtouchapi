@@ -6,6 +6,18 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.26 ] - 2023/12/12
+
+  * Added method `SoundTouchClient`.`CreateGroupStereoPair` - Creates a new left / right stereo pair speaker group configuration for the device.
+  * Added method `SoundTouchClient`.`GetGroupStereoPairStatus` - Gets the current left / right stereo pair speaker group configuration of the device.
+  * Added method `SoundTouchClient`.`SetBalanceLevel` - Sets the device balance level to the given level.
+  * Added method `SoundTouchClient`.`UpdateGroupStereoPairName` - Updates the name of the current left / right stereo pair speaker group configuration for the device.
+  * Added model `Group` - group (stereo pair) configuration.
+  * Added model `GroupRole` - group (stereo pair) role configuration.
+  * Added model `GroupRoleTypes` - group (stereo pair) role types enumeration.
+  * Added model `GroupStatusTypes` - group (stereo pair) status types enumeration.
+  * Updated property descriptions for various classes.
+
 ###### [ 1.0.25 ] - 2023/12/10
 
   * Added model `KeyStates` - key states enumeration.

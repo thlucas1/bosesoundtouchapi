@@ -97,7 +97,7 @@ class SearchResult:
 
     @property
     def SourceAccount(self) -> str:
-        """ Music service source account used to obtain the source (e.g. the music service user-id). """
+        """ The account associated with the Source. """
         return self._SourceAccount
 
 

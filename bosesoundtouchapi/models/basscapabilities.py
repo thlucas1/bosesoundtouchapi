@@ -55,7 +55,7 @@ class BassCapabilities:
 
     @property
     def IsAvailable(self) -> bool:
-        """ Returns whether bass capabilities are enabled on the device. """
+        """ Returns True if the bass level of the device is adjustable; otherwise, False. """
         return self._IsAvailable
 
 

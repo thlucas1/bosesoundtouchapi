@@ -105,7 +105,7 @@ class RemoveStation(SoundTouchModelRequest):
 
     @property
     def SourceAccount(self) -> str:
-        """ Music service source account value to login with. """
+        """ The account associated with the Source. """
         if self._ContentItem is None:
             return None
         return self._ContentItem._SourceAccount

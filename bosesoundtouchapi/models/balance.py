@@ -14,15 +14,15 @@ class Balance(SoundTouchModelRequest):
     balance configuration of the device.      
     """
 
-    def __init__(self, actual:int=0,
+    def __init__(self, target:int=0,
                  root:Element=None
                  ) -> None:
         """
         Initializes a new instance of the class.
         
         Args:
-            actual (int):
-                The actual value of the balance level.
+            target (int):
+                Target balance level to set.
             root (Element):
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
@@ -37,7 +37,7 @@ class Balance(SoundTouchModelRequest):
 
         if (root is None):
 
-            self._Actual = int(actual) if actual else 0
+            self._Target = int(target) if target else 0
 
         else:
 
@@ -111,14 +111,17 @@ class Balance(SoundTouchModelRequest):
                 request body; otherwise, False to return all attributes.
         """
         elm = Element('balance')
+        if self._DeviceId and len(self._DeviceId) > 0: elm.set('deviceID', str(self._DeviceId))
+        
         if isRequestBody == True:
             
-            elm.text = str(self._Actual or 0)
+            if self._Target is not None:
+                elmNode = Element('targetBalance')
+                elmNode.text = str(self._Target)
+                elm.append(elmNode)
             
         else:
-            
-            if self._DeviceId and len(self._DeviceId) > 0: elm.set('deviceID', str(self._DeviceId))
-            
+                       
             if self._IsAvailable is not None:
                 elmNode = Element('balanceAvailable')
                 elmNode.text = str(self._IsAvailable)
