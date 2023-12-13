@@ -40,3 +40,8 @@ class BSTAppMessages:
     BST1001E - '%s': device is not capable of processing '%s' functions".
     """
     
+    BST_WEBSERVICES_API_ERROR:str = "BST1002E - '%s': SoundTouch Web-services API returned an error status: '%s'"
+    """
+    BST1002E - '%s': SoundTouch Web-services API returned an error status: '%s'
+    """
+    

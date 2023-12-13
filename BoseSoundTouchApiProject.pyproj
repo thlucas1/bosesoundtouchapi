@@ -126,7 +126,6 @@
     <Compile Include="bosesoundtouchapi\soundtouchclient.py" />
     <Compile Include="bosesoundtouchapi\soundtouchdevice.py" />
     <Compile Include="bosesoundtouchapi\soundtouchdevicecomponent.py" />
-    <Compile Include="bosesoundtouchapi\soundtouchexception.py" />
     <Compile Include="bosesoundtouchapi\soundtouchnotifycategorys.py" />
     <Compile Include="bosesoundtouchapi\uri\soundtouchuriscopes.py" />
     <Compile Include="bosesoundtouchapi\uri\soundtouchuritypes.py" />
@@ -138,6 +137,7 @@
     <Compile Include="docs\include\samplecode\SoundTouchClient\Action.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\Bookmark.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\ClearBluetoothPaired.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\RemoveGroupStereoPair.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\UpdateGroupStereoPairName.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\CreateGroupStereoPair.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetAudioProductLevelControls.py" />

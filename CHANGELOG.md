@@ -6,6 +6,12 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.28 ] - 2023/12/13
+
+  * Added method `SoundTouchClient`.`RemoveGroupStereoPair` - Removes an existing left / right stereo pair speaker group configuration from the device.
+  * Removed the `SoundTouchException` class, as it was not used; SoundTouchError class is used instead.
+  * cleaned up some unused references.
+
 ###### [ 1.0.27 ] - 2023/12/12
 
   * Updated code to include pretty print of raw xml responses for easier debugging.

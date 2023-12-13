@@ -15,7 +15,6 @@ from bosesoundtouchapi.soundtouchclient import SoundTouchClient
 from bosesoundtouchapi.soundtouchdevice import SoundTouchDevice
 from bosesoundtouchapi.soundtouchdiscovery import SoundTouchDiscovery
 from bosesoundtouchapi.soundtoucherror import SoundTouchError
-from bosesoundtouchapi.soundtouchexception import SoundTouchException
 from bosesoundtouchapi.soundtouchitemtypes import SoundTouchItemTypes
 from bosesoundtouchapi.soundtouchkeys import SoundTouchKeys
 from bosesoundtouchapi.soundtouchmessage import SoundTouchMessage
@@ -29,7 +28,6 @@ __all__ = [
     'SoundTouchDevice',
     'SoundTouchDiscovery',
     'SoundTouchError',
-    'SoundTouchException',
     'SoundTouchItemTypes',
     'SoundTouchKeys',
     'SoundTouchMessage',

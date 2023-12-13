@@ -3,14 +3,11 @@ try:
     from queue import Queue, Empty
 except ImportError:
     from Queue import Queue, Empty
-from zeroconf import Zeroconf, ServiceBrowser, ServiceInfo, ServiceListener, ServiceStateChange, IPVersion
+from zeroconf import Zeroconf, ServiceBrowser, ServiceInfo, ServiceStateChange, IPVersion
 
 # our package imports.
-from .bstappmessages import BSTAppMessages
 from .bstutils import export
 from .soundtouchdevice import SoundTouchDevice
-from .soundtoucherror import SoundTouchError
-from .soundtouchexception import SoundTouchException
 
 # get smartinspect logger reference; create a new session for this module name.
 from smartinspectpython.siauto import SIAuto, SILevel, SISession

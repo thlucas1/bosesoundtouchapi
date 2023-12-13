@@ -220,7 +220,9 @@ class SoundTouchClient:
                 errValue:int = int(error.get('value', -1))
                 errName:str =  error.get('name', 'NONE')
                 errSeverity:str =  error.get('severity', 'NONE')
-                errMessage:str = error.text
+                errText:str = error.text
+                if errText is None or len(errText.strip()) == 0: errText = errName
+                errMessage = BSTAppMessages.BST_WEBSERVICES_API_ERROR % (self.Device.DeviceName, errText)
                 raise SoundTouchError(errMessage, errName, errSeverity, errValue, _logsi)
             
             # sometimes an error is not returned in an <errors> collection:
@@ -231,7 +233,9 @@ class SoundTouchClient:
                 errValue:int = int(error.get('value', -1))
                 errName:str =  error.get('name', 'NONE')
                 errSeverity:str =  error.get('severity', 'NONE')
-                errMessage:str = error.text
+                errText:str = error.text
+                if errText is None or len(errText.strip()) == 0: errText = errName
+                errMessage = BSTAppMessages.BST_WEBSERVICES_API_ERROR % (self.Device.DeviceName, errText)
                 raise SoundTouchError(errMessage, errName, errSeverity, errValue, _logsi)
         return
 
@@ -607,6 +611,9 @@ class SoundTouchClient:
         The group argument should contain 2 roles (LEFT and RIGHT) with the device
         information (ip address and device id).
         
+        The device will generate a `groupUpdated` websocket event, which contains the 
+        updated `Group` configuration.
+
         The ST-10 is the only SoundTouch product that supports stereo pair groups.
 
         <details>
@@ -2100,7 +2107,7 @@ class SoundTouchClient:
             The status code (integer) or allowed methods (list).
 
         Raises:
-            InterruptedError: 
+            SoundTouchError: 
                 If an error occurs while requesting content.
                 
         A 400 status code is immediately returned for the following scenarios:  
@@ -2154,9 +2161,11 @@ class SoundTouchClient:
             response.close()
             return response.headers
         
+        except SoundTouchError: raise  # pass handled exceptions on thru
         except Exception as ex:
             
-            raise InterruptedError(ex) from ex
+            # format unhandled exception.
+            raise SoundTouchError(BSTAppMessages.UNHANDLED_EXCEPTION.format("MakeRequest", str(ex)), logsi=_logsi)
 
 
     def MediaNextTrack(self) -> None:
@@ -2493,7 +2502,7 @@ class SoundTouchClient:
                 ttsUrl argument was not a string; ignoring PlayNotificationTTS request.
                 
         Note that SoundTouch devices do not support playing content from HTTPS (secure 
-        socket layer) url's.  A `SoundTouchException` will be raised if a non `http://` url 
+        socket layer) url's.  A `SoundTouchError` will be raised if a non `http://` url 
         is supplied for the ttsUrl argument.
         
         There are models of Bose SoundTouch speakers that do not support notifications. Only the 
@@ -2935,45 +2944,6 @@ class SoundTouchClient:
         return presetList
 
 
-    def RemovePreset(self, presetId: int) -> PresetList:
-        """
-        Removes the specified Preset id from the device's list of presets.
-        
-        Args:
-            presetId (int):
-                The preset id to remove; valid values are 1 thru 6.
-                
-        Returns:
-            A `PresetList` object that contains the updated preset list configuration of the device.
-            
-        Raises:
-            Exception:
-                If the command fails for any reason.
-        
-        The preset with the specified id is removed.  
-        No exception is raised if the preset id does not exist.
-        
-        Presets and favorites in the SoundTouch app are not reordered once the
-        preset is removed; it simply creates an open / empty slot in the list.
-
-        <details>
-          <summary>Sample Code</summary>
-        ```python
-        .. include:: ../docs/include/samplecode/SoundTouchClient/RemovePreset.py
-        ```
-        </details>
-        """
-        _logsi.LogVerbose("Removing preset from SoundTouch device: '%s'" % self._Device.DeviceName)
-        item:Preset = Preset(presetId)
-        presetList:PresetList = self.Put(SoundTouchNodes.removePreset, item, PresetList)
-        
-        # update configuration cache with the updated list.
-        if isinstance(presetList, PresetList):
-            self[SoundTouchNodes.presets] = presetList
-        return presetList
-
-
-
     def RemoveFavorite(self) -> None:
         """ 
         Removes the currently playing media from the device favorites.
@@ -2999,57 +2969,40 @@ class SoundTouchClient:
             _logsi.LogVerbose(MSG_TRACE_FAVORITE_NOT_ENABLED % nowPlaying.ToString())
 
 
-    def RemoveGroup(self, delay:int=1) -> SoundTouchMessage:
+    def RemoveGroupStereoPair(self) -> SoundTouchMessage:
         """
-        Removes the given zone.
+        Removes an existing left / right stereo pair speaker group.
         
         Args:
-            delay (int):
-                Time delay (in seconds) to wait AFTER removing zone members.
-                This delay will give the device time to process the change before another 
-                command is accepted.  
-                Default is 1; value range is 0 - 10.
+            group (Group):
+                Speaker group configuration object that defines the group.  
                 
         Raises:
             SoundTouchError:
-                Master zone status could not be retrieved.  
-                Master zone does not exist; zone members cannot be removed.  
+                If SoundTouch WebService call fails for any reason.
+                
+        The device that issues the call to this method has to be the master of the group,
+        or the service will fail.
         
-        This method retrieves the current master zone status, and issues a call to
-        `RemoveZoneMembers` to remove all members from the zone.  
-        
-        Note that the master zone itself is also removed; you will need to 
-        reissue a call to the `CreateZone()` method to re-create the master zone.
+        The device will generate a `groupUpdated` websocket event, which contains the 
+        updated `Group` configuration.
+
+        The ST-10 is the only SoundTouch product that supports stereo pair groups.
 
         <details>
           <summary>Sample Code</summary>
         ```python
-        .. include:: ../docs/include/samplecode/SoundTouchClient/RemoveZone.py
+        .. include:: ../docs/include/samplecode/SoundTouchClient/RemoveGroupStereoPair.py
         ```
         </details>
         """
-        # validations.
-        delay = self._ValidateDelay(delay, 1, 10)
-        
-        # get master zone status.
-        # we do this to retrieve the master zone device id and its zone members.
-        masterZone:Zone = self.GetZoneStatus(refresh=True)
-        if masterZone is None:
-            raise SoundTouchError('Master zone status could not be retrieved', logsi=_logsi)
-        if len(masterZone.Members) == 0:
-            raise SoundTouchError('Master zone does not exist; zone members cannot be removed', logsi=_logsi)
-        
-        _logsi.LogVerbose("Removing zone members from SoundTouch device: '%s' - %s" % (
-            self._Device.DeviceName, masterZone.ToStringMemberSummary()))
-        
-        # remove the member zones from the device.
-        result = self.Put(SoundTouchNodes.removeZoneSlave, masterZone.ToXmlString())
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.removeGroup.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
-        if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
-            time.sleep(delay)
-
-        return result
+        # device is capable - process the request.
+        return self.Get(SoundTouchNodes.removeGroup)
 
 
     def RemoveMusicServiceAccount(self, source:str, displayName:str, userAccount:str, password:str=None
@@ -3124,6 +3077,44 @@ class SoundTouchClient:
         _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("removeStation", removeStation.ToString(), self._Device.DeviceName))
         result:SoundTouchMessage = self.Put(SoundTouchNodes.removeStation, removeStation)
         return result
+
+
+    def RemovePreset(self, presetId: int) -> PresetList:
+        """
+        Removes the specified Preset id from the device's list of presets.
+        
+        Args:
+            presetId (int):
+                The preset id to remove; valid values are 1 thru 6.
+                
+        Returns:
+            A `PresetList` object that contains the updated preset list configuration of the device.
+            
+        Raises:
+            Exception:
+                If the command fails for any reason.
+        
+        The preset with the specified id is removed.  
+        No exception is raised if the preset id does not exist.
+        
+        Presets and favorites in the SoundTouch app are not reordered once the
+        preset is removed; it simply creates an open / empty slot in the list.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/RemovePreset.py
+        ```
+        </details>
+        """
+        _logsi.LogVerbose("Removing preset from SoundTouch device: '%s'" % self._Device.DeviceName)
+        item:Preset = Preset(presetId)
+        presetList:PresetList = self.Put(SoundTouchNodes.removePreset, item, PresetList)
+        
+        # update configuration cache with the updated list.
+        if isinstance(presetList, PresetList):
+            self[SoundTouchNodes.presets] = presetList
+        return presetList
 
 
     def RemoveZone(self, delay:int=1) -> SoundTouchMessage:
@@ -3914,7 +3905,7 @@ class SoundTouchClient:
             SoundTouchError:
                 If the device is not capable of supporting `audiodspcontrols` functions,
                 as determined by a query to the cached `supportedURLs` web-services api.  
-
+                
         Note that some SoundTouch devices do not support this functionality.  For example,
         the ST-300 will support this, but the ST-10 will not.  This method will first query
         the device supportedUris to determine if it supports the function; if so, then the

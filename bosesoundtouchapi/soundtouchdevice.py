@@ -8,7 +8,6 @@ from .bstappmessages import BSTAppMessages
 from .bstutils import export, _xmlFind
 from .soundtouchdevicecomponent import SoundTouchDeviceComponent
 from .soundtoucherror import SoundTouchError
-from .soundtouchexception import SoundTouchException
 from .models import InfoNetworkConfig
 from .uri.soundtouchnodes import SoundTouchNodes
 from .uri.soundtouchuri import SoundTouchUri
@@ -66,8 +65,7 @@ class SoundTouchDevice:
                 SoundTouch host address is not recognized as a valid IPV4 network address.  
                 Could not retrieve SoundTouch device information.  
                 Could not retrieve SoundTouch device supported urls.  
-            SoundTouchException:
-                If the method fails for any reason.
+                If the method fails for any other reason.
                 
         This method loads all components and device properties allocated at the given 
         SoundTouch host.
@@ -183,16 +181,15 @@ class SoundTouchDevice:
                     self._SupportedUris.append(allUris[name])
 
             response.close()
-                    
+            
             if _logsi.IsOn(SILevel.Verbose):
                 _logsi.LogObject(SILevel.Verbose, "SoundTouch Device object: '%s' (%s)" % (self.DeviceName, self.Host), self)
                 
         except SoundTouchError: raise  # pass handled exceptions on thru
-        except SoundTouchException: raise  # pass handled exceptions on thru
         except Exception as ex:
         
             # format unhandled exception.
-            raise SoundTouchException(BSTAppMessages.UNHANDLED_EXCEPTION.format("__init__", str(ex)), ex, _logsi)
+            raise SoundTouchError(BSTAppMessages.UNHANDLED_EXCEPTION.format("__init__", str(ex)), logsi=_logsi)
 
 
     def __repr__(self) -> str:
