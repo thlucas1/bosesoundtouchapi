@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.30 ] - 2023/12/13
+
+  * Updated method `SoundTouchWebSocket`.`_OnWebSocketClose` - Close event handler was missing 2 arguments that are passed for the event.
+
 ###### [ 1.0.29 ] - 2023/12/13
 
   * Added method `SoundTouchDevice`.`RebootDevice` - Reboots the operating system of the SoundTouch device.

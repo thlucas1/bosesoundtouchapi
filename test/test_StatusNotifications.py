@@ -96,7 +96,7 @@ try:
     socket:SoundTouchWebSocket = None
 
     # create SoundTouch device instance.
-    device:SoundTouchDevice = SoundTouchDevice("192.168.1.132") # Bose SoundTouch 10
+    device:SoundTouchDevice = SoundTouchDevice("192.168.1.131") # Bose SoundTouch 10
     #device:SoundTouchDevice = SoundTouchDevice("192.168.1.130") # Bose SoundTouch 300
             
     # create SoundTouch client instance from device.
@@ -162,6 +162,11 @@ try:
                 
                 # wait 1 second.
                 time.sleep(1)
+                
+                if i == 10:
+                    print("Rebooting device ...")
+                    msg = device.RebootDevice()
+                    print("Response:\n%s" % msg)
             
                 # did we lose the connection to the SoundTouch device?
                 # if so, then stop / restart the notification event thread.
