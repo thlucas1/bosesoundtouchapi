@@ -6,6 +6,20 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.29 ] - 2023/12/13
+
+  * Added method `SoundTouchDevice`.`RebootDevice` - Reboots the operating system of the SoundTouch device.
+  * Removed method `SoundTouchClient`.`Bookmark` - No longer necessary, as Pandora removed bookmark functionality; per Pandora, use thumbs up / down instead.
+  * Added method `SoundTouchClient`.`SetUserPlayControl` - Sends a user play control type command to stop / pause / play / resume media content playback.
+  * Added method `SoundTouchClient`.`SetUserRating` - Rates the currently playing media, if ratings are supported.
+  * Added method `SoundTouchClient`.`SetUserTrackControl` - Sends a user track control type command to control track playback (next, previous, repeat, shuffle, etc).
+  * Added model `UserPlayControl` - user play control configuration.
+  * Added model `UserPlayControlTypes` - user play control types enumeration.
+  * Added model `UserRating` - user rating configuration.
+  * Added model `UserRatingTypes` - user rating types enumeration.
+  * Added model `UserTrackControl` - user track control configuration.
+  * Added model `UserTrackControlTypes` - user track control types enumeration.
+
 ###### [ 1.0.28 ] - 2023/12/13
 
   * Added method `SoundTouchClient`.`RemoveGroupStereoPair` - Removes an existing left / right stereo pair speaker group configuration from the device.

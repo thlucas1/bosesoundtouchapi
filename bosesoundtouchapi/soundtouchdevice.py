@@ -1,5 +1,6 @@
 # external package imports.
 import re
+import telnetlib 
 from urllib3 import PoolManager, ProxyManager, Timeout, HTTPResponse
 from xml.etree.ElementTree import Element, fromstring
 
@@ -11,6 +12,10 @@ from .soundtoucherror import SoundTouchError
 from .models import InfoNetworkConfig
 from .uri.soundtouchnodes import SoundTouchNodes
 from .uri.soundtouchuri import SoundTouchUri
+from .bstconst import (
+    MSG_TRACE_DEVICE_COMMAND_WITH_PARM
+)
+
 
 # get smartinspect logger reference; create a new session for this module name.
 from smartinspectpython.siauto import SIAuto, SILevel, SISession
@@ -401,6 +406,67 @@ class SoundTouchDevice:
             yield component
 
 
+    def RebootDevice(self, sshPort:int=17000) -> str:
+        """        
+        Reboots the operating system of the SoundTouch device.
+        
+        Args:
+            sshPort (int):
+                SSH port to connect to; default is 17000.
+                
+        Returns:
+            The SSH server response, in string format.
+                
+        This method will open a telnet connection to the SoundTouch SSH server
+        running on the device (port 17000).  It will then issue a `sys reboot`
+        command to reboot the device.  The telnet session will fail if any other
+        process has a telnet session open to the device; this is a SoundTouch
+        device limitation, as only one SSH session is allowed per device.
+        
+        If successful, all communication with the device will be lost while the 
+        device is rebooting. SoundTouch web-services API connectivity should be 
+        restored within 45 - 60 seconds if the reboot is successful.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchDevice/RebootDevice.py
+        ```
+        </details>
+        """
+        response:str = None
+        conn = None
+        
+        try:
+            
+            _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("RebootDevice", self.Host, self.DeviceName))
+            
+            # open a connection to the ssh server running on the device (port 17000 default).
+            conn = telnetlib.Telnet(self.Host, sshPort) 
+
+            # send reboot system command.
+            conn.write(b"sys reboot\n")
+        
+            # receive response; decode if bytes received (expected).
+            response = conn.read_all()
+            if isinstance(response, bytes):
+                response = response.decode(encoding='utf-8')
+            _logsi.LogVerbose("SSH Server response:\n%s" % response)
+            
+        except Exception as ex:
+            
+            # format unhandled exception.
+            raise SoundTouchError(BSTAppMessages.UNHANDLED_EXCEPTION.format("RebootDevice", str(ex)), logsi=_logsi)
+
+        finally:
+            
+            if conn is not None:
+                conn.close()
+            conn = None
+        
+        return response
+        
+        
     def ToString(self, includeItems:bool=False) -> str:
         """
         Returns a displayable string representation of the class.

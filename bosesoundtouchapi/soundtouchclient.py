@@ -7,7 +7,6 @@ from tinytag import TinyTag
 import urllib.parse
 from urllib3 import PoolManager, Timeout
 from xml.etree.ElementTree import fromstring, Element
-from xml.etree import ElementTree
 
 # our package imports.
 from .bstappmessages import BSTAppMessages
@@ -23,7 +22,6 @@ from .uri import *
 
 from .bstconst import (
     MSG_TRACE_ACTION_KEY,
-    MSG_TRACE_BOOKMARKS_NOT_ENABLED,
     MSG_TRACE_DELAY_DEVICE,
     MSG_TRACE_DEVICE_COMMAND,
     MSG_TRACE_DEVICE_COMMAND_WITH_PARM,
@@ -541,20 +539,20 @@ class SoundTouchClient:
         return result
 
 
-    def Bookmark(self) -> None:
-        """ 
-        Bookmarks the currently playing media.
+    # def Bookmark(self) -> None:
+    #     """ 
+    #     Bookmarks the currently playing media.
         
-        This function is only supported by the Pandora Music Service.
+    #     This function is only supported by the Pandora Music Service.
 
-        <details>
-          <summary>Sample Code</summary>
-        ```python
-        .. include:: ../docs/include/samplecode/SoundTouchClient/Bookmark.py
-        ```
-        </details>
-        """
-        self.Action(SoundTouchKeys.BOOKMARK, KeyStates.Press)
+    #     <details>
+    #       <summary>Sample Code</summary>
+    #     ```python
+    #     .. include:: ../docs/include/samplecode/SoundTouchClient/Bookmark.py
+    #     ```
+    #     </details>
+    #     """
+    #     self.Action(SoundTouchKeys.BOOKMARK, KeyStates.Press)
 
 
     def ClearBluetoothPaired(self) -> SoundTouchMessage:
@@ -2179,7 +2177,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.NEXT_TRACK, KeyStates.Press)
+        self.SetUserTrackControl(UserTrackControlTypes.Next)
 
 
     def MediaPause(self) -> None:
@@ -2193,7 +2191,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.PAUSE, KeyStates.Press)
+        self.SetUserPlayControl(UserPlayControlTypes.Pause)
 
 
     def MediaPlay(self) -> None:
@@ -2207,7 +2205,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.PLAY, KeyStates.Press)
+        self.SetUserPlayControl(UserPlayControlTypes.Play)
 
 
     def MediaPlayPause(self) -> None:
@@ -2221,12 +2219,19 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.PLAY_PAUSE, KeyStates.Press)
+        self.SetUserPlayControl(UserPlayControlTypes.PlayPause)
 
 
-    def MediaPreviousTrack(self) -> None:
+    def MediaPreviousTrack(self, force:bool=False) -> None:
         """ 
-        Move to the previous track in the current media playlist.
+        Play previous track if current track has been playing for less than 10 seconds;
+        otherwise, restart play of the current track.
+        
+        Args:
+            force (bool):
+                If True, force the previous track to be played regardless of how much
+                play time has passed for the current track; otherwise, False to restart
+                the current track if more than 10 seconds have passed.
 
         <details>
           <summary>Sample Code</summary>
@@ -2235,8 +2240,11 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.PREV_TRACK, KeyStates.Press)
-
+        if force is not None and force == True:
+            self.SetUserTrackControl(UserTrackControlTypes.PreviousForce)
+        else:
+            self.SetUserTrackControl(UserTrackControlTypes.Previous)
+            
 
     def MediaRepeatAll(self) -> None:
         """ 
@@ -2249,7 +2257,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.REPEAT_ALL, KeyStates.Press)
+        self.SetUserTrackControl(UserTrackControlTypes.RepeatAll)
 
 
     def MediaRepeatOff(self) -> None:
@@ -2263,7 +2271,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.REPEAT_OFF, KeyStates.Press)
+        self.SetUserTrackControl(UserTrackControlTypes.RepeatOff)
 
 
     def MediaRepeatOne(self) -> None:
@@ -2277,7 +2285,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.REPEAT_ONE, KeyStates.Press)
+        self.SetUserTrackControl(UserTrackControlTypes.RepeatOne)
 
 
     def MediaResume(self) -> None:
@@ -2291,7 +2299,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.PLAY, KeyStates.Both)
+        self.SetUserPlayControl(UserPlayControlTypes.Play)
 
 
     def MediaShuffleOff(self) -> None:
@@ -2305,7 +2313,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.SHUFFLE_OFF, KeyStates.Press)
+        self.SetUserTrackControl(UserTrackControlTypes.ShuffleOff)
 
 
     def MediaShuffleOn(self) -> None:
@@ -2319,7 +2327,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.SHUFFLE_ON, KeyStates.Press)
+        self.SetUserTrackControl(UserTrackControlTypes.ShuffleOn)
 
 
     def MediaStop(self) -> None:
@@ -2333,7 +2341,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        self.Action(SoundTouchKeys.STOP, KeyStates.Both)
+        self.SetUserPlayControl(UserPlayControlTypes.Stop)
 
 
     def Mute(self) -> None:
@@ -4180,6 +4188,123 @@ class SoundTouchClient:
         _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("product cec hdmi control", control.ToString(), self._Device.DeviceName))
         request:ProductCecHdmiControl = control
         return self.Put(SoundTouchNodes.productcechdmicontrol, request)
+
+
+    def SetUserPlayControl(self, userPlayControlType:UserPlayControlTypes) -> SoundTouchMessage:
+        """
+        Sends a user play control type command to stop / pause / play / resume media content playback.
+        
+        Args:
+            userPlayControlType (UserPlayControlTypes):
+                User play control type to send.
+
+        Raises:
+            SoundTouchError:  
+                userPlayControlType argument was not supplied, or not of type UserPlayControlTypes.  
+                
+        No exception is raised if the device is currently in standby mode.
+                
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SetUserPlayControl.py
+        ```
+        </details>
+        """
+        # validations.
+        if (userPlayControlType is None) or (not isinstance(userPlayControlType, UserPlayControlTypes)):
+            raise SoundTouchError('userPlayControlType argument was not supplied, or is not of type UserPlayControlTypes', logsi=_logsi)
+            
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.userPlayControl.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+        
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("userPlayControl", userPlayControlType.value, self._Device.DeviceName))
+        userPlayControl:UserPlayControl = UserPlayControl(userPlayControlType)
+        return self.Put(SoundTouchNodes.userPlayControl, userPlayControl)
+
+
+    def SetUserRating(self, ratingType:UserRatingTypes) -> SoundTouchMessage:
+        """
+        Rates the currently playing media, if ratings are supported.
+        
+        Args:
+            ratingType (UserRatingTypes):
+                Rating to assign.
+
+        Raises:
+            SoundTouchError:  
+                rating argument was not supplied, or not of type UserRatingTypes.  
+                
+        No exception is raised if the device is currently in standby mode.
+                
+        No exception is raised if the NowPlaying content does not support ratings.
+        Check the `NowPlayingStatus.IsRatingEnabled` property to determine if the
+        content supports ratings or not.
+                
+        PANDORA is currently the only source that supports ratings.  Ratings are stored 
+        in the artist profile under "My Collection" settings.  If a ThumbsDown rating is 
+        assigned, then the current track play will stop and advance to the next track.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SetUserRating.py
+        ```
+        </details>
+        """
+        # validations.
+        if (ratingType is None) or (not isinstance(ratingType, UserRatingTypes)):
+            raise SoundTouchError('ratingType argument was not supplied, or is not of type UserRatingTypes', logsi=_logsi)
+            
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.userRating.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+        
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("userRating", ratingType.value, self._Device.DeviceName))
+        userRating:UserRating = UserRating(ratingType)
+        return self.Put(SoundTouchNodes.userRating, userRating)
+
+
+    def SetUserTrackControl(self, userTrackControlType:UserTrackControlTypes) -> SoundTouchMessage:
+        """
+        Sends a user track control type command to control track playback (next, previous, repeat, 
+        shuffle, etc).
+        
+        Args:
+            userTrackControlType (UserTrackControlTypes):
+                User track control type to send.
+
+        Raises:
+            SoundTouchError:  
+                userTrackControlType argument was not supplied, or not of type UserTrackControlTypes.  
+                
+        No exception is raised if the device is currently in standby mode.
+                
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/SetUserTrackControl.py
+        ```
+        </details>
+        """
+        # validations.
+        if (userTrackControlType is None) or (not isinstance(userTrackControlType, UserTrackControlTypes)):
+            raise SoundTouchError('userTrackControlType argument was not supplied, or is not of type UserTrackControlTypes', logsi=_logsi)
+            
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.userTrackControl.Path
+        if not uriPath in self._Device._SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+        
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("userTrackControl", userTrackControlType.value, self._Device.DeviceName))
+        userTrackControl:UserTrackControl = UserTrackControl(userTrackControlType)
+        return self.Put(SoundTouchNodes.userTrackControl, userTrackControl)
 
 
     def SetVolumeLevel(self, level:int) -> SoundTouchMessage:

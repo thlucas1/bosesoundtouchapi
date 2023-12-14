@@ -49,6 +49,9 @@ from .soundtouchconfigurationstatus import SoundTouchConfigurationStatus
 from .sourcelist import SourceList, SourceItem
 from .systemtimeout import SystemTimeout
 from .trackinfo import TrackInfo
+from .userplaycontrol import UserPlayControl, UserPlayControlTypes
+from .userrating import UserRating, UserRatingTypes
+from .usertrackcontrol import UserTrackControl, UserTrackControlTypes
 from .volume import Volume
 from .wirelessprofile import WirelessProfile
 from .zone import Zone, ZoneMember
@@ -105,6 +108,9 @@ __all__ = [
     'SourceList', 'SourceItem',
     'SystemTimeout',
     'TrackInfo',
+    'UserPlayControl', 'UserPlayControlTypes',
+    'UserRating', 'UserRatingTypes',
+    'UserTrackControl', 'UserTrackControlTypes',
     'Volume',
     'WirelessProfile',
     'Zone', 'ZoneMember'

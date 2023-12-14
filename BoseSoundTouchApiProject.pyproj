@@ -32,6 +32,12 @@
     <Compile Include="bosesoundtouchapi\firmware\soundtouchfirmwareproduct.py" />
     <Compile Include="bosesoundtouchapi\firmware\soundtouchfirmwarerelease.py" />
     <Compile Include="bosesoundtouchapi\firmware\__init__.py" />
+    <Compile Include="bosesoundtouchapi\models\usertrackcontrol.py" />
+    <Compile Include="bosesoundtouchapi\models\userplaycontrol.py" />
+    <Compile Include="bosesoundtouchapi\models\usertrackcontroltypes.py" />
+    <Compile Include="bosesoundtouchapi\models\userplaycontroltypes.py" />
+    <Compile Include="bosesoundtouchapi\models\userratingtypes.py" />
+    <Compile Include="bosesoundtouchapi\models\userrating.py" />
     <Compile Include="bosesoundtouchapi\models\grouproletypes.py" />
     <Compile Include="bosesoundtouchapi\models\keystates.py" />
     <Compile Include="bosesoundtouchapi\models\mediaitemcontainer.py" />
@@ -138,6 +144,9 @@
     <Compile Include="docs\include\samplecode\SoundTouchClient\Bookmark.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\ClearBluetoothPaired.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\RemoveGroupStereoPair.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SetUserTrackControl.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SetUserPlayControl.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\SetUserRating.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\UpdateGroupStereoPairName.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\CreateGroupStereoPair.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetAudioProductLevelControls.py" />
@@ -253,11 +262,13 @@
     <Compile Include="docs\include\samplecode\SoundTouchClient\SetBassLevel.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SelectPreset.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\StorePreset.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchDevice\RebootDevice.py" />
     <Compile Include="docs\include\samplecode\SoundTouchDevice\_ClassInit.py" />
     <Compile Include="docs\include\samplecode\SoundTouchDiscovery\DiscoverDevices.py" />
     <Compile Include="docs\include\samplecode\SoundTouchFirmware\_ClassInit.py" />
     <Compile Include="docs\include\samplecode\SoundTouchWebSocket\_ClassInit.py" />
     <Compile Include="setup.py" />
+    <Compile Include="test\testVS_SoundTouchDevice.py" />
     <Compile Include="test\testVS_SoundTouchClient_MusicLib_NAS.py" />
     <Compile Include="test\testVS_SoundTouchClient_MusicSvc_Pandora.py" />
     <Compile Include="test\testVS_SoundTouchClient_Groups.py" />

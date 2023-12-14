@@ -271,9 +271,9 @@ class NowPlayingStatus:
         
         The `RepeatSetting` property contains the actual repeat setting.
         """
-        if self._RepeatSetting in ["REPEAT_ALL", "REPEAT_ONE"]: 
-            return True
-        return False
+        if self._RepeatSetting is None: 
+            return False
+        return True
 
 
     @property
@@ -289,9 +289,9 @@ class NowPlayingStatus:
         """ 
         True if shuffle play is enabled; otherwise, False. 
         """
-        if self._ShuffleSetting in ["SHUFFLE_ON"]:
-            return True
-        return False
+        if self._ShuffleSetting is None: 
+            return False
+        return True
 
 
     @property
@@ -346,6 +346,8 @@ class NowPlayingStatus:
     def RepeatSetting(self) -> str:
         """ 
         Repeat setting value (e.g. "REPEAT_ALL", "REPEAT_ONE", "REPEAT_OFF", etc). 
+        
+        If null, then repeat functions are not enabled for the playing media.
         """
         return self._RepeatSetting
 
@@ -362,6 +364,8 @@ class NowPlayingStatus:
     def ShuffleSetting(self) -> str:
         """ 
         Shuffle setting value (e.g. "SHUFFLE_ON", "SHUFFLE_OFF", etc). 
+        
+        If null, then shuffle functions are not enabled for the playing media.
         """
         return self._ShuffleSetting
 
