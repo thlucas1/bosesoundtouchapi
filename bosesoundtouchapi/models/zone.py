@@ -190,11 +190,11 @@ class Zone:
         if self._MasterDeviceId is not None and len(self._MasterDeviceId) > 0: msg = '%s masterDeviceId="%s"' % (msg, str(self._MasterDeviceId))
         if self._MasterIpAddress is not None and len(self._MasterIpAddress) > 0: msg = '%s masterIpAddress="%s"' % (msg, str(self._MasterIpAddress))
         if self._IsZoneMaster is not None: msg = '%s isZoneMaster=%s' % (msg, str(self._IsZoneMaster).lower())
-        msg = "%s (%d items)" % (msg, self.__len__())
+        msg = "%s (%d items)" % (msg, len(self._Members))
         
         if includeItems == True:
             item:ZoneMember
-            for item in self:
+            for item in self._Members:
                 msg = "%s\n- %s" % (msg, item.ToString())
             
         return msg
@@ -204,9 +204,9 @@ class Zone:
         """
         Returns a displayable string representation of the Members list.
         """
-        msg:str = "(%d items): " % (self.__len__())
+        msg:str = "(%d items): " % (len(self._Members))
         item:ZoneMember
-        for item in self:
+        for item in self._Members:
             msg = "%s '%s (%s)'," % (msg, item.DeviceId, item.IpAddress)
             
         return msg[0:len(msg)-1]

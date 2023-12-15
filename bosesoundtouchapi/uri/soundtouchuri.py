@@ -19,8 +19,8 @@ class SoundTouchUri:
     
     def __init__(self, 
                  path:str,
-                 scope:SoundTouchUriScopes = SoundTouchUriScopes.OP_SCOPE_PUBLIC,
-                 uriType:SoundTouchUriTypes = SoundTouchUriTypes.OP_TYPE_REQUEST
+                 scope:SoundTouchUriScopes=SoundTouchUriScopes.OP_SCOPE_PUBLIC,
+                 uriType:SoundTouchUriTypes=SoundTouchUriTypes.OP_TYPE_REQUEST
                  ) -> None:
         """
         Initializes a new instance of the class.
@@ -34,6 +34,11 @@ class SoundTouchUri:
             uriType (SoundTouchUriType):
                 Defines the type of this uri; it can be either 'request' or 'event'.
         """
+        if isinstance(scope, SoundTouchUriScopes):
+            scope = scope.name
+        if isinstance(uriType, SoundTouchUriTypes):
+            uriType = uriType.name
+            
         self._Path = path
         self._Scope = scope
         self._UriType = uriType
@@ -79,3 +84,13 @@ class SoundTouchUri:
         """ Defines the type of this uri; it can be either 'request' or 'event'. """
         return self._UriType
 
+
+    def ToString(self) -> str:
+        """
+        Returns a displayable string representation of the class.
+        """
+        msg:str = 'SoundTouchUri:'
+        msg = '%s Path="%s"' % (msg, self._Path)
+        msg = '%s UriType="%s"' % (msg, self._UriType)
+        msg = '%s Scope="%s"' % (msg, self._Scope)
+        return msg

@@ -106,7 +106,7 @@ class RecentList:
         elm = Element('recents')
         
         item:Recent
-        for item in self:
+        for item in self._Recents:
             elm.append(item.ToElement())
         return elm
 
@@ -121,11 +121,11 @@ class RecentList:
                 include the base list.
         """
         msg:str = 'RecentList:'
-        msg = "%s (%d items)" % (msg, self.__len__())
+        msg = "%s (%d items)" % (msg, len(self._Recents))
         
         if includeItems == True:
             item:Recent
-            for item in self:
+            for item in self._Recents:
                 msg = "%s\n- %s" % (msg, item.ToString())
             
         return msg

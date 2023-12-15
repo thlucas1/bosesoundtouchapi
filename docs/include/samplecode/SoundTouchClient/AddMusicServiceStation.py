@@ -11,7 +11,7 @@ try:
     client:SoundTouchClient = SoundTouchClient(device)
 
     # get my collection of PANDORA music service stations.
-    criteria:Navigate = Navigate(SoundTouchSources.PANDORA, "YourMusicServiceUserId", NavigateMenuTypes.radioStations, 1, 100)
+    criteria:Navigate = Navigate(SoundTouchSources.PANDORA, "YourMusicServiceUserId", menuType=NavigateMenuTypes.RadioStations)
     resultsBefore:NavigateResponse = client.GetMusicServiceStations(criteria)
     print("\n%s Music Service Stations before:\n%s" % (criteria.Source, resultsBefore.ToString(True)))
         
@@ -21,7 +21,7 @@ try:
     client.AddMusicServiceStation(addStation)
         
     # get my collection of PANDORA music service stations.
-    criteria:Navigate = Navigate(SoundTouchSources.PANDORA, "YourMusicServiceUserId", NavigateMenuTypes.radioStations, 1, 100)
+    criteria:Navigate = Navigate(SoundTouchSources.PANDORA, "YourMusicServiceUserId", menuType=NavigateMenuTypes.RadioStations)
     resultsAfter:NavigateResponse = client.GetMusicServiceStations(criteria)
     print("\n%s Music Service Stations after:\n%s" % (criteria.Source, resultsAfter.ToString(True)))
         

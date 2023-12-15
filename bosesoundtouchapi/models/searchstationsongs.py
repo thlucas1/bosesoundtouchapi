@@ -166,7 +166,7 @@ class SearchStationSongs:
                 include the base list.
         """
         msg:str = 'SearchStationSongs:'
-        msg = "%s (%d items)" % (msg, self.__len__())
+        msg = "%s (%d items)" % (msg, len(self._Items))
         
         if includeItems == True:
             item:SearchResult

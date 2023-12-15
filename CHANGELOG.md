@@ -6,6 +6,19 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.31 ] - 2023/12/15
+
+  * Added method `SoundTouchClient`.`GetInformation` - Gets the information configuration of the device.
+  * Added method `SoundTouchClient`.`GetIntrospectData` - Gets introspect data for a specified source.
+  * Added model `Component` - component configuration.
+  * Added model `Information` - info configuration.
+  * Added model `InformationNetworkInfo` - info network information configuration.
+  * Added model `Introspect` - introspect configuration.
+  * Added model `SupportedUrl` - supported url configuration.
+  * Added model `SupportedUrls` - supported urls configuration.
+  * Removed `SoundTouchDeviceComponent` class, as it was replaced by the `Component` model.
+  * Removed `InfoNetworkConfig` model, as it was replaced by the `InformationNetworkInfo` model.
+
 ###### [ 1.0.30 ] - 2023/12/13
 
   * Updated method `SoundTouchWebSocket`.`_OnWebSocketClose` - Close event handler was missing 2 arguments that are passed for the event.

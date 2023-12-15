@@ -79,11 +79,11 @@ class MediaServerList:
                 include the base list.
         """
         msg:str = 'MediaServerList:'
-        msg = "%s (%d items)" % (msg, self.__len__())
+        msg = "%s (%d items)" % (msg, len(self._MediaServers))
         
         if includeItems == True:
             item:MediaServer
-            for item in self:
+            for item in self._MediaServers:
                 msg = "%s\n- %s" % (msg, item.ToString())
             
         return msg

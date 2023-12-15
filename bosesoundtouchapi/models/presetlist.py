@@ -98,7 +98,7 @@ class PresetList:
         elm = Element('presets')
         
         item:Preset
-        for item in self:
+        for item in self._Presets:
             elm.append(item.ToElement())
         return elm
 
@@ -113,11 +113,11 @@ class PresetList:
                 include the base list.
         """
         msg:str = 'PresetList:'
-        msg = "%s (%d items)" % (msg, self.__len__())
+        msg = "%s (%d items)" % (msg, len(self._Presets))
         
         if includeItems == True:
             item:Preset
-            for item in self:
+            for item in self._Presets:
                 msg = "%s\n- %s" % (msg, item.ToString())
             
         return msg

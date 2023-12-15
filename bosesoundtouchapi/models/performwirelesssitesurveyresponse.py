@@ -24,7 +24,7 @@ class PerformWirelessSiteSurveyResponse:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        self._SurveyResultItems = []
+        self._SurveyResultItems:list[SurveyResultItem] = []
 
         if (root is None):
 
@@ -81,11 +81,11 @@ class PerformWirelessSiteSurveyResponse:
                 include the base list.
         """
         msg:str = 'PerformWirelessSiteSurveyResponse:'
-        msg = "%s (%d items)" % (msg, self.__len__())
+        msg = "%s (%d items)" % (msg, len(self._SurveyResultItems))
         
         if includeItems == True:
             item:SurveyResultItem
-            for item in self:
+            for item in self._SurveyResultItems:
                 msg = "%s\n- %s" % (msg, item.ToString())
             
         return msg

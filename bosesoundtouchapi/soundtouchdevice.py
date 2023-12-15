@@ -7,9 +7,8 @@ from xml.etree.ElementTree import Element, fromstring
 # our package imports.
 from .bstappmessages import BSTAppMessages
 from .bstutils import export, _xmlFind
-from .soundtouchdevicecomponent import SoundTouchDeviceComponent
 from .soundtoucherror import SoundTouchError
-from .models import InfoNetworkConfig
+from .models import Component, Information, InformationNetworkInfo, SupportedUrls, SupportedUrl
 from .uri.soundtouchnodes import SoundTouchNodes
 from .uri.soundtouchuri import SoundTouchUri
 from .bstconst import (
@@ -82,22 +81,11 @@ class SoundTouchDevice:
         ```
         </details>
         """
-        self._Components:list[SoundTouchDeviceComponent] = []
-        self._CountryCode:str = None
-        self._DeviceId:str = None
-        self._DeviceName:str = None
-        self._DeviceType:str = None
+        self._Information:Information = Information()
         self._Host:str = host
-        self._MacAddress:str = None
-        self._ModuleType:str = None
-        self._NetworkInfo:list[InfoNetworkConfig] = []
         self._Port:int = int(port)
-        self._RegionCode:str = None
-        self._StreamingAccountUUID:str = None
-        self._StreamingUrl:str = None
         self._SupportedUris:list[SoundTouchUri] = []
-        self._Variant:str = None
-        self._VariantMode:str = None
+        self._UnSupportedUrlNames:list[str] = []
 
         try:
 
@@ -124,47 +112,9 @@ class SoundTouchDevice:
             if response.status != 200:
                 raise SoundTouchError("Could not retrieve SoundTouch device info: (%s) - '%s'" % (response.status, reqUrl), None, _logsi)
 
-            # convert xml string response to xmltree Element object for parsing.
-            root = fromstring(response.data)
-
-            # load device details - base info.
-            self._CountryCode = _xmlFind(root, 'countryCode')
-            self._DeviceId = root.get('deviceID')
-            self._DeviceName = _xmlFind(root, 'name')
-            self._DeviceType = _xmlFind(root, 'type')
-            self._ModuleType = _xmlFind(root, 'moduleType')
-            self._RegionCode = _xmlFind(root, 'regionCode')
-            self._StreamingAccountUUID = _xmlFind(root, 'margeAccountUUID')
-            self._StreamingUrl = _xmlFind(root, 'margeURL')
-            self._Variant = _xmlFind(root, 'variant')
-            self._VariantMode = _xmlFind(root, 'variantMode')
-
-            # default MAC address to the device id.
-            self._MacAddress = self._DeviceId
-         
-            # load device details - components list.
-            component:Element
-            for component in root.find('components'):
-
-                componentCategory:str = None
-                elm:Element = component.find('componentCategory')
-                if elm is not None: componentCategory = elm.text
-
-                softwareVersion:str = None
-                elm:Element = component.find('softwareVersion')
-                if elm is not None: softwareVersion = elm.text
-
-                serialNumber:str = None
-                elm:Element = component.find('serialNumber')
-                if elm is not None: serialNumber = elm.text
-
-                obj = SoundTouchDeviceComponent(componentCategory, softwareVersion, serialNumber)
-                self._Components.append(obj)
-
-            # load device details - network info list.
-            for info in root.findall('networkInfo'):
-                self._NetworkInfo.append(InfoNetworkConfig(info))
-        
+            # convert xml string response to xmltree Element and create information object.
+            info:Element = fromstring(response.data)
+            self._Information:Information = Information(root=info)
             response.close()
         
             # get SoundTouch supported url information; if it fails then we are done.
@@ -173,6 +123,10 @@ class SoundTouchDevice:
             response:HTTPResponse = manager.request('GET', reqUrl)
             if response.status != 200:
                 raise SoundTouchError("Could not retrieve SoundTouch device supported urls: (%s) - '%s'" % (response.status, reqUrl), None, _logsi)
+            
+            # load supported url's list.
+            elmNode:Element = fromstring(response.data)
+            supportedUrls:SupportedUrls = SupportedUrls(root=elmNode)
 
             # get list of ALL supported SoundTouch uri's.
             allUris:dict = SoundTouchNodes._AllUris
@@ -180,10 +134,13 @@ class SoundTouchDevice:
             # load the list of SoundTouch uri's that THIS device supports.
             # it could be everything in the ALL supported uri's list, but probably not as
             # SoundTouch devices can support different features.
-            for url_element in fromstring(response.data).findall('URL'):
-                name:str = url_element.get('location', default='/')[1:]  # drop the forward slash prefix.
-                if name is not None and name in allUris:
+            url:SupportedUrl
+            for url in supportedUrls.Urls:
+                name:str = url.Location[1:]  # drop the forward slash prefix.
+                if name in allUris:
                     self._SupportedUris.append(allUris[name])
+                else:
+                    self._UnSupportedUrlNames.append(name)
 
             response.close()
             
@@ -210,12 +167,12 @@ class SoundTouchDevice:
 
 
     @property
-    def Components(self) -> list[SoundTouchDeviceComponent]:
+    def Components(self) -> list[Component]:
         """
-        List of `SoundTouchDeviceComponent` objects containing various information about the 
+        List of `Component` objects containing various information about the 
         device's components (e.g. SCM, LPM, BASS, etc).
         """
-        return self._Components
+        return self._Information._Components
 
 
     @property
@@ -223,7 +180,7 @@ class SoundTouchDevice:
         """
         Country code of the device as assigned by the manufacturer (e.g. 'US', etc). 
         """
-        return self._CountryCode
+        return self._Information._CountryCode
 
 
     @property
@@ -231,21 +188,21 @@ class SoundTouchDevice:
         """
         Unique device identifier as assigned by the manufacturer (e.g. '9070658C9D4A', etc).
         """
-        return self._DeviceId
+        return self._Information._DeviceId
 
     @property
     def DeviceName(self) -> str:
         """ 
         Friendly name assigned to the SoundTouch device (e.g. 'Home Theater SoundBar', etc). 
         """
-        return self._DeviceName
+        return self._Information._DeviceName
 
     @property
     def DeviceType(self) -> str:
         """ 
         Type of device as assigned by the manufacturer (e.g. 'SoundTouch 10', 'SoundTouch 300', etc). 
         """
-        return self._DeviceType
+        return self._Information._DeviceType
 
 
     @property
@@ -274,7 +231,7 @@ class SoundTouchDevice:
     @property
     def MacAddress(self) -> str:
         """ MAC address (media access control address) assigned to the device. """
-        return self._MacAddress
+        return self._Information._MacAddress
 
 
     @property
@@ -282,16 +239,16 @@ class SoundTouchDevice:
         """ 
         Radio module type used in the device, as assigned by the manufacturer (e.g. 'SM2', etc). 
         """
-        return self._ModuleType
+        return self._Information._ModuleType
 
 
     @property
-    def NetworkInfo(self) -> list[InfoNetworkConfig]:
+    def NetworkInfo(self) -> list[InformationNetworkInfo]:
         """
-        List of `SoundTouchNetworkConfig` objects containing the current network configuration 
+        List of `InformationNetworkInfo` objects containing the current network configuration 
         of the device.
         """
-        return self._NetworkInfo
+        return self._Information._NetworkInfo
 
 
     @property
@@ -308,15 +265,15 @@ class SoundTouchDevice:
         """ 
         Region code of the device as assigned by the manufacturer (e.g. 'US', etc). 
         """
-        return self._RegionCode
+        return self._Information._RegionCode
 
 
     @property
     def StreamingAccountUUID(self) -> str:
         """ 
-        Bose Streaming account UUID, as assigned by the manufacturer (e.g. '6146078', etc). 
+        Bose Streaming account UUID, as assigned by the manufacturer (e.g. '1234567', etc). 
         """
-        return self._StreamingAccountUUID
+        return self._Information._StreamingAccountUUID
 
 
     @property
@@ -324,7 +281,7 @@ class SoundTouchDevice:
         """ 
         Bose Streaming URL, as assigned by the manufacturer (e.g. 'https://streaming.bose.com', etc). 
         """
-        return self._StreamingUrl
+        return self._Information._StreamingUrl
 
 
     @property
@@ -353,6 +310,14 @@ class SoundTouchDevice:
 
 
     @property
+    def UnSupportedUrlNames(self) -> list[SoundTouchUri]:
+        """
+        List of url names that the device supports, but are not supported by this api.
+        """
+        return self._UnSupportedUrlNames
+
+
+    @property
     def UpnpUrl(self) -> str:
         """ 
         Universal Plug and Play (UPnP) root URL for this device.
@@ -374,7 +339,7 @@ class SoundTouchDevice:
         """ 
         Variant value (e.g. 'ginger', etc). 
         """
-        return self._Variant
+        return self._Information._Variant
 
 
     @property
@@ -382,10 +347,10 @@ class SoundTouchDevice:
         """ 
         Variant mode value (e.g. 'noap', etc). 
         """
-        return self._VariantMode
+        return self._Information._VariantMode
 
 
-    def GetComponents(self, componentCategory:str) -> SoundTouchDeviceComponent:
+    def GetComponents(self, componentCategory:str) -> Component:
         """
         Iterates over all components discovered at class initialization that match 
         the given category.
@@ -395,7 +360,7 @@ class SoundTouchDevice:
                 The  component's category
                 
         Returns:
-            An iterator over the filtered `SoundTouchDeviceComponent` components.
+            An iterator over the filtered `Component` components.
             
         This yields a device component for the given category.
         """
@@ -477,14 +442,25 @@ class SoundTouchDevice:
                 include the base list.
         """
         msg:str = 'SoundTouchDevice:'
-        msg = "%s Host='%s'" % (msg, self._Host)
-        msg = "%s DeviceName='%s'" % (msg, self._DeviceName)
-        msg = "%s DeviceId='%s'" % (msg, self._DeviceId)
-        msg = "%s (%d components)" % (msg, len(self._Components))
+        msg = '%s Host="%s"' % (msg, self._Host)
+        msg = '%s DeviceName="%s"' % (msg, self.DeviceName)
+        msg = '%s DeviceId="%s"' % (msg, self.DeviceId)
+        msg = '%s SupportedUrisCount=%d' % (msg, len(self.SupportedUris))
+        if len(self.UnSupportedUrlNames) > 0:
+            msg = "%s UnSupportedUrlNamesCount=%d" % (msg, len(self.UnSupportedUrlNames))
         
         if includeItems == True:
-            item:SoundTouchDeviceComponent
-            for item in self._Components:
+            
+            msg = "%s\n\nDevice %s" % (msg, self._Information.ToString(True))
+            
+            msg = "%s\n\nDevice UnSupportedUrlNames (%d items)" % (msg, len(self.UnSupportedUrlNames))
+            item:str
+            for item in self.UnSupportedUrlNames:
+                msg = "%s\n- %s" % (msg, item)
+            
+            msg = "%s\n\nDevice SupportedUrlNames (%d items)" % (msg, len(self.SupportedUris))
+            item:SoundTouchUri
+            for item in self.SupportedUris:
                 msg = "%s\n- %s" % (msg, item.ToString())
             
         return msg

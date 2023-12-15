@@ -11,12 +11,14 @@ from .bluetoothinfo import BlueToothInfo
 from .capabilities import Capabilities
 from .clockconfig import ClockConfig
 from .clocktime import ClockTime
+from .component import Component
 from .contentitem import ContentItem
 from .controllevelinfo import ControlLevelInfo
 from .dspmonostereoitem import DSPMonoStereoItem
 from .group import Group, GroupStatusTypes
 from .grouprole import GroupRole, GroupRoleTypes
-from .infonetworkconfig import InfoNetworkConfig
+from .info import Information, InformationNetworkInfo
+from .introspect import Introspect
 from .keystates import KeyStates
 from .mediaserverlist import MediaServerList, MediaServer
 from .musicserviceaccount import MusicServiceAccount
@@ -47,6 +49,7 @@ from .softwareupdatecheckresponse import SoftwareUpdateCheckResponse
 from .softwareupdatequeryresponse import SoftwareUpdateQueryResponse
 from .soundtouchconfigurationstatus import SoundTouchConfigurationStatus
 from .sourcelist import SourceList, SourceItem
+from .supportedurls import SupportedUrls, SupportedUrl
 from .systemtimeout import SystemTimeout
 from .trackinfo import TrackInfo
 from .userplaycontrol import UserPlayControl, UserPlayControlTypes
@@ -70,12 +73,14 @@ __all__ = [
     'Capabilities',
     'ClockConfig',
     'ClockTime',
+    'Component',
     'ContentItem',
     'ControlLevelInfo',
     'DSPMonoStereoItem',
     'Group', 'GroupStatusTypes',
     'GroupRole', 'GroupRoleTypes',
-    'InfoNetworkConfig',
+    'Information', 'InformationNetworkInfo',
+    'Introspect',
     'KeyStates',
     'MediaServerList', 'MediaServer',
     'MusicServiceAccount',
@@ -106,6 +111,7 @@ __all__ = [
     'SoftwareUpdateQueryResponse',
     'SoundTouchConfigurationStatus',
     'SourceList', 'SourceItem',
+    'SupportedUrls', 'SupportedUrl',
     'SystemTimeout',
     'TrackInfo',
     'UserPlayControl', 'UserPlayControlTypes',

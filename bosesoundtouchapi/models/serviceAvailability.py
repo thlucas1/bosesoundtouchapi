@@ -87,11 +87,11 @@ class ServiceAvailability:
                 include the base attributes.
         """
         msg:str = 'ServiceAvailability:'
-        msg = "%s (%d items)" % (msg, self.__len__())
+        msg = "%s (%d items)" % (msg, len(self._Services))
         
         if includeItems == True:
             item:Service
-            for item in self:
+            for item in self._Services:
                 msg = "%s\n- %s" % (msg, item.ToString())
             
         return msg

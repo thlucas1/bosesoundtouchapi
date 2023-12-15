@@ -163,10 +163,10 @@ try:
                 # wait 1 second.
                 time.sleep(1)
                 
-                if i == 10:
-                    print("Rebooting device ...")
-                    msg = device.RebootDevice()
-                    print("Response:\n%s" % msg)
+                # if i == 10:
+                #     print("Rebooting device ...")
+                #     msg = device.RebootDevice()
+                #     print("Response:\n%s" % msg)
             
                 # did we lose the connection to the SoundTouch device?
                 # if so, then stop / restart the notification event thread.

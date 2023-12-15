@@ -6,12 +6,12 @@ from xml.etree.ElementTree import Element
 from ..bstutils import export, _xmlFind
 
 @export
-class InfoNetworkConfig:
+class InformationNetworkInfo:
     """
-    SoundTouch device InfoNetworkConfig configuration object.
+    SoundTouch device Information NetworkInfo configuration object.
        
     This class contains the attributes and sub-items that represent the 
-    net connected interfaces configuration of the device.
+    Information NetworkInfo configuration of the device.
     """
 
     def __init__(self, root:Element) -> None:
@@ -68,7 +68,7 @@ class InfoNetworkConfig:
         """
         Returns a displayable string representation of the class.
         """
-        msg:str = 'InfoNetworkConfig:'
+        msg:str = 'NetworkInfo:'
         if self._MacAddress is not None and len(self._MacAddress) > 0: msg = '%s macAddress="%s"' % (msg, str(self._MacAddress))
         if self._IpAddress is not None and len(self._IpAddress) > 0: msg = '%s ipAddress="%s"' % (msg, str(self._IpAddress))
         if self._TypeValue is not None and len(self._TypeValue) > 0: msg = '%s type="%s"' % (msg, str(self._TypeValue))

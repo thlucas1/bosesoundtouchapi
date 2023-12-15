@@ -235,9 +235,9 @@ class Group(SoundTouchModelRequest):
         """
         Returns a displayable string representation of the Roles list.
         """
-        msg:str = "(%d items): " % (len(self.Roles))
+        msg:str = "(%d items): " % (len(self._Roles))
         item:GroupRole
-        for item in self:
+        for item in self._Roles:
             msg = "%s '%s (%s) %s'," % (msg, item.DeviceId, item.IpAddress, item.Role)
             
         return msg[0:len(msg)-1]

@@ -195,26 +195,26 @@ class SoundTouchWebSocket:
         return self._Port
 
 
-    def _OnWebSocketClose(self, wsApp:WebSocketApp, statusCode, message:bytes) -> None:
+    def _OnWebSocketClose(self, wsApp:WebSocketApp, closeCode, closeMessage:bytes) -> None:
         """
         Event raised by the web socket event listener when a socket has been closed.
         
         Args:
             wsApp (WebSocketApp):
                 Event sender.
-            statusCode:
+            closeCode:
                 Close status code.
-            message (bytes):
+            closeMessage (bytes):
                 Close message.
         """
         if _logsi.IsOn(SILevel.Verbose):
-            _logsi.LogObject(SILevel.Verbose, "SoundTouch web socket event listener OnClose event: '%s' - (%s) %s" % (SoundTouchNotifyCategorys.WebSocketClose.value, str(statusCode), str(message)), message)
+            _logsi.LogObject(SILevel.Verbose, "SoundTouch web socket event listener OnClose event: '%s' - (%s) %s" % (SoundTouchNotifyCategorys.WebSocketClose.value, str(closeCode), str(closeMessage)), closeMessage)
             
         # notify listeners.
         self.NotifyListeners(SoundTouchNotifyCategorys.WebSocketClose.value, SoundTouchNotifyCategorys.WebSocketClose.value)
 
 
-    def _OnWebSocketError(self, wsApp:WebSocketApp, error) -> None:
+    def _OnWebSocketError(self, wsApp:WebSocketApp, error:bytes) -> None:
         """
         Event raised by the web socket event listener when a socket error has occurred.
         
@@ -479,12 +479,12 @@ class SoundTouchWebSocket:
             
             self._WebsocketClient = WebSocketApp(
                     wsUrl,
-                    on_message = lambda ws,msg:         self._OnMessage(ws, msg),
-                    on_error   = lambda ws,msg:         self._OnWebSocketError(ws, msg),
-                    on_close   = lambda ws,statcd, msg: self._OnWebSocketClose(ws, statcd, msg),
-                    on_open    = lambda ws:             self._OnWebSocketOpen(ws),
-                    on_ping    = lambda ws,args:        self._OnWebSocketPing(ws, args),
-                    on_pong    = lambda ws,args:        self._OnWebSocketPong(ws, args),
+                    on_message = lambda ws,msg:             self._OnMessage(ws,msg),
+                    on_error   = lambda ws,msg:             self._OnWebSocketError(ws,msg),
+                    on_close   = lambda ws,clscod,clsmsg:   self._OnWebSocketClose(ws,clscod,clsmsg),
+                    on_open    = lambda ws:                 self._OnWebSocketOpen(ws),
+                    on_ping    = lambda ws,args:            self._OnWebSocketPing(ws,args),
+                    on_pong    = lambda ws,args:            self._OnWebSocketPong(ws,args),
                     subprotocols=['gabbo']
             )
             

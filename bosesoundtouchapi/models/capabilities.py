@@ -204,10 +204,10 @@ class Capabilities:
         msg = '%s bcoResetCapable=%s' % (msg, str(self._IsBcoResetCapable).lower())
         msg = '%s disablePowerSaving=%s' % (msg, str(self._IsDisablePowerSavingCapable).lower())
         msg = '%s dualMode=%s' % (msg, str(self._IsDualModeCapable).lower())
-        msg = "%s (%d items)" % (msg, self.__len__())
+        msg = "%s (%d items)" % (msg, len(self._Capabilities))
         
         if includeItems == True:
-            for item in self:
-                msg = "%s\n- '%s' = '%s'" % (msg, str(item), str(self[item]))
+            for item in self._Capabilities:
+                msg = "%s\n- '%s' = '%s'" % (msg, str(item), str(self._Capabilities[item]))
 
         return msg 

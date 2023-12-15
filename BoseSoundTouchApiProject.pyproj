@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>b57aea50-a094-4619-b41e-cdade13693c6</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>test\test_StatusNotifications.py</StartupFile>
+    <StartupFile>test\test_SampleCode.py</StartupFile>
     <SearchPath>.;test</SearchPath>
     <WorkingDirectory>C:\Users\thluc\source\repos\BoseSoundTouchApiProject</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -32,6 +32,11 @@
     <Compile Include="bosesoundtouchapi\firmware\soundtouchfirmwareproduct.py" />
     <Compile Include="bosesoundtouchapi\firmware\soundtouchfirmwarerelease.py" />
     <Compile Include="bosesoundtouchapi\firmware\__init__.py" />
+    <Compile Include="bosesoundtouchapi\models\component.py" />
+    <Compile Include="bosesoundtouchapi\models\introspect.py" />
+    <Compile Include="bosesoundtouchapi\models\info.py" />
+    <Compile Include="bosesoundtouchapi\models\supportedurl.py" />
+    <Compile Include="bosesoundtouchapi\models\supportedurls.py" />
     <Compile Include="bosesoundtouchapi\models\usertrackcontrol.py" />
     <Compile Include="bosesoundtouchapi\models\userplaycontrol.py" />
     <Compile Include="bosesoundtouchapi\models\usertrackcontroltypes.py" />
@@ -100,7 +105,7 @@
     <Compile Include="bosesoundtouchapi\models\clocktime.py" />
     <Compile Include="bosesoundtouchapi\models\contentitem.py" />
     <Compile Include="bosesoundtouchapi\models\dspmonostereoitem.py" />
-    <Compile Include="bosesoundtouchapi\models\infonetworkconfig.py" />
+    <Compile Include="bosesoundtouchapi\models\infonetworkinfo.py" />
     <Compile Include="bosesoundtouchapi\models\mediaserver.py" />
     <Compile Include="bosesoundtouchapi\models\mediaserverlist.py" />
     <Compile Include="bosesoundtouchapi\models\networkstatusinterface.py" />
@@ -131,7 +136,6 @@
     <Compile Include="bosesoundtouchapi\bstutils.py" />
     <Compile Include="bosesoundtouchapi\soundtouchclient.py" />
     <Compile Include="bosesoundtouchapi\soundtouchdevice.py" />
-    <Compile Include="bosesoundtouchapi\soundtouchdevicecomponent.py" />
     <Compile Include="bosesoundtouchapi\soundtouchnotifycategorys.py" />
     <Compile Include="bosesoundtouchapi\uri\soundtouchuriscopes.py" />
     <Compile Include="bosesoundtouchapi\uri\soundtouchuritypes.py" />
@@ -143,6 +147,9 @@
     <Compile Include="docs\include\samplecode\SoundTouchClient\Action.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\Bookmark.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\ClearBluetoothPaired.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetInformation.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetIntrospectData.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\GetSupportedUrls.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\RemoveGroupStereoPair.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SetUserTrackControl.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\SetUserPlayControl.py" />
@@ -268,6 +275,7 @@
     <Compile Include="docs\include\samplecode\SoundTouchFirmware\_ClassInit.py" />
     <Compile Include="docs\include\samplecode\SoundTouchWebSocket\_ClassInit.py" />
     <Compile Include="setup.py" />
+    <Compile Include="test\testVS_SoundTouchClient_DestructiveMethods.py" />
     <Compile Include="test\testVS_SoundTouchDevice.py" />
     <Compile Include="test\testVS_SoundTouchClient_MusicLib_NAS.py" />
     <Compile Include="test\testVS_SoundTouchClient_MusicSvc_Pandora.py" />
@@ -276,7 +284,6 @@
     <Compile Include="test\testVS_SoundTouchDiscovery.py" />
     <Compile Include="test\testVS_SoundTouchClient.py" />
     <Compile Include="test\test_Firmware.py" />
-    <Compile Include="test\test_Navigate.py" />
     <Compile Include="test\test_SampleCode.py" />
     <Compile Include="test\test_ZeroconfDiscovery.py" />
     <Compile Include="test\test_StatusNotifications.py" />

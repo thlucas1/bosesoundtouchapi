@@ -250,7 +250,7 @@ class SoundTouchDiscovery:
                 include the base list.
         """
         msg:str = 'SoundTouchDiscovery:'
-        msg = "%s (%d items)" % (msg, self.__len__())
+        msg = "%s (%d items)" % (msg, len(self._DiscoveredDeviceNames))
         
         if includeItems == True:
             for key, deviceName in self._DiscoveredDeviceNames.items():

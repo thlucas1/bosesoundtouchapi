@@ -6,7 +6,8 @@ import time
 from tinytag import TinyTag
 import urllib.parse
 from urllib3 import PoolManager, Timeout
-from xml.etree.ElementTree import fromstring, Element
+from xml.etree.ElementTree import fromstring, tostring, Element
+from xml.etree import ElementTree
 
 # our package imports.
 from .bstappmessages import BSTAppMessages
@@ -343,7 +344,7 @@ class SoundTouchClient:
         xmlRequest = f'<key state="%s" sender="Gabbo">{key}</key>'
         
         # send press or release or both based upon state argument.
-        _logsi.LogVerbose(MSG_TRACE_ACTION_KEY % (key, state, self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_ACTION_KEY % (key, state, self.Device.DeviceName))
         if state in ['press','both']:
             self.Put(SoundTouchNodes.key, xmlRequest % 'press')
         if state in ['release','both']:
@@ -401,13 +402,13 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.setMusicServiceAccount.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         result:list[str] = []
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("AddMusicServiceSources", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("AddMusicServiceSources", self.Device.DeviceName))
         
         # get list of defined sources.
         sourceList:SourceList = self.GetSourceList()
@@ -466,11 +467,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.addStation.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("addStation", addStation.ToString(), self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("addStation", addStation.ToString(), self.Device.DeviceName))
         result:SoundTouchMessage = self.Put(SoundTouchNodes.addStation, addStation)
         return result
 
@@ -527,13 +528,13 @@ class SoundTouchClient:
             tempZone.AddMember(member, _logsi)
 
         _logsi.LogVerbose("Adding zone members from SoundTouch device: '%s' - %s" % (
-            self._Device.DeviceName, tempZone.ToStringMemberSummary()))
+            self.Device.DeviceName, tempZone.ToStringMemberSummary()))
         
         # add the member zones from the device.
         result = self.Put(SoundTouchNodes.addZoneSlave, tempZone.ToXmlString())
     
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
 
         return result
@@ -582,7 +583,7 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.clearBluetoothPaired.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
@@ -633,7 +634,7 @@ class SoundTouchClient:
 
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.addGroup.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
@@ -700,7 +701,7 @@ class SoundTouchClient:
         result = self.Put(SoundTouchNodes.setZone, zone.ToXmlString())
         
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
 
         return result
@@ -786,7 +787,7 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.enterBluetoothPairing.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
@@ -864,11 +865,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.audiodspcontrols.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioDspControls", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioDspControls", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.audiodspcontrols, AudioDspControls, refresh)
 
 
@@ -905,11 +906,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.audioproductlevelcontrols.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioProductLevelControls", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioProductLevelControls", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.audioproductlevelcontrols, AudioProductLevelControls, refresh)
 
 
@@ -946,11 +947,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.audioproducttonecontrols.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioProductToneControls", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioProductToneControls", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.audioproducttonecontrols, AudioProductToneControls, refresh)
 
 
@@ -987,11 +988,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.audiospeakerattributeandsetting.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioSpeakerAttributeAndSetting", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("AudioSpeakerAttributeAndSetting", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.audiospeakerattributeandsetting, AudioSpeakerAttributeAndSetting, refresh)
 
 
@@ -1014,7 +1015,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Balance", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Balance", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.balance, Balance, refresh)
 
 
@@ -1037,7 +1038,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Bass", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Bass", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.bass, Bass, refresh)
 
 
@@ -1060,7 +1061,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("BassCapabilities", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("BassCapabilities", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.bassCapabilities, BassCapabilities, refresh)
 
 
@@ -1083,7 +1084,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("BlueToothInfo", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("BlueToothInfo", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.bluetoothInfo, BlueToothInfo, refresh)
 
 
@@ -1109,7 +1110,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Capabilities", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Capabilities", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.capabilities, Capabilities, refresh)
 
 
@@ -1132,7 +1133,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ClockConfig", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ClockConfig", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.clockDisplay, ClockConfig, refresh)
 
 
@@ -1155,7 +1156,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ClockTime", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ClockTime", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.clockTime, ClockTime, refresh)
 
 
@@ -1178,7 +1179,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("DSPMonoStereo", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("DSPMonoStereo", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.DSPMonoStereo, DSPMonoStereoItem, refresh)
 
 
@@ -1205,12 +1206,83 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.getGroup.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Group", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Group", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.getGroup, Group, refresh)
+
+
+    def GetInformation(self, refresh=True) -> Information:
+        """
+        Gets the information configuration of the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `Information` object that contains the results.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `info` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetInformation.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.info.Path
+        if not uriPath in self.Device.SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("info", self.Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.info, Information, refresh)
+
+
+    def GetIntrospectData(self, introspect:Introspect) -> str:
+        """
+        Gets introspect data for a specified source.
+
+        Args:
+            introspect (Introspect):
+                Introspect object to retrieve introspect data for.
+
+        Returns:
+            A string that contains the introspect xml response.
+            
+        The introspect xml response returned can vary by source type, and if the source
+        is currently in use (e.g. NowPlaying) or not.
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetIntrospectData.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.introspect.Path
+        if not uriPath in self.Device.SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("introspect", "%s:%s" % (introspect.Source, introspect.SourceAccount or ""), self.Device.DeviceName))
+        msg:SoundTouchMessage = self.Put(SoundTouchNodes.introspect, introspect)
+        
+        xmlResult:str = None
+        if msg.Response is not None:
+            ElementTree.indent(msg.Response)  
+            xmlResult:str = ElementTree.tostring(msg.Response, encoding='unicode', xml_declaration=True)
+        return xmlResult
 
 
     def GetLanguage(self, refresh=True) -> SimpleConfig:
@@ -1232,7 +1304,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Language", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Language", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.language, SimpleConfig, refresh)
 
 
@@ -1255,7 +1327,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("MediaServerList", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("MediaServerList", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.listMediaServers, MediaServerList, refresh)
 
 
@@ -1302,11 +1374,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.navigate.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("navigate", navigate.ContainerTitle, self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("navigate", navigate.ContainerTitle, self.Device.DeviceName))
         result:NavigateResponse = self.Put(SoundTouchNodes.navigate, navigate, NavigateResponse)
         return result
 
@@ -1340,11 +1412,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.navigate.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("navigate", navigate.ContainerTitle, self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("navigate", navigate.ContainerTitle, self.Device.DeviceName))
         result:NavigateResponse = self.Put(SoundTouchNodes.navigate, navigate, NavigateResponse)
         return result
 
@@ -1369,11 +1441,11 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Name", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Name", self.Device.DeviceName))
         name = self.GetProperty(SoundTouchNodes.name, SimpleConfig, refresh)
         
-        if name.Value != self._Device.DeviceName:
-            self._Device.DeviceName = name.Value
+        if name.Value != self.Device.DeviceName:
+            self.Device.DeviceName = name.Value
             
         return name
 
@@ -1397,7 +1469,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("NetworkInfo", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("NetworkInfo", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.networkInfo, NetworkInfo, refresh)
 
 
@@ -1424,7 +1496,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("NetworkStatus", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("NetworkStatus", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.netStats, NetworkStatus, refresh)
 
 
@@ -1462,7 +1534,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("NowPlayingStatus", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("NowPlayingStatus", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.nowPlaying, NowPlayingStatus, refresh)
 
 
@@ -1517,7 +1589,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("PowerManagement", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("PowerManagement", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.powerManagement, PowerManagement, refresh)
 
 
@@ -1540,7 +1612,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("PresetList", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("PresetList", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.presets, PresetList, refresh)
         
 
@@ -1577,11 +1649,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.productcechdmicontrol.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ProductCecHdmiControl", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ProductCecHdmiControl", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.productcechdmicontrol, ProductCecHdmiControl, refresh)
 
 
@@ -1618,11 +1690,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.producthdmiassignmentcontrols.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ProductHdmiAssignmentControls", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ProductHdmiAssignmentControls", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.producthdmiassignmentcontrols, ProductHdmiAssignmentControls, refresh)
 
 
@@ -1689,11 +1761,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.rebroadcastlatencymode.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("RebroadcastLatencyMode", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("RebroadcastLatencyMode", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.rebroadcastlatencymode, RebroadcastLatencyMode, refresh)
 
 
@@ -1716,7 +1788,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("RecentList", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("RecentList", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.recents, RecentList, refresh)
         
 
@@ -1739,7 +1811,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("RequestToken", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("RequestToken", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.requestToken, SimpleConfig, refresh)
 
 
@@ -1769,11 +1841,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.serviceAvailability.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ServiceAvailability", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("ServiceAvailability", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.serviceAvailability, ServiceAvailability, refresh)
 
 
@@ -1809,11 +1881,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.swUpdateQuery.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("SoftwareUpdateQueryResponse", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("SoftwareUpdateQueryResponse", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.swUpdateQuery, SoftwareUpdateQueryResponse, refresh)
 
 
@@ -1849,11 +1921,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.swUpdateCheck.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("SoftwareUpdateCheckResponse", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("SoftwareUpdateCheckResponse", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.swUpdateCheck, SoftwareUpdateCheckResponse, refresh)
 
 
@@ -1883,11 +1955,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.soundTouchConfigurationStatus.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("SoundTouchConfigurationStatus", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("SoundTouchConfigurationStatus", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.soundTouchConfigurationStatus, SoundTouchConfigurationStatus, refresh)
 
 
@@ -1910,8 +1982,42 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("SourceList", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("SourceList", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.sources, SourceList, refresh)
+
+
+    def GetSupportedUrls(self, refresh=True) -> SupportedUrls:
+        """
+        Gets the supported urls configuration of the device.
+
+        Args:
+            refresh (bool):
+                True to query the device for realtime information and refresh the cache;
+                otherwise, False to just return the cached information.
+
+        Returns:
+            A `SupportedUrls` object that contains the results.
+
+        Raises:
+            SoundTouchError:
+                If the device is not capable of supporting `info` functions,
+                as determined by a query to the cached `supportedURLs` web-services api.  
+
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/GetSupportedUrls.py
+        ```
+        </details>
+        """
+        # check if device supports this uri function; if not then we are done.
+        uriPath:str = SoundTouchNodes.supportedURLs.Path
+        if not uriPath in self.Device.SupportedUris:
+            raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
+
+        # device is capable - process the request.
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("supportedURLs", self.Device.DeviceName))
+        return self.GetProperty(SoundTouchNodes.supportedURLs, SupportedUrls, refresh)
 
 
     def GetSystemTimeout(self, refresh=True) -> SystemTimeout:
@@ -1935,7 +2041,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("SystemTimeout", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("SystemTimeout", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.systemtimeout, SystemTimeout, refresh)
 
 
@@ -1971,11 +2077,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.trackInfo.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("TrackInfo", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("TrackInfo", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.trackInfo, TrackInfo, refresh)
 
 
@@ -2001,7 +2107,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Volume", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Volume", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.volume, Volume, refresh)
 
 
@@ -2024,7 +2130,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("WirelessProfile", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("WirelessProfile", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.getActiveWirelessProfile, WirelessProfile, refresh)
 
 
@@ -2060,11 +2166,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.performWirelessSiteSurvey.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("PerformWirelessSiteSurveyResponse", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("PerformWirelessSiteSurveyResponse", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.performWirelessSiteSurvey, PerformWirelessSiteSurveyResponse, refresh)
 
 
@@ -2087,7 +2193,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Zone", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("Zone", self.Device.DeviceName))
         return self.GetProperty(SoundTouchNodes.getZone, Zone, refresh)
 
 
@@ -2123,10 +2229,10 @@ class SoundTouchClient:
         if not method or not msg:
             return 400 # bad request
 
-        if msg.Uri not in self._Device.SupportedUris:
+        if msg.Uri not in self.Device.SupportedUris:
             return 400
 
-        url = f'http://{self._Device.Host}:{self._Device.Port}/{msg.Uri}'
+        url = f'http://{self.Device.Host}:{self.Device.Port}/{msg.Uri}'
         
         try:
             if msg.HasXmlMessage:
@@ -2463,7 +2569,7 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.playNotification.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
@@ -2790,11 +2896,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.standby.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("standby", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("standby", self.Device.DeviceName))
         self.Get(SoundTouchNodes.standby)
         return
         
@@ -2819,11 +2925,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.lowPowerStandby.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("lowPowerStandby", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("lowPowerStandby", self.Device.DeviceName))
         self.Get(SoundTouchNodes.lowPowerStandby)
         return
         
@@ -2934,7 +3040,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose("Removing all presets from SoundTouch device: '%s'" % self._Device.DeviceName)
+        _logsi.LogVerbose("Removing all presets from SoundTouch device: '%s'" % self.Device.DeviceName)
 
         # get current list of presets.
         presets:PresetList = self.GetPresetList(True)
@@ -3006,7 +3112,7 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.removeGroup.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
@@ -3037,13 +3143,13 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.removeMusicServiceAccount.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("removeMusicServiceAccount", userAccount, self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("removeMusicServiceAccount", userAccount, self.Device.DeviceName))
         request:MusicServiceAccount = MusicServiceAccount(source, displayName, userAccount, password)
-        _logsi.LogVerbose("'%s': Account details - %s" % (self._Device.DeviceName, request.ToString()))
+        _logsi.LogVerbose("'%s': Account details - %s" % (self.Device.DeviceName, request.ToString()))
         msg:SoundTouchMessage = self.Put(SoundTouchNodes.removeMusicServiceAccount, request)
         return msg
 
@@ -3078,11 +3184,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.removeStation.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("removeStation", removeStation.ToString(), self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("removeStation", removeStation.ToString(), self.Device.DeviceName))
         result:SoundTouchMessage = self.Put(SoundTouchNodes.removeStation, removeStation)
         return result
 
@@ -3115,7 +3221,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose("Removing preset from SoundTouch device: '%s'" % self._Device.DeviceName)
+        _logsi.LogVerbose("Removing preset from SoundTouch device: '%s'" % self.Device.DeviceName)
         item:Preset = Preset(presetId)
         presetList:PresetList = self.Put(SoundTouchNodes.removePreset, item, PresetList)
         
@@ -3166,13 +3272,13 @@ class SoundTouchClient:
             raise SoundTouchError('Master zone does not exist; zone members cannot be removed', logsi=_logsi)
         
         _logsi.LogVerbose("Removing zone members from SoundTouch device: '%s' - %s" % (
-            self._Device.DeviceName, masterZone.ToStringMemberSummary()))
+            self.Device.DeviceName, masterZone.ToStringMemberSummary()))
         
         # remove the member zones from the device.
         result = self.Put(SoundTouchNodes.removeZoneSlave, masterZone.ToXmlString())
 
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
 
         return result
@@ -3235,13 +3341,13 @@ class SoundTouchClient:
             tempZone.AddMember(member, _logsi)
 
         _logsi.LogVerbose("Removing zone members from SoundTouch device: '%s' - %s" % (
-            self._Device.DeviceName, tempZone.ToStringMemberSummary()))
+            self.Device.DeviceName, tempZone.ToStringMemberSummary()))
 
         # remove the member zones from the device.
         result = self.Put(SoundTouchNodes.removeZoneSlave, tempZone.ToXmlString())
 
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
 
         return result
@@ -3342,11 +3448,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.search.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("search", search.ContainerTitle, self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("search", search.ContainerTitle, self.Device.DeviceName))
         result:SearchResponse = self.Put(SoundTouchNodes.search, search, SearchResponse)
         return result
 
@@ -3384,11 +3490,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.searchStation.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("searchStation", searchStation.ToString(), self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("searchStation", searchStation.ToString(), self.Device.DeviceName))
         result:SoundTouchMessage = self.Put(SoundTouchNodes.searchStation, searchStation, SearchStationResults)
         return result
 
@@ -3421,7 +3527,7 @@ class SoundTouchClient:
         result = self.Put(SoundTouchNodes.select, item)
         
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
             
         return result
@@ -3459,16 +3565,16 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.selectLocalSource.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("selectLastSoundTouchSource", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("selectLastSoundTouchSource", self.Device.DeviceName))
         delay = self._ValidateDelay(delay, 5, 10)
         msg = self.Get(SoundTouchNodes.selectLastSoundTouchSource)
         
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
             
         return msg
@@ -3506,16 +3612,16 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.selectLocalSource.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("selectLastSource", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("selectLastSource", self.Device.DeviceName))
         delay = self._ValidateDelay(delay, 5, 10)
         msg = self.Get(SoundTouchNodes.selectLastSource)
         
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
             
         return msg
@@ -3553,16 +3659,16 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.selectLastWiFiSource.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("selectLastWiFiSource", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("selectLastWiFiSource", self.Device.DeviceName))
         delay = self._ValidateDelay(delay, 5, 10)
         msg = self.Get(SoundTouchNodes.selectLastWiFiSource)
         
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
             
         return msg
@@ -3601,16 +3707,16 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.selectLocalSource.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("selectLocalSource", self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND % ("selectLocalSource", self.Device.DeviceName))
         delay = self._ValidateDelay(delay, 5, 10)
         msg = self.Get(SoundTouchNodes.selectLocalSource)
         
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
             
         return msg
@@ -3640,7 +3746,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose("Selecting preset on SoundTouch device: '%s'" % self._Device.DeviceName)
+        _logsi.LogVerbose("Selecting preset on SoundTouch device: '%s'" % self.Device.DeviceName)
         
         if not preset:
             raise SoundTouchError('Preset argument was not supplied', logsi=_logsi)
@@ -3649,7 +3755,7 @@ class SoundTouchClient:
         result = self.Put(SoundTouchNodes.select, preset.ContentItem)
         
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
             
         return result
@@ -3679,7 +3785,7 @@ class SoundTouchClient:
         self.Action(SoundTouchKeys.PRESET_1, KeyStates.Release)
         
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
 
 
@@ -3707,7 +3813,7 @@ class SoundTouchClient:
         self.Action(SoundTouchKeys.PRESET_2, KeyStates.Release)
         
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
 
 
@@ -3735,7 +3841,7 @@ class SoundTouchClient:
         self.Action(SoundTouchKeys.PRESET_3, KeyStates.Release)
         
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
 
 
@@ -3763,7 +3869,7 @@ class SoundTouchClient:
         self.Action(SoundTouchKeys.PRESET_4, KeyStates.Release)
         
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
 
 
@@ -3791,7 +3897,7 @@ class SoundTouchClient:
         self.Action(SoundTouchKeys.PRESET_5, KeyStates.Release)
         
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
 
 
@@ -3819,7 +3925,7 @@ class SoundTouchClient:
         self.Action(SoundTouchKeys.PRESET_6, KeyStates.Release)
         
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
 
 
@@ -3847,7 +3953,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose("Selecting recent on SoundTouch device: '%s'" % self._Device.DeviceName)
+        _logsi.LogVerbose("Selecting recent on SoundTouch device: '%s'" % self.Device.DeviceName)
         
         if not recent:
             raise SoundTouchError('Recent argument was not supplied', logsi=_logsi)
@@ -3856,7 +3962,7 @@ class SoundTouchClient:
         result = self.Put(SoundTouchNodes.select, recent.ContentItem.ToXmlRequestBody())
         
         if delay > 0:
-            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self._Device.DeviceName))
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
             time.sleep(delay)
             
         return result
@@ -3932,11 +4038,11 @@ class SoundTouchClient:
             
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.audiodspcontrols.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio dsp controls", controls.ToString(), self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio dsp controls", controls.ToString(), self.Device.DeviceName))
         request:AudioDspControls = controls
         return self.Put(SoundTouchNodes.audiodspcontrols, request)
 
@@ -3974,11 +4080,11 @@ class SoundTouchClient:
             
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.audioproductlevelcontrols.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio product level controls", controls.ToString(), self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio product level controls", controls.ToString(), self.Device.DeviceName))
         request:AudioProductLevelControls = controls
         return self.Put(SoundTouchNodes.audioproductlevelcontrols, request)
 
@@ -4016,11 +4122,11 @@ class SoundTouchClient:
             
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.audioproducttonecontrols.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio product tone controls", controls.ToString(), self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio product tone controls", controls.ToString(), self.Device.DeviceName))
         request:AudioProductToneControls = controls
         return self.Put(SoundTouchNodes.audioproducttonecontrols, request)
 
@@ -4048,11 +4154,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.balance.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("balance level", str(level), self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("balance level", str(level), self.Device.DeviceName))
         request:Balance = Balance(level)
         return self.Put(SoundTouchNodes.balance, request)
 
@@ -4077,11 +4183,11 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.bass.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("bass level", str(level), self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("bass level", str(level), self.Device.DeviceName))
         request:Bass = Bass(level)
         return self.Put(SoundTouchNodes.bass, request)
 
@@ -4115,13 +4221,13 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.setMusicServiceAccount.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("setMusicServiceAccount", userAccount, self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("setMusicServiceAccount", userAccount, self.Device.DeviceName))
         request:MusicServiceAccount = MusicServiceAccount(source, displayName, userAccount, password)
-        _logsi.LogVerbose("'%s': Account details - %s" % (self._Device.DeviceName, request.ToString()))
+        _logsi.LogVerbose("'%s': Account details - %s" % (self.Device.DeviceName, request.ToString()))
         msg:SoundTouchMessage = self.Put(SoundTouchNodes.setMusicServiceAccount, request)
         return msg
 
@@ -4137,14 +4243,14 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("device name", name, self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("device name", name, self.Device.DeviceName))
         
         # update the device configuration.
         request:SimpleConfig = SimpleConfig('name', name)
         result:SoundTouchMessage = self.Put(SoundTouchNodes.name, request)
     
-        # update the SoundTouchDevice object device name to match.
-        self._Device._DeviceName = name
+        # update the SoundTouchDevice info configuration device name to match.
+        self.Device._Information._DeviceName = name
         return result
 
 
@@ -4181,11 +4287,11 @@ class SoundTouchClient:
             
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.productcechdmicontrol.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("product cec hdmi control", control.ToString(), self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("product cec hdmi control", control.ToString(), self.Device.DeviceName))
         request:ProductCecHdmiControl = control
         return self.Put(SoundTouchNodes.productcechdmicontrol, request)
 
@@ -4217,11 +4323,11 @@ class SoundTouchClient:
             
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.userPlayControl.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
         
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("userPlayControl", userPlayControlType.value, self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("userPlayControl", userPlayControlType.value, self.Device.DeviceName))
         userPlayControl:UserPlayControl = UserPlayControl(userPlayControlType)
         return self.Put(SoundTouchNodes.userPlayControl, userPlayControl)
 
@@ -4261,11 +4367,11 @@ class SoundTouchClient:
             
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.userRating.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
         
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("userRating", ratingType.value, self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("userRating", ratingType.value, self.Device.DeviceName))
         userRating:UserRating = UserRating(ratingType)
         return self.Put(SoundTouchNodes.userRating, userRating)
 
@@ -4298,11 +4404,11 @@ class SoundTouchClient:
             
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.userTrackControl.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
         
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("userTrackControl", userTrackControlType.value, self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("userTrackControl", userTrackControlType.value, self.Device.DeviceName))
         userTrackControl:UserTrackControl = UserTrackControl(userTrackControlType)
         return self.Put(SoundTouchNodes.userTrackControl, userTrackControl)
 
@@ -4322,7 +4428,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("volume level", str(level), self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("volume level", str(level), self.Device.DeviceName))
         request:Volume = Volume(level, level)
         return self.Put(SoundTouchNodes.volume, request)
 
@@ -4355,7 +4461,7 @@ class SoundTouchClient:
         ```
         </details>
         """
-        _logsi.LogVerbose("Storing preset to SoundTouch device: '%s'" % self._Device.DeviceName)
+        _logsi.LogVerbose("Storing preset to SoundTouch device: '%s'" % self.Device.DeviceName)
         presetList:PresetList = self.Put(SoundTouchNodes.storePreset, item, PresetList)
         
         # update configuration cache with the updated list.
@@ -4462,10 +4568,10 @@ class SoundTouchClient:
         """
         msg:str = 'SoundTouchClient:'
         if self._Device is not None:
-            msg = "%s DeviceName='%s'" % (msg, self._Device.DeviceName)
-            msg = "%s DeviceId='%s'" % (msg, self._Device._DeviceId)
-            msg = "%s Host='%s'" % (msg, self._Device.Host)
-            msg = "%s Port='%s'" % (msg, self._Device.Port)
+            msg = "%s DeviceName='%s'" % (msg, self.Device.DeviceName)
+            msg = "%s DeviceId='%s'" % (msg, self.Device.DeviceId)
+            msg = "%s Host='%s'" % (msg, self.Device.Host)
+            msg = "%s Port='%s'" % (msg, self.Device.Port)
         return msg
 
 
@@ -4495,7 +4601,7 @@ class SoundTouchClient:
         """
         # check if device supports this uri function; if not then we are done.
         uriPath:str = SoundTouchNodes.updateGroup.Path
-        if not uriPath in self._Device._SupportedUris:
+        if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
         # get current group status, and change the name.
@@ -4503,7 +4609,7 @@ class SoundTouchClient:
         group.Name = name
 
         # device is capable - process the request.
-        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("updateGroup", name, self._Device.DeviceName))
+        _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("updateGroup", name, self.Device.DeviceName))
         result:Group = self.Put(SoundTouchNodes.updateGroup, group, Group)
         return result
 

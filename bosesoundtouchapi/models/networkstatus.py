@@ -96,11 +96,11 @@ class NetworkStatus:
         msg:str = 'NetworkStatus:'
         if self._DeviceId and len(self._DeviceId) > 0: msg = '%s deviceId="%s"' % (msg, str(self._DeviceId))
         if self._SerialNumber and len(self._SerialNumber) > 0: msg = '%s serial="%s"' % (msg, str(self._SerialNumber))
-        msg = "%s (%d items)" % (msg, self.__len__())
+        msg = "%s (%d items)" % (msg, len(self._Interfaces))
         
         if includeItems == True:
             item:NetworkStatusInterface
-            for item in self:
+            for item in self._Interfaces:
                 msg = "%s\n- %s" % (msg, item.ToString())
             
         return msg

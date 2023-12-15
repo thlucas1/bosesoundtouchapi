@@ -24,7 +24,7 @@ class NetworkInfo:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        self._Interfaces = []
+        self._Interfaces:list[NetworkInfoInterface] = []
         self._WifiProfileCount:int = None
 
         if (root is None):
@@ -85,11 +85,11 @@ class NetworkInfo:
         """
         msg:str = 'NetworkInfo:'
         msg = '%s wifiProfileCount=%d' % (msg, self._WifiProfileCount)
-        msg = "%s (%d items)" % (msg, self.__len__())
+        msg = "%s (%d items)" % (msg, len(self._Interfaces))
         
         if includeItems == True:
             item:NetworkInfoInterface
-            for item in self:
+            for item in self._Interfaces:
                 msg = "%s\n- %s" % (msg, item.ToString())
             
         return msg

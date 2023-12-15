@@ -53,7 +53,7 @@ class SourceList:
 
     def __getitem__(self, key) -> SourceItem:
         if isinstance(key, str):
-            for item in self:
+            for item in self._SourceItems:
                 if item.Source == key:
                     return item
         else:
@@ -124,7 +124,7 @@ class SourceList:
         if self._DeviceId and len(self._DeviceId) > 0: elm.set('deviceID', str(self._DeviceId))
         
         item:SourceItem
-        for item in self:
+        for item in self._SourceItems:
             elm.append(item.ToElement())
         return elm
 
@@ -147,7 +147,7 @@ class SourceList:
         
         # load list of supported sources.
         item:SourceItem
-        for item in self:
+        for item in self._SourceItems:
             if (item is not None) and (len(item.Source) > 0):
                 if (includeSourceAccount == False):
                     sourceList.append(item.Source)
@@ -170,11 +170,11 @@ class SourceList:
         """
         msg:str = 'SourceList:'
         if self._DeviceId is not None: msg = '%s DeviceId="%s"' % (msg, self._DeviceId)
-        msg = "%s (%d items)" % (msg, self.__len__())
+        msg = "%s (%d items)" % (msg, len(self._SourceItems))
         
         if includeItems == True:
             item:SourceItem
-            for item in self:
+            for item in self._SourceItems:
                 msg = "%s\n- %s" % (msg, item.ToString())
             
         return msg
