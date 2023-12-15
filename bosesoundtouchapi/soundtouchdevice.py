@@ -6,11 +6,11 @@ from xml.etree.ElementTree import Element, fromstring
 
 # our package imports.
 from .bstappmessages import BSTAppMessages
-from .bstutils import export, _xmlFind
+from .bstutils import export
 from .soundtoucherror import SoundTouchError
 from .models import Component, Information, InformationNetworkInfo, SupportedUrls, SupportedUrl
 from .uri.soundtouchnodes import SoundTouchNodes
-from .uri.soundtouchuri import SoundTouchUri
+from .uri.soundtouchuri import SoundTouchUri, SoundTouchUriTypes
 from .bstconst import (
     MSG_TRACE_DEVICE_COMMAND_WITH_PARM
 )
@@ -85,6 +85,8 @@ class SoundTouchDevice:
         self._Host:str = host
         self._Port:int = int(port)
         self._SupportedUris:list[SoundTouchUri] = []
+        self._SupportedUrls:SupportedUrls = None
+        self._UnknownUrlNames:list[str] = []
         self._UnSupportedUrlNames:list[str] = []
 
         try:
@@ -126,21 +128,32 @@ class SoundTouchDevice:
             
             # load supported url's list.
             elmNode:Element = fromstring(response.data)
-            supportedUrls:SupportedUrls = SupportedUrls(root=elmNode)
+            self._SupportedUrls = SupportedUrls(root=elmNode)
 
-            # get list of ALL supported SoundTouch uri's.
+            # get list of ALL supported SoundTouch uri's that are possible regardless of device type.
+            # we will add all of the 'request' type names to the UnSupportedUrlNames list, then 
+            # filter them out below based upon what is returned by the device '/supportedUrls' call.  
+            # this will leave a list of 'request' type names that are NOT supported by the device.
             allUris:dict = SoundTouchNodes._AllUris
+            EVENT_TYPE:str = SoundTouchUriTypes.OP_TYPE_EVENT.name
+            for name in allUris.keys():
+                uri:SoundTouchUri = allUris[name]
+                if uri.UriType != EVENT_TYPE:
+                    self._UnSupportedUrlNames.append(name)
         
             # load the list of SoundTouch uri's that THIS device supports.
             # it could be everything in the ALL supported uri's list, but probably not as
             # SoundTouch devices can support different features.
             url:SupportedUrl
-            for url in supportedUrls.Urls:
-                name:str = url.Location[1:]  # drop the forward slash prefix.
+            for url in self._SupportedUrls.Urls:
+                name:str = url.Location[1:]               # drop the forward slash prefix.
                 if name in allUris:
-                    self._SupportedUris.append(allUris[name])
+                    if name in self._UnSupportedUrlNames: # in case the name is listed multiple times.
+                        self._UnSupportedUrlNames.remove(name)
+                        self._SupportedUris.append(allUris[name])
                 else:
-                    self._UnSupportedUrlNames.append(name)
+                    if name not in self._UnknownUrlNames: # in case the name is listed multiple times.
+                        self._UnknownUrlNames.append(name)
 
             response.close()
             
@@ -310,9 +323,18 @@ class SoundTouchDevice:
 
 
     @property
-    def UnSupportedUrlNames(self) -> list[SoundTouchUri]:
+    def UnknownUrlNames(self) -> list[str]:
         """
-        List of url names that the device supports, but are not supported by this api.
+        List of url names that the device support, but are NOT recognized by the SoundTouch
+        API.
+        """
+        return self._UnknownUrlNames
+
+
+    @property
+    def UnSupportedUrlNames(self) -> list[str]:
+        """
+        List of url names that are NOT supported by the device.
         """
         return self._UnSupportedUrlNames
 
@@ -448,6 +470,8 @@ class SoundTouchDevice:
         msg = '%s SupportedUrisCount=%d' % (msg, len(self.SupportedUris))
         if len(self.UnSupportedUrlNames) > 0:
             msg = "%s UnSupportedUrlNamesCount=%d" % (msg, len(self.UnSupportedUrlNames))
+        if len(self.UnknownUrlNames) > 0:
+            msg = "%s UnknownUrlNames=%d" % (msg, len(self.UnknownUrlNames))
         
         if includeItems == True:
             
@@ -456,6 +480,11 @@ class SoundTouchDevice:
             msg = "%s\n\nDevice UnSupportedUrlNames (%d items)" % (msg, len(self.UnSupportedUrlNames))
             item:str
             for item in self.UnSupportedUrlNames:
+                msg = "%s\n- %s" % (msg, item)
+            
+            msg = "%s\n\nDevice UnknownUrlNames (%d items)" % (msg, len(self.UnknownUrlNames))
+            item:str
+            for item in self.UnknownUrlNames:
                 msg = "%s\n- %s" % (msg, item)
             
             msg = "%s\n\nDevice SupportedUrlNames (%d items)" % (msg, len(self.SupportedUris))

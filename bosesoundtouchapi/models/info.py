@@ -217,8 +217,8 @@ class Information:
                 
         else:
             
-            msg = "%s\nNetworkInfo: (%d items)\n" % (msg, len(self._NetworkInfo))
-            msg = "%s\nComponents: (%d items)\n" % (msg, len(self._Components))
+            msg = "%s\nNetworkInfo: (%d items)" % (msg, len(self._NetworkInfo))
+            msg = "%s\nComponents: (%d items)" % (msg, len(self._Components))
             
         return msg 
     

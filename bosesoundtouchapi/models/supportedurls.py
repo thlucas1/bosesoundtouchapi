@@ -91,7 +91,7 @@ class SupportedUrls:
                 True to include all items in the list; otherwise False to only
                 include the base list.
         """
-        msg:str = 'SupportedUrls:'
+        msg:str = 'SupportedURLs:'
         if self._DeviceId is not None: msg = '%s DeviceId="%s"' % (msg, self._DeviceId)
         msg = "%s (%d items)" % (msg, len(self._Urls))
         

@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.32 ] - 2023/12/15
+
+  * Added `Information` and `SupportedURLs` objects to `SoundTouchClient`.`ConfigurationCache` upon class initialization.  These are used by the `SoundTouchDevice` class.
+  * Added properties to `SoundTouchDevice` class - `UnknownUrlNames`, `UnSupportedUrlNames`.
+
 ###### [ 1.0.31 ] - 2023/12/15
 
   * Added method `SoundTouchClient`.`GetInformation` - Gets the information configuration of the device.

@@ -80,6 +80,10 @@ class SoundTouchClient:
         self._RaiseErrors:bool = bool(raiseErrors)
         self._SnapshotSettings:dict = {}
         
+        # cache configurations that we have already obtained.
+        self._ConfigurationCache[SoundTouchNodes.info.Path] = device._Information
+        self._ConfigurationCache[SoundTouchNodes.supportedURLs.Path] = device._SupportedUrls
+        
 
     def __enter__(self) -> 'SoundTouchClient':
         # if called via a context manager (e.g. "with" statement).
