@@ -232,7 +232,8 @@ class SoundTouchClient:
             # sometimes an error is not returned in an <errors> collection:
             # status=200 - <Error value="401" name="HTTP_STATUS_UNAUTHORIZED" severity="Unknown">app_key not authorized</Error>
             # status=200 - <Error value="415" name="HTTP_STATUS_UNSUPPORTED_MEDIA_TYPE" severity="Unknown">media referenced by url is not supported by speaker</Error>
-            if element.tag == 'Error':
+            # status=200 - <error>Invalid Input</error>
+            if element.tag == 'Error' or element.tag == 'error':
                 error = element
                 errValue:int = int(error.get('value', -1))
                 errName:str =  error.get('name', 'NONE')

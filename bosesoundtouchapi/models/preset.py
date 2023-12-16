@@ -139,8 +139,9 @@ class Preset(SoundTouchModelRequest):
         """ 
         Date and time (in epoch format) of when the preset was created. 
         
-        It seems that the SoundTouch WebServices API only returns this attribute for the
-        LAST preset that was stored; the value will not be present for any other presets
+        It seems that on some devices (ST-10) the SoundTouch WebServices API only returns 
+        this attribute for the LAST preset that was stored; the value will not be present 
+        for any other presets.  Other devices (ST-300) return this attribute on all items.
         """
         return self._CreatedOn
 
@@ -216,8 +217,9 @@ class Preset(SoundTouchModelRequest):
         """ 
         Date and time (in epoch format) of when the preset was last updated. 
         
-        It seems that the SoundTouch WebServices API only returns this attribute for the
-        LAST preset that was stored; the value will not be present for any other presets
+        It seems that on some devices (ST-10) the SoundTouch WebServices API only returns 
+        this attribute for the LAST preset that was stored; the value will not be present 
+        for any other presets.  Other devices (ST-300) return this attribute on all items.
         """
         return self._UpdatedOn
 

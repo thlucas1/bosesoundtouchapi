@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.35 ] - 2023/12/16
+
+  * Fixed error processing logic for `SoundTouchClient`.  Prior to this fix, some error conditions were not being caught.
+
 ###### [ 1.0.34 ] - 2023/12/16
 
   * Fixed logging of eventhandler exceptions in `SoundTouchWebSocket`.  Prior to this fix, exceptions were being ignored.
