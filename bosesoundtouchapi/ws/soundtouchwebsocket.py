@@ -419,7 +419,7 @@ class SoundTouchWebSocket:
                 try:
                     listener(self._Client, event)
                 except Exception as ex: 
-                    _logsi.LogError(BSTAppMessages.BST_WEBSOCKET_EVENTHANDLER_ERROR % str(ex))
+                    _logsi.LogError(BSTAppMessages.BST_WEBSOCKET_EVENTHANDLER_ERROR % (category, str(ex)))
             return
             
         # are listeners defined for the specified category?  if so, then notify them.
@@ -431,7 +431,7 @@ class SoundTouchWebSocket:
                 try:
                     listener(self._Client, event)
                 except Exception as ex: 
-                    _logsi.LogError(BSTAppMessages.BST_WEBSOCKET_EVENTHANDLER_ERROR % str(ex))
+                    _logsi.LogError(BSTAppMessages.BST_WEBSOCKET_EVENTHANDLER_ERROR % (category, str(ex)))
             return
         
 

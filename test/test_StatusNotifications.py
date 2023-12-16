@@ -59,10 +59,14 @@ class EventHandlerClass:
 
     def OnSoundTouchUpdateEvent(self, client:SoundTouchClient, args:Element) -> None:
         if (args != None):
-            ElementTree.indent(args)  # for pretty printing
-            argsEncoded = ElementTree.tostring(args, encoding="unicode")
-            _logsi.LogXml(SILevel.Message, "SoundTouch device status update: '%s'" % (args.tag), argsEncoded, SIColors.LightGreen, prettyPrint=True)
-            print("\n'%s' status update:\n%s" % (client.Device.DeviceName, argsEncoded))
+            if (isinstance(args, Element)):
+                ElementTree.indent(args)  # for pretty printing
+                argsEncoded = ElementTree.tostring(args, encoding="unicode")
+                _logsi.LogXml(SILevel.Message, "SoundTouch device status update: '%s'" % (args.tag), argsEncoded, SIColors.LightGreen, prettyPrint=True)
+                print("\n'%s' status update:\n%s" % (client.Device.DeviceName, argsEncoded))
+            else:
+                _logsi.LogMessage("SoundTouch device status update: '%s'" % (args), colorValue=SIColors.LightGreen)
+                print("\n'%s' status update:\n%s" % (client.Device.DeviceName, args))
         
 
     def OnSoundTouchUpdateEvent_Volume(self, client:SoundTouchClient, args:Element) -> None:
