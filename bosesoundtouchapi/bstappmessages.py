@@ -45,3 +45,9 @@ class BSTAppMessages:
     BST1002E - '%s': SoundTouch Web-services API returned an error status: '%s'
     """
     
+    BST_WEBSOCKET_EVENTHANDLER_ERROR:str = "BST1003E - '%s': SoundTouchWebSocket eventhandler exception: %s"
+    """
+    BST1003E - '%s': SoundTouchWebSocket eventhandler exception: %s
+    """
+
+    

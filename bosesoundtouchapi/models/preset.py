@@ -136,8 +136,21 @@ class Preset(SoundTouchModelRequest):
 
     @property
     def CreatedOn(self) -> int:
-        """ Date and time (in epoch format) of when the preset was created. """
+        """ 
+        Date and time (in epoch format) of when the preset was created. 
+        
+        It seems that the SoundTouch WebServices API only returns this attribute for the
+        LAST preset that was stored; the value will not be present for any other presets
+        """
         return self._CreatedOn
+
+    @CreatedOn.setter
+    def CreatedOn(self, value:int):
+        """ 
+        Sets the CreatedOn property value.
+        """
+        if isinstance(value, int) and value > -1:
+            self._CreatedOn = value
 
 
     @property
@@ -200,8 +213,21 @@ class Preset(SoundTouchModelRequest):
 
     @property
     def UpdatedOn(self) -> int:
-        """ Date and time (in epoch format) of when the preset was last updated. """
+        """ 
+        Date and time (in epoch format) of when the preset was last updated. 
+        
+        It seems that the SoundTouch WebServices API only returns this attribute for the
+        LAST preset that was stored; the value will not be present for any other presets
+        """
         return self._UpdatedOn
+
+    @UpdatedOn.setter
+    def UpdatedOn(self, value:int):
+        """ 
+        Sets the UpdatedOn property value.
+        """
+        if isinstance(value, int) and value > -1:
+            self._UpdatedOn = value
 
 
     def ToElement(self, isRequestBody:bool=False) -> Element:

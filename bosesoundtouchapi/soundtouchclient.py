@@ -1,4 +1,5 @@
 # external package imports.
+from datetime import datetime
 from functools import reduce
 from io import BytesIO
 import re
@@ -4465,6 +4466,13 @@ class SoundTouchClient:
         ```
         </details>
         """
+        if isinstance(item, Preset):
+            # if create or update date not set then set it.
+            if item.CreatedOn is None or item.CreatedOn == 0:
+                item.CreatedOn = int(round(datetime.now().timestamp()))
+            if item.UpdatedOn is None or item.UpdatedOn == 0:
+                item.UpdatedOn = int(round(datetime.now().timestamp()))
+                
         _logsi.LogVerbose("Storing preset to SoundTouch device: '%s'" % self.Device.DeviceName)
         presetList:PresetList = self.Put(SoundTouchNodes.storePreset, item, PresetList)
         

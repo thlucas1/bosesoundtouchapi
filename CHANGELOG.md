@@ -6,6 +6,12 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.33 ] - 2023/12/16
+
+  * Added logging of eventhandler exceptions in `SoundTouchWebSocket`.  Prior to this fix, exceptions were being ignored.
+  * Added property `PresetList`.`LastUpdatedOn` - indicates when the list was last updated.
+  * Added property `RecentList`.`LastUpdatedOn` - indicates when the list was last updated.
+
 ###### [ 1.0.32 ] - 2023/12/15
 
   * Added `Information` and `SupportedURLs` objects to `SoundTouchClient`.`ConfigurationCache` upon class initialization.  These are used by the `SoundTouchDevice` class.

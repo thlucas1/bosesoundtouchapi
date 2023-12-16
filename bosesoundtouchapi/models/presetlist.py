@@ -25,6 +25,7 @@ class PresetList:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._LastUpdatedOn:int = 0
         self._Presets:list[Preset] = []
         
         if (root is None):
@@ -34,7 +35,14 @@ class PresetList:
         else:
 
             for preset in root.findall('preset'):
-                self._Presets.append(Preset(root=preset))
+                
+                config:Preset = Preset(root=preset)
+                self._Presets.append(config)
+                
+                if config.CreatedOn is not None and config.CreatedOn > self._LastUpdatedOn:
+                    self._LastUpdatedOn = config.CreatedOn
+                if config.UpdatedOn is not None and config.UpdatedOn > self._LastUpdatedOn:
+                    self._LastUpdatedOn = config.UpdatedOn
 
 
     def __getitem__(self, key) -> Preset:
@@ -55,6 +63,24 @@ class PresetList:
 
     def __str__(self) -> str:
         return self.ToString()
+
+
+    @property
+    def LastUpdatedOn(self) -> int:
+        """ 
+        Date and time (in epoch format) of when the preset list was last updated. 
+        
+        This is a helper property, and is not part of the SoundTouch WebServices API implementation.
+        """
+        return self._LastUpdatedOn
+
+    @LastUpdatedOn.setter
+    def LastUpdatedOn(self, value:int):
+        """ 
+        Sets the LastUpdatedOn property value.
+        """
+        if isinstance(value, int) and value > -1:
+            self._LastUpdatedOn = value
 
 
     @property
@@ -113,6 +139,7 @@ class PresetList:
                 include the base list.
         """
         msg:str = 'PresetList:'
+        msg = '%s LastUpdatedOn="%s"' % (msg, str(self._LastUpdatedOn))
         msg = "%s (%d items)" % (msg, len(self._Presets))
         
         if includeItems == True:

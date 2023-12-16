@@ -29,6 +29,7 @@ class RecentList:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
+        self._LastUpdatedOn:int = 0
         self._Recents:list[Recent] = []
         
         if (root is None):
@@ -38,7 +39,12 @@ class RecentList:
         else:
 
             for recent in root.findall('recent'):
-                self._Recents.append(Recent(root=recent))
+                
+                config:Recent = Recent(root=recent)
+                self._Recents.append(config)
+                
+                if config.CreatedOn is not None and config.CreatedOn > self._LastUpdatedOn:
+                    self._LastUpdatedOn = config.CreatedOn
                 
             # sort items on CreatedOn property, descending order (latest first).
             if len(self._Recents) > 0:
@@ -63,6 +69,24 @@ class RecentList:
 
     def __str__(self) -> str:
         return self.ToString()
+
+
+    @property
+    def LastUpdatedOn(self) -> int:
+        """ 
+        Date and time (in epoch format) of when the recent list was last updated. 
+        
+        This is a helper property, and is not part of the SoundTouch WebServices API implementation.
+        """
+        return self._LastUpdatedOn
+
+    @LastUpdatedOn.setter
+    def LastUpdatedOn(self, value:int):
+        """ 
+        Sets the LastUpdatedOn property value.
+        """
+        if isinstance(value, int) and value > -1:
+            self._LastUpdatedOn = value
 
 
     @property
@@ -121,6 +145,7 @@ class RecentList:
                 include the base list.
         """
         msg:str = 'RecentList:'
+        msg = '%s LastUpdatedOn="%s"' % (msg, str(self._LastUpdatedOn))
         msg = "%s (%d items)" % (msg, len(self._Recents))
         
         if includeItems == True:

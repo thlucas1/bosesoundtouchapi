@@ -4,6 +4,7 @@ from websocket import WebSocketApp
 from xml.etree import ElementTree as xmltree
 
 # our package imports.
+from bosesoundtouchapi.bstappmessages import BSTAppMessages
 from bosesoundtouchapi.bstutils import export
 from bosesoundtouchapi.soundtouchclient import SoundTouchClient
 from bosesoundtouchapi.soundtouchnotifycategorys import SoundTouchNotifyCategorys
@@ -236,7 +237,7 @@ class SoundTouchWebSocket:
         self.NotifyListeners(SoundTouchNotifyCategorys.WebSocketError.value, error)
             
 
-    def _OnMessage(self, wsApp:WebSocketApp, message:bytes) -> None:
+    def _OnWebSocketMessage(self, wsApp:WebSocketApp, message:bytes) -> None:
         """
         Event raised by the web socket event listener when a message is received from
         the monitored SoundTouch device.
@@ -418,7 +419,7 @@ class SoundTouchWebSocket:
                 try:
                     listener(self._Client, event)
                 except Exception as ex: 
-                    pass  # ignore exceptions.
+                    _logsi.LogError(BSTAppMessages.BST_WEBSOCKET_EVENTHANDLER_ERROR % str(ex))
             return
             
         # are listeners defined for the specified category?  if so, then notify them.
@@ -430,7 +431,7 @@ class SoundTouchWebSocket:
                 try:
                     listener(self._Client, event)
                 except Exception as ex: 
-                    pass  # ignore exceptions.
+                    _logsi.LogError(BSTAppMessages.BST_WEBSOCKET_EVENTHANDLER_ERROR % str(ex))
             return
         
 
@@ -479,7 +480,7 @@ class SoundTouchWebSocket:
             
             self._WebsocketClient = WebSocketApp(
                     wsUrl,
-                    on_message = lambda ws,msg:             self._OnMessage(ws,msg),
+                    on_message = lambda ws,msg:             self._OnWebSocketMessage(ws,msg),
                     on_error   = lambda ws,msg:             self._OnWebSocketError(ws,msg),
                     on_close   = lambda ws,clscod,clsmsg:   self._OnWebSocketClose(ws,clscod,clsmsg),
                     on_open    = lambda ws:                 self._OnWebSocketOpen(ws),
