@@ -36,11 +36,16 @@ class EventHandlerClass:
             print("\n'%s' status update:\n%s" % (client.Device.DeviceName, argsEncoded))
 
 
-    def OnSoundTouchWebSocketConnectionEvent(self, client:SoundTouchClient, args:str) -> None:
+    def OnSoundTouchWebSocketOpenEvent(self, client:SoundTouchClient, args:str) -> None:
         if (args != None):
-            # args will be a connection type: 'WebSocketOpen', 'WebSocketClose'.
             _logsi.LogVerbose("SoundTouch device websocket connection event: %s" % (str(args)), colorValue=SIColors.LightGreen)
             print("\n'%s' websocket connection event:\n%s" % (client.Device.DeviceName, str(args)))
+
+
+    def OnSoundTouchWebSocketCloseEvent(self, client:SoundTouchClient, statCode=None, args:str=None) -> None:
+        if (args != None):
+            _logsi.LogVerbose("SoundTouch device websocket closed event: (%s) %s" % (str(statCode), str(args)), colorValue=SIColors.LightGreen)
+            print("\n'%s' websocket connection event: (%s) %s" % (client.Device.DeviceName, str(statCode), str(args)))
 
 
     def OnSoundTouchWebSocketErrorEvent(self, client:SoundTouchClient, ex:Exception) -> None:
@@ -147,9 +152,9 @@ try:
         socket.AddListener(SoundTouchNotifyCategorys.userActivityUpdate, ehc.OnSoundTouchInfoEvent)
         
         # add our listener that will handle SoundTouch websocket related events.
-        socket.AddListener(SoundTouchNotifyCategorys.WebSocketClose, ehc.OnSoundTouchWebSocketConnectionEvent)
+        socket.AddListener(SoundTouchNotifyCategorys.WebSocketClose, ehc.OnSoundTouchWebSocketCloseEvent)
         socket.AddListener(SoundTouchNotifyCategorys.WebSocketError, ehc.OnSoundTouchWebSocketErrorEvent)
-        socket.AddListener(SoundTouchNotifyCategorys.WebSocketOpen, ehc.OnSoundTouchWebSocketConnectionEvent)
+        socket.AddListener(SoundTouchNotifyCategorys.WebSocketOpen, ehc.OnSoundTouchWebSocketOpenEvent)
         socket.AddListener(SoundTouchNotifyCategorys.WebSocketPong, ehc.OnSoundTouchWebSocketPingPongEvent)
 
         # start receiving updates.
@@ -167,6 +172,9 @@ try:
                 # wait 1 second.
                 time.sleep(1)
                 
+                if i == 1:
+                    socket.StopNotification()
+                    break
                 # if i == 10:
                 #     print("Rebooting device ...")
                 #     msg = device.RebootDevice()

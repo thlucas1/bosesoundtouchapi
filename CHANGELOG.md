@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.38 ] - 2023/12/21
+
+  * Updated socket close processing in `SoundTouchWebSocket` to include a close status code and message upon socket closure.
+  
 ###### [ 1.0.37 ] - 2023/12/21
 
   * Added method `SourceList`.`GetTitleBySource` - Returns a `SourceItem`.`SourceTitle` string for the given source and sourceAccount values.

@@ -1,6 +1,6 @@
 # external package imports.
 from threading import Thread
-from websocket import WebSocketApp
+from websocket import WebSocketApp, STATUS_NORMAL
 from xml.etree import ElementTree as xmltree
 
 # our package imports.
@@ -196,7 +196,7 @@ class SoundTouchWebSocket:
         return self._Port
 
 
-    def _OnWebSocketClose(self, wsApp:WebSocketApp, closeCode, closeMessage:bytes) -> None:
+    def _OnWebSocketClose(self, wsApp:WebSocketApp, closeCode=None, closeMessage:bytes=None) -> None:
         """
         Event raised by the web socket event listener when a socket has been closed.
         
@@ -208,11 +208,17 @@ class SoundTouchWebSocket:
             closeMessage (bytes):
                 Close message.
         """
+        # if remote server did not send a close code or message, then assume normal close.
+        if closeCode is None:
+            closeCode = STATUS_NORMAL
+        if closeMessage is None:
+            closeMessage = b"STATUS_NORMAL (RC=1000) assumed - goodbye"
+            
         if _logsi.IsOn(SILevel.Verbose):
             _logsi.LogObject(SILevel.Verbose, "SoundTouch web socket event listener OnClose event: '%s' - (%s) %s" % (SoundTouchNotifyCategorys.WebSocketClose.value, str(closeCode), str(closeMessage)), closeMessage)
             
         # notify listeners.
-        self.NotifyListeners(SoundTouchNotifyCategorys.WebSocketClose.value, SoundTouchNotifyCategorys.WebSocketClose.value)
+        self.NotifyListeners(SoundTouchNotifyCategorys.WebSocketClose.value, closeMessage)
 
 
     def _OnWebSocketError(self, wsApp:WebSocketApp, error:bytes) -> None:
@@ -504,6 +510,9 @@ class SoundTouchWebSocket:
         This method does nothing if the event loop thread was not started.
         """
         if self._WebsocketClient != None:
+            
             _logsi.LogVerbose("Stopping SoundTouch web socket event listener thread")
-            self._WebsocketClient.close()
+            
+            # close socket (only kwargs accepted: status:int, reason:bytes=b"xxx" 123 chars max)
+            self._WebsocketClient.close(status=STATUS_NORMAL, reason=b"goodbye")
             self._WebsocketClient = None
