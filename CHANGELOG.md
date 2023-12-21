@@ -6,6 +6,12 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.37 ] - 2023/12/21
+
+  * Added method `SourceList`.`GetTitleBySource` - Returns a `SourceItem`.`SourceTitle` string for the given source and sourceAccount values.
+  * Renamed method `SourceList`.`FromSourceTitle` to `GetSourceItemByTitle` - Returns a `SourceItem` instance for the given source title value.
+  * Added model `PlayStatusTypes` - play status types enumeration.
+  
 ###### [ 1.0.36 ] - 2023/12/20
 
   * Added property `SourceItem`.`SourceTitle` - source title of media content (e.g. "Tunein", "Airplay", "NAS Music Server", etc).

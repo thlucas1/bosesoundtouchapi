@@ -29,6 +29,7 @@ from .networkstatus import NetworkStatus, NetworkStatusInterface
 from .nowplayingstatus import NowPlayingStatus
 from .performwirelesssitesurveyresponse import PerformWirelessSiteSurveyResponse, SurveyResultItem
 from .playinfo import PlayInfo
+from .playstatustypes import PlayStatusTypes
 from .powermanagement import PowerManagement
 from .presetlist import PresetList, Preset
 from .productcechdmicontrol import ProductCecHdmiControl, ProductCecHdmiModes
@@ -91,6 +92,7 @@ __all__ = [
     'NowPlayingStatus',
     'PerformWirelessSiteSurveyResponse','SurveyResultItem',
     'PlayInfo',
+    'PlayStatusTypes',
     'PowerManagement',
     'PresetList', 'Preset',
     'ProductCecHdmiControl', 'ProductCecHdmiModes',

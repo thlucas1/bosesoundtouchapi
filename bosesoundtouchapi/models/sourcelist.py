@@ -90,8 +90,7 @@ class SourceList:
         return self._SourceItems
 
 
-    @staticmethod
-    def FromSourceTitle(self, title:str) -> SourceItem:
+    def GetSourceItemByTitle(self, title:str) -> SourceItem:
         """
         Returns a `SourceItem` instance for the given source title value.
         
@@ -107,6 +106,36 @@ class SourceList:
         for item in self._SourceItems:
             if title == item.SourceTitle:
                 return item
+        return None
+        
+
+    def GetTitleBySource(self, source:str, sourceAccount:str=None) -> str:
+        """
+        Returns a title for the given source and sourceAccount values.
+        
+        Args:
+            source (str):
+                The source of media content (e.g. "TUNEIN", "AIRPLAY", "UPNP", etc).
+                Value is case-sensitive, and must match exactly.
+            sourceAccount (str):
+                The account associated with the Source.
+                Value is case-sensitive, and must match exactly.
+                
+        Returns:
+            A `SourceItem`.`SourceTitle` if the title argument value was found; 
+            otherwise, None.
+        """
+        # if source not specified then don't bother.
+        if source is None:
+            return None
+        
+        item:SourceItem
+        for item in self._SourceItems:
+            if source == item.Source:
+                if sourceAccount is None and item.SourceAccount is None:
+                    return item.SourceTitle
+                elif sourceAccount == item.SourceAccount:
+                    return item.SourceTitle
         return None
         
 

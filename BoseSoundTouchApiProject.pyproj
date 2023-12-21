@@ -35,6 +35,7 @@
     <Compile Include="bosesoundtouchapi\models\component.py" />
     <Compile Include="bosesoundtouchapi\models\introspect.py" />
     <Compile Include="bosesoundtouchapi\models\info.py" />
+    <Compile Include="bosesoundtouchapi\models\playstatustypes.py" />
     <Compile Include="bosesoundtouchapi\models\supportedurl.py" />
     <Compile Include="bosesoundtouchapi\models\supportedurls.py" />
     <Compile Include="bosesoundtouchapi\models\usertrackcontrol.py" />
