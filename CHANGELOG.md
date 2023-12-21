@@ -6,6 +6,12 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.36 ] - 2023/12/20
+
+  * Added property `SourceItem`.`SourceTitle` - source title of media content (e.g. "Tunein", "Airplay", "NAS Music Server", etc).
+  * Added method `SourceList`.`FromSourceTitle` - Returns a `SourceItem` instance for the given source title value.
+  * Added method `SourceList`.`ToSourceTitleArray` - Returns an array of source title strings.
+
 ###### [ 1.0.35 ] - 2023/12/16
 
   * Fixed error processing logic for `SoundTouchClient`.  Prior to this fix, some error conditions were not being caught.

@@ -90,6 +90,26 @@ class SourceList:
         return self._SourceItems
 
 
+    @staticmethod
+    def FromSourceTitle(self, title:str) -> SourceItem:
+        """
+        Returns a `SourceItem` instance for the given source title value.
+        
+        Args:
+            title (str):
+                Source title string to locate in the `SourceItems` list.
+                Value is case-sensitive, and must match exactly.
+                
+        Returns:
+            A `SourceItem` if the title argument value was found; otherwise, None.
+        """
+        item:SourceItem
+        for item in self._SourceItems:
+            if title == item.SourceTitle:
+                return item
+        return None
+        
+
     def ToDictionary(self, encoding:str='utf-8') -> dict:
         """ 
         Returns a dictionary representation of the class. 
@@ -131,7 +151,7 @@ class SourceList:
 
     def ToSourceArray(self, includeSourceAccount:bool=False) -> list[str]:
         """
-        Returns an array of SourceItem (and optionally SourceAccount) strings.
+        Returns an array of source names (and optionally source account) strings.
         
         Args:
             includeSourceAccount (bool):
@@ -148,7 +168,7 @@ class SourceList:
         # load list of supported sources.
         item:SourceItem
         for item in self._SourceItems:
-            if (item is not None) and (len(item.Source) > 0):
+            if (item.Source is not None) and (len(item.Source) > 0):
                 if (includeSourceAccount == False):
                     sourceList.append(item.Source)
                 elif (item.SourceAccount is not None) and (len(item.SourceAccount) > 0):
@@ -157,6 +177,20 @@ class SourceList:
                     sourceList.append(item.Source)
                         
         return sourceList
+
+        
+    def ToSourceTitleArray(self) -> list[str]:
+        """
+        Returns an array of source title strings.
+        """
+        result:list[str] = []
+        
+        # load list of supported sources.
+        item:SourceItem
+        for item in self._SourceItems:
+            result.append(item.SourceTitle)
+                        
+        return result
 
         
     def ToString(self, includeItems:bool=False) -> str:

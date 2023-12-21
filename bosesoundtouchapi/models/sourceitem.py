@@ -22,28 +22,32 @@ class SourceItem:
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
         """
-        # initialize instance.
         self._IsLocal:bool = None
         self._IsMultiroomAllowed:bool = None
         self._Source:str = None
         self._SourceAccount:str = None
         self._Status:str = None
         self._FriendlyName:str = None
-
+        
+        # helper properties (non-xml).
+        self._SourceTitle:str = None
+        
         if (root is None):
             
             pass
         
         else:
 
-            # base fields.
             self._IsLocal = _xmlGetAttrBool(root,'isLocal')
             self._IsMultiroomAllowed = _xmlGetAttrBool(root, 'multiroomallowed')
             self._Source = root.get('source')
             self._SourceAccount = root.get('sourceAccount')
             self._Status = root.get('status')
             self._FriendlyName = root.text
-
+            
+            # set source title based upon source, source account, and friendly name values.
+            self._SetSourceTitle()
+            
         
     def __repr__(self) -> str:
         return self.ToString()
@@ -106,9 +110,37 @@ class SourceItem:
 
 
     @property
+    def SourceTitle(self) -> str:
+        """ The source title of media content (e.g. "Tunein", "Airplay", "NAS Music Server", etc). """
+        return self._SourceTitle
+
+
+    @property
     def Status(self) -> str:
         """ Indicates whether the source is available or not, and its current status. """
         return self._Status
+
+
+    def _SetSourceTitle(self) -> None:
+        """
+        Sets the `SourceTitle` value based upon source, source account, and friendly name values.
+        """
+        if self._Source is None:
+            self._SourceTitle = None
+        elif self._Source in ['AUX']:
+            self._SourceTitle = self._FriendlyName.title()
+        elif self._Source in ['LOCAL_MUSIC','STORED_MUSIC']:
+            self._SourceTitle = self._FriendlyName
+        elif self._Source in ['AIRPLAY','ALEXA','BLUETOOTH','NOTIFICATION','TUNEIN','UPNP']:
+            self._SourceTitle = self._Source.title()
+        elif self._Source in ['DEEZER','IHEART','PANDORA','QPLAY','QQMUSIC','SIRIUSXM','SPOTIFY']:
+            self._SourceTitle = '%s (%s)' % (self._Source.title(), self._FriendlyName)
+        elif self._Source in ['STORED_MUSIC_MEDIA_RENDERER']:
+            self._SourceTitle = '%s (%s)' % (self._Source.replace('_',' ').title(), self._FriendlyName)
+        elif self._Source in ['LOCAL_INTERNET_RADIO']:
+            self._SourceTitle = self._Source.replace('_',' ').title()
+        else:
+            self._SourceTitle = '%s (%s)' % (self._Source.title(), self._SourceAccount)
 
 
     def ToElement(self, isRequestBody:bool=False) -> Element:
@@ -142,4 +174,5 @@ class SourceItem:
         if self._IsLocal is not None: msg = '%s isLocal=%s' % (msg, str(self._IsLocal).lower())
         if self._IsMultiroomAllowed is not None: msg = '%s multiroomAllowed=%s' % (msg, str(self._IsMultiroomAllowed).lower())
         if self._FriendlyName is not None and len(self._FriendlyName) > 0: msg = '%s friendlyName="%s"' % (msg, str(self._FriendlyName))
+        if self._SourceTitle is not None and len(self._SourceTitle) > 0: msg = '%s SourceTitle="%s"' % (msg, str(self._SourceTitle))
         return msg 

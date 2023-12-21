@@ -164,7 +164,7 @@ class SoundTouchDevice:
         except Exception as ex:
         
             # format unhandled exception.
-            raise SoundTouchError(BSTAppMessages.UNHANDLED_EXCEPTION.format("__init__", str(ex)), logsi=_logsi)
+            raise SoundTouchError(BSTAppMessages.UNHANDLED_EXCEPTION.format("SoundTouchDevice.__init__", str(ex)), logsi=_logsi)
 
 
     def __repr__(self) -> str:
@@ -443,7 +443,7 @@ class SoundTouchDevice:
         except Exception as ex:
             
             # format unhandled exception.
-            raise SoundTouchError(BSTAppMessages.UNHANDLED_EXCEPTION.format("RebootDevice", str(ex)), logsi=_logsi)
+            raise SoundTouchError(BSTAppMessages.UNHANDLED_EXCEPTION.format("SoundTouchDevice.RebootDevice", str(ex)), logsi=_logsi)
 
         finally:
             

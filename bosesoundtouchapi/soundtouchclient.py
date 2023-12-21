@@ -2275,7 +2275,7 @@ class SoundTouchClient:
         except Exception as ex:
             
             # format unhandled exception.
-            raise SoundTouchError(BSTAppMessages.UNHANDLED_EXCEPTION.format("MakeRequest", str(ex)), logsi=_logsi)
+            raise SoundTouchError(BSTAppMessages.UNHANDLED_EXCEPTION.format("SoundTouchClient.MakeRequest", str(ex)), logsi=_logsi)
 
 
     def MediaNextTrack(self) -> None:
@@ -2621,15 +2621,6 @@ class SoundTouchClient:
                 ttsUrl argument value does not start with 'http://'.
                 ttsUrl argument was not a string; ignoring PlayNotificationTTS request.
                 
-        Note that SoundTouch devices do not support playing content from HTTPS (secure 
-        socket layer) url's.  A `SoundTouchError` will be raised if a non `http://` url 
-        is supplied for the ttsUrl argument.
-        
-        There are models of Bose SoundTouch speakers that do not support notifications. Only the 
-        Bose SoundTouch 10 in the III series support notifications, as far as I know.
-        I could not get this to work on my SoundTouch 300, and another user reported that the
-        ST-20 did not support it either.
-
         The notification message is played at the level specified by the volumeLevel argument.
         Specify a volumeLevel of zero to play the notification at the current volume level.
         The volume level is restored to the level it was before the notification message was 
@@ -2655,6 +2646,13 @@ class SoundTouchClient:
         argument value with "a!".  Example: "a!This is a test message".  It's not a perfect
         solution, but works for me since my SoundTouch speaker takes a second or two to switch
         into active mode, and the first second of the played message is lost.
+        
+        This method calls the `play_info` SoundTouch API service for the notification.
+        There are models of SoundTouch speakers that do not support notifications. 
+        Per the SoundTouch WebServices API reference: audio Notifications are only available 
+        for SoundTouch 10, SoundTouch 20 Series III, and SoundTouch 30 Series III. 
+        Attempting to send an Audio Notification to an incompatible device will return a 
+        `403 Forbidden` error.
         
         <details>
           <summary>Sample Code</summary>
@@ -2756,6 +2754,13 @@ class SoundTouchClient:
         
         If the device is the master controller of a zone, then the given url content will 
         be played on all devices that are members of the zone.
+
+        This method calls the `play_info` SoundTouch API service for the notification.
+        There are models of SoundTouch speakers that do not support notifications. 
+        Per the SoundTouch WebServices API reference: audio Notifications are only available 
+        for SoundTouch 10, SoundTouch 20 Series III, and SoundTouch 30 Series III. 
+        Attempting to send an Audio Notification to an incompatible device will return a 
+        `403 Forbidden` error.
         
         <details>
           <summary>Sample Code</summary>
