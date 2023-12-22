@@ -38,6 +38,54 @@ class AudioDspAudioModes(Enum):
 
 
     @staticmethod    
+    def GetNameByValue(value:str) -> str:
+        """
+        Returns a name for the given audioMode value.
+        No exception will be thrown by this method if the value is not found.
+        
+        Args:
+            value (str):
+                The audio mode value (e.g. "AUDIO_MODE_NORMAL", etc).
+                Value is case-sensitive, and must match exactly.
+                
+        Returns:
+            A name if the value argument was found; otherwise, None.
+        """
+        if value is None:
+            return None
+        
+        item:str
+        for item in AudioDspAudioModes:
+            if value == item.value:
+                return item.name
+        return None
+        
+
+    @staticmethod    
+    def GetValueByName(name:str) -> str:
+        """
+        Returns a value for the given audioMode name.
+        No exception will be thrown by this method if the name is not found.
+        
+        Args:
+            name (str):
+                The audio mode name (e.g. "Normal", "Dialog", etc).
+                Value is case-sensitive, and must match exactly.
+                
+        Returns:
+            A value if the name argument was found; otherwise, None.
+        """
+        if name is None:
+            return None
+        
+        item:str
+        for item in AudioDspAudioModes:
+            if name == item.name:
+                return item.value
+        return None
+        
+
+    @staticmethod    
     def ToString(value) -> str:
         """ Returns the enum.value (instead of classname.value) as a string. """
         if isinstance(value, AudioDspAudioModes):

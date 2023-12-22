@@ -6,6 +6,12 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.39 ] - 2023/12/22
+
+  * Added method `AudioDspControls`.`ToSupportedAudioModeTitlesArray` - Returns a string array of titles for SupportedAudioModes.
+  * Added method `AudioDspAudioModes`.`GetNameByValue` - Returns a name for the given audioMode value; No exception will be thrown by this method if the value is not found.
+  * Added method `AudioDspAudioModes`.`GetValueByName` - Returns a value for the given audioMode name; No exception will be thrown by this method if the name is not found.
+  
 ###### [ 1.0.38 ] - 2023/12/21
 
   * Updated socket close processing in `SoundTouchWebSocket` to include a close status code and message upon socket closure.

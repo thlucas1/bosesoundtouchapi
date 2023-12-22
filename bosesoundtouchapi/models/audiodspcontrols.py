@@ -159,3 +159,21 @@ class AudioDspControls(SoundTouchModelRequest):
             modesList = self._SupportedAudioModes.split('|')
             modesList.sort()
         return modesList
+
+
+    def ToSupportedAudioModeTitlesArray(self) -> list[str]:
+        """
+        Returns a string array of titles for SupportedAudioModes.
+        """
+        # build list of supported audio mode titles; results are already sorted by enum name.
+        result:list[str] = []
+        if self._SupportedAudioModes is not None:
+            modes:list[str] = self._SupportedAudioModes.split('|')
+            mode:str
+            enum:AudioDspAudioModes
+            for enum in AudioDspAudioModes:
+                for mode in modes:
+                    if enum.value == mode:
+                        result.append(enum.name)
+        return result
+       
