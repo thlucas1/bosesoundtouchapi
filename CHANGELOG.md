@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.41 ] - 2023/12/22
+
+  * Fixed a bug in `SourceList`.`GetTitleBySource` model that was incorrectly resolving a title by it's source value.
+  * Updated `SoundTouchWebSocket`.`NotifyListeners` method to log any exceptions that occur in user event handlers.
+
 ###### [ 1.0.40 ] - 2023/12/22
 
   * Fixed a bug in `NowPlayingStatus` model that was reporting incorrect values for `IsSkipPreviousSupported`, `IsSeekSupported`, and `isFavorite` properties.

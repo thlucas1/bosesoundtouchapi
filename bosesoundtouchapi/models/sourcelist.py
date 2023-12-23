@@ -129,12 +129,17 @@ class SourceList:
         if source is None:
             return None
         
+        # source list will never contain a 'sourceAccount=""' value; the sourceAccount
+        # attribute will not be specified in this case (e.g. TUNEIN, BLUETOOTH, etc).
+        # however, sometimes a NowPlaying event will generate a 'sourceAccount=""' value
+        # for a source
         item:SourceItem
         for item in self._SourceItems:
             if source == item.Source:
-                if sourceAccount is None and item.SourceAccount is None:
+                itemSourceAccount:str = item.SourceAccount
+                if (itemSourceAccount == sourceAccount):
                     return item.SourceTitle
-                elif sourceAccount == item.SourceAccount:
+                elif (itemSourceAccount is None) and (sourceAccount == ''):
                     return item.SourceTitle
         return None
         
