@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.40 ] - 2023/12/22
+
+  * Fixed a bug in `NowPlayingStatus` model that was reporting incorrect values for `IsSkipPreviousSupported`, `IsSeekSupported`, and `isFavorite` properties.
+  
 ###### [ 1.0.39 ] - 2023/12/22
 
   * Added method `AudioDspControls`.`ToSupportedAudioModeTitlesArray` - Returns a string array of titles for SupportedAudioModes.

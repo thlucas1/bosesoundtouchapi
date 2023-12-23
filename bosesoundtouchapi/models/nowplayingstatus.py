@@ -2,7 +2,7 @@
 from xml.etree.ElementTree import Element
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlGetAttrInt
+from ..bstutils import export, _xmlFind, _xmlGetAttrInt, _xmlFindBool, _xmlGetAttrBool
 from .contentitem import ContentItem
 
 @export
@@ -84,14 +84,12 @@ class NowPlayingStatus:
             self._ArtistId = _xmlFind(root, "artistID")
             self._Description = _xmlFind(root, "description")
             self._Genre = _xmlFind(root, "genre")
-            self._IsAdvertisement = _xmlFind(root, "isAdvertisement", default=False, defaultNoText=True)
-            self._IsFavorite = _xmlFind(root, "isFavorite", default=False, defaultNoText=True)
-            self._IsFavoriteEnabled = _xmlFind(root, "favoriteEnabled", default=False, defaultNoText=True)
-            self._IsRatingEnabled = _xmlFind(root, "rateEnabled", default=False, defaultNoText=True)
-            self._IsSkipEnabled = _xmlFind(root, "skipEnabled", default=False, defaultNoText=True)
-            self._IsSkipPreviousEnabled = _xmlFind(root, "skipPreviousEnabled", default=False, defaultNoText=True)
-            self._IsSkipPreviousSupported = _xmlFind(root, "skipPreviousSupported", default=False, defaultNoText=True)
-            self._IsSeekSupported = _xmlFind(root, "seekSupported", default=False, defaultNoText=True)
+            self._IsAdvertisement = _xmlFindBool(root, "isAdvertisement")
+            self._IsFavorite = _xmlFindBool(root, "isFavorite")
+            self._IsFavoriteEnabled = _xmlFindBool(root, "favoriteEnabled")
+            self._IsRatingEnabled = _xmlFindBool(root, "rateEnabled")
+            self._IsSkipEnabled = _xmlFindBool(root, "skipEnabled")
+            self._IsSkipPreviousEnabled = _xmlFindBool(root, "skipPreviousEnabled")
             self._PlayStatus = _xmlFind(root, "playStatus")
             self._Rating = _xmlFind(root, "rating")
             self._RepeatSetting = _xmlFind(root, "repeatSetting")
@@ -115,11 +113,21 @@ class NowPlayingStatus:
                 self._ConnectionDeviceName = elmNode.get("deviceName")
                 self._ConnectionStatus = elmNode.get("status")
             
-            # time node.
+            # time node (e.g. <time total="265">15</time>).
             elmNode = root.find('time')
             if (elmNode != None):
                 self._Duration = _xmlGetAttrInt(elmNode, 'total')
                 self._Position = int(elmNode.text)
+                
+            # skipPreviousSupported node (e.g. <skipPreviousSupported value="true" />).
+            elmNode = root.find('skipPreviousSupported')
+            if (elmNode != None):
+                self._IsSkipPreviousSupported = _xmlGetAttrBool(elmNode, 'value')
+                
+            # seekSupported node (e.g. <seekSupported value="false" />)
+            elmNode = root.find('seekSupported')
+            if (elmNode != None):
+                self._IsSeekSupported = _xmlGetAttrBool(elmNode, 'value')
 
 
     def __repr__(self) -> str:
@@ -431,23 +439,37 @@ class NowPlayingStatus:
         Returns a displayable string representation of the class.
         """
         msg:str = 'NowPlayingStatus:'
-        if self._Source is not None and len(self._Source) > 0: msg = '%s Source="%s"' % (msg, str(self._Source))
-        if self._SourceAccount is not None and len(self._SourceAccount) > 0: msg = '%s SourceAccount="%s"' % (msg, str(self._SourceAccount))
-        if self._PlayStatus is not None and len(self._PlayStatus) > 0: msg = '%s PlayStatus="%s"' % (msg, str(self._PlayStatus))
-        if self._ContentItem is not None: msg = '%s %s' % (msg, self._ContentItem.ToString())
-        if self._RepeatSetting is not None and len(self._RepeatSetting) > 0: msg = '%s Repeat="%s"' % (msg, str(self._RepeatSetting))
-        if self._ShuffleSetting is not None and len(self._ShuffleSetting) > 0: msg = '%s Shuffle="%s"' % (msg, str(self._ShuffleSetting))
-        msg = '%s FavoriteEnabled="%s"' % (msg, str(self._IsFavoriteEnabled).lower())
-        if self._IsFavorite is not None: msg = '%s IsFavorite="%s"' % (msg, str(self._IsFavorite).lower())
-        if self._IsAdvertisement is not None: msg = '%s IsAdvertisement="%s"' % (msg, str(self._IsAdvertisement).lower())
-        if self._IsRatingEnabled is not None: msg = '%s RateEnabled="%s"' % (msg, str(self._IsRatingEnabled).lower())
-        if self._Rating is not None and len(self._Rating) > 0: msg = '%s Rating="%s"' % (msg, str(self._Rating))
-        if self._Artist is not None and len(self._Artist) > 0: msg = '%s Artist="%s"' % (msg, str(self._Artist))
-        if self._ArtistId is not None and len(self._ArtistId) > 0: msg = '%s ArtistId="%s"' % (msg, str(self._ArtistId))
-        if self._Track is not None and len(self._Track) > 0: msg = '%s Track="%s"' % (msg, str(self._Track))
-        if self._TrackId is not None and len(self._TrackId) > 0: msg = '%s TrackId="%s"' % (msg, str(self._TrackId))
-        if self._SessionId is not None and len(self._SessionId) > 0: msg = '%s SessionId="%s"' % (msg, str(self._SessionId))
-        if self._ArtUrl is not None and len(self._ArtUrl) > 0: msg = '%s ArtUrl="%s"' % (msg, str(self._ArtUrl))
-        if self._DeviceId is not None and len(self._DeviceId) > 0: msg = '%s DeviceId="%s"' % (msg, str(self._DeviceId))
+        if self._Source is not None and len(self._Source) > 0: msg = '%s\n Source="%s"' % (msg, str(self._Source))
+        if self._SourceAccount is not None and len(self._SourceAccount) > 0: msg = '%s\n SourceAccount="%s"' % (msg, str(self._SourceAccount))
+        if self._ContentItem is not None: msg = '%s\n %s' % (msg, self._ContentItem.ToString())
+        if self._Album is not None and len(self._Album) > 0: msg = '%s\n Album="%s"' % (msg, str(self._Album))
+        if self._Artist is not None and len(self._Artist) > 0: msg = '%s\n Artist="%s"' % (msg, str(self._Artist))
+        if self._ArtistId is not None and len(self._ArtistId) > 0: msg = '%s\n ArtistId="%s"' % (msg, str(self._ArtistId))
+        if self._ArtImageStatus is not None and len(self._ArtImageStatus) > 0: msg = '%s\n ArtImageStatus="%s"' % (msg, str(self._ArtImageStatus))
+        if self._ArtUrl is not None and len(self._ArtUrl) > 0: msg = '%s\n ArtUrl="%s"' % (msg, str(self._ArtUrl))
+        if self._ConnectionDeviceName is not None and len(self._ConnectionDeviceName) > 0: msg = '%s\n ConnectionDeviceName="%s"' % (msg, str(self._ConnectionDeviceName))
+        if self._ConnectionStatus is not None and len(self._ConnectionStatus) > 0: msg = '%s\n ConnectionStatus="%s"' % (msg, str(self._ConnectionStatus))
+        if self._Description is not None and len(self._Description) > 0: msg = '%s\n Description="%s"' % (msg, str(self._Description))
+        if self._DeviceId is not None and len(self._DeviceId) > 0: msg = '%s\n DeviceId="%s"' % (msg, str(self._DeviceId))
+        if self._Duration is not None and self._Duration > 0: msg = '%s\n Duration="%s"' % (msg, str(self._Duration))
+        if self._Genre is not None and len(self._Genre) > 0: msg = '%s\n Genre="%s"' % (msg, str(self._Genre))
+        if self._IsAdvertisement is not None: msg = '%s\n IsAdvertisement="%s"' % (msg, str(self._IsAdvertisement).lower())
+        if self._IsFavorite is not None: msg = '%s\n IsFavorite="%s"' % (msg, str(self._IsFavorite).lower())
+        if self._IsFavoriteEnabled is not None: msg = '%s\n IsFavoriteEnabled="%s"' % (msg, str(self._IsFavoriteEnabled).lower())
+        if self._IsRatingEnabled is not None: msg = '%s\n IsRateEnabled="%s"' % (msg, str(self._IsRatingEnabled).lower())
+        if self._IsSeekSupported is not None: msg = '%s\n IsSeekSupported="%s"' % (msg, str(self._IsSeekSupported).lower())
+        if self._IsSkipEnabled is not None: msg = '%s\n IsSkipEnabled="%s"' % (msg, str(self._IsSkipEnabled).lower())
+        if self._IsSkipPreviousEnabled is not None: msg = '%s\n IsSkipPreviousEnabled="%s"' % (msg, str(self._IsSkipPreviousEnabled).lower())
+        if self._IsSkipPreviousSupported is not None: msg = '%s\n IsSkipPreviousSupported="%s"' % (msg, str(self._IsSkipPreviousSupported).lower())
+        if self._PlayStatus is not None and len(self._PlayStatus) > 0: msg = '%s\n PlayStatus="%s"' % (msg, str(self._PlayStatus))
+        if self._Position is not None and self._Position > 0: msg = '%s\n Position="%s"' % (msg, str(self._Position))
+        if self._Rating is not None and len(self._Rating) > 0: msg = '%s\n Rating="%s"' % (msg, str(self._Rating))
+        if self._RepeatSetting is not None and len(self._RepeatSetting) > 0: msg = '%s\n Repeat="%s"' % (msg, str(self._RepeatSetting))
+        if self._SessionId is not None and len(self._SessionId) > 0: msg = '%s\n SessionId="%s"' % (msg, str(self._SessionId))
+        if self._ShuffleSetting is not None and len(self._ShuffleSetting) > 0: msg = '%s\n Shuffle="%s"' % (msg, str(self._ShuffleSetting))
+        if self._StationLocation is not None and len(self._StationLocation) > 0: msg = '%s\n StationLocation="%s"' % (msg, str(self._StationLocation))
+        if self._StationName is not None and len(self._StationName) > 0: msg = '%s\n StationName="%s"' % (msg, str(self._StationName))
+        if self._StreamType is not None and len(self._StreamType) > 0: msg = '%s\n StreamType="%s"' % (msg, str(self._StreamType))
+        if self._Track is not None and len(self._Track) > 0: msg = '%s\n Track="%s"' % (msg, str(self._Track))
+        if self._TrackId is not None and len(self._TrackId) > 0: msg = '%s\n TrackId="%s"' % (msg, str(self._TrackId))
         return msg 
-    

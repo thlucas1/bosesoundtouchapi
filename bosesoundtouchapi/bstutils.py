@@ -183,8 +183,10 @@ def _xmlFindBool(root:Element, name:str, default:bool=None) -> bool:
         otherwise, the default value.
     """
     elmNode = root.find(name)
-    if elmNode is None or elmNode.text is None:
+    if elmNode is None:
         return default
+    if elmNode.text is None:  # the node is there, but the text is not set (e.g. <isFavorite />)
+        return True
     return elmNode.text.lower() in ('true', '1', 'yes', 'on')
 
 
