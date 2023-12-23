@@ -128,11 +128,15 @@ class SourceList:
         # if source not specified then don't bother.
         if source is None:
             return None
+
+        # NowPlaying does not generate a 'sourceAccount' value for the 'AUX' source.
+        # in this case we will set the sourceAccount="AUX" so it matches the source list entry.
+        if source == 'AUX':
+            sourceAccount = 'AUX'
         
-        # source list will never contain a 'sourceAccount=""' value; the sourceAccount
-        # attribute will not be specified in this case (e.g. TUNEIN, BLUETOOTH, etc).
-        # however, sometimes a NowPlaying event will generate a 'sourceAccount=""' value
-        # for a source
+        # source list will never contain a 'sourceAccount=""' (empty string) value; 
+        # the sourceAccount attribute will not be specified in this case (e.g. TUNEIN, BLUETOOTH, etc).
+        # Sometimes a NowPlaying event will generate a 'sourceAccount=""' value for a source.
         item:SourceItem
         for item in self._SourceItems:
             if source == item.Source:
@@ -141,7 +145,9 @@ class SourceList:
                     return item.SourceTitle
                 elif (itemSourceAccount is None) and (sourceAccount == ''):
                     return item.SourceTitle
-        return None
+                
+        # if we can't resolve the title, then just display the raw source information.
+        return "%s:%s" % (source, sourceAccount or '')
         
 
     def ToDictionary(self, encoding:str='utf-8') -> dict:

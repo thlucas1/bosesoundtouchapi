@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.42 ] - 2023/12/22
+
+  * Fixed a bug in `SourceList`.`GetTitleBySource` model that was incorrectly resolving the 'AUX' title.  Also return 'source:sourceAccount' for title if title could not be resolved. 
+
 ###### [ 1.0.41 ] - 2023/12/22
 
   * Fixed a bug in `SourceList`.`GetTitleBySource` model that was incorrectly resolving a title by it's source value.
