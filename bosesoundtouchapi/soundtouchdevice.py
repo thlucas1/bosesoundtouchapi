@@ -104,8 +104,9 @@ class SoundTouchDevice:
                 # create new pool manager with specified timeouts.
                 timeout = Timeout(connect=float(connectTimeout), read=None)
                 manager = PoolManager(headers={'User-Agent': 'BoseSoundTouchApi/1.0.0'},
-                                              timeout=timeout
-                                              )
+                                      timeout=timeout,
+                                      num_pools=30
+                                     )
         
             # get SoundTouch device information; if it fails then we are done.
             _logsi.LogVerbose("Retrieving SoundTouch device information.")

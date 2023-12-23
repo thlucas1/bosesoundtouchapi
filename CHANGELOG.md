@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.43 ] - 2023/12/22
+
+  * Increased number of connection pools in PoolManager constructor from the default (10) to 30.  This should fix the "Connection pool is full, discarding connection ..." messages for environments with a large number of SoundTouch devices.
+
 ###### [ 1.0.42 ] - 2023/12/22
 
   * Fixed a bug in `SourceList`.`GetTitleBySource` model that was incorrectly resolving the 'AUX' title.  Also return 'source:sourceAccount' for title if title could not be resolved. 
