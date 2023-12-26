@@ -91,7 +91,7 @@ class PresetList:
         return self._Presets
 
 
-    def ToDictionary(self, encoding:str='utf-8') -> dict:
+    def ToDictionary(self, encoding:str='utf-8', includeEmptyPresets:bool=False) -> dict:
         """ 
         Returns a dictionary representation of the class. 
         
@@ -99,10 +99,13 @@ class PresetList:
             encoding (str):
                 encode type (e.g. 'utf-8', 'unicode', etc).  
                 Default is 'utf-8'.
+            includeEmptyPresets (bool):
+                True if the method should return all 6 preset slots, including empty ones;
+                otherwise, False (default) to return only presets with content items.
         """
         if encoding is None:
             encoding = 'utf-8'
-        elm = self.ToElement()
+        elm = self.ToElement(includeEmptyPresets=includeEmptyPresets)
         xml = tostring(elm, encoding=encoding).decode(encoding)
         
         # convert xml to dictionary.
@@ -112,20 +115,40 @@ class PresetList:
         return oDict
 
 
-    def ToElement(self, isRequestBody:bool=False) -> Element:
+    def ToElement(self, isRequestBody:bool=False, includeEmptyPresets:bool=False) -> Element:
         """ 
         Returns an xmltree Element node representation of the class. 
 
         Args:
             isRequestBody (bool):
-                True if the element should only return attributes needed for a POST
+                True if the method should only return attributes needed for a POST
                 request body; otherwise, False to return all attributes.
+            includeEmptyPresets (bool):
+                True if the method should return all 6 preset slots, including empty ones;
+                otherwise, False (default) to return only presets with content items.
         """
         elm = Element('presets')
+
+        # process all possible presets.
+        maxPresetCount:int = 6
+        for presetId in range(1, maxPresetCount + 1):
+            
+            # search for preset id in the list.
+            isEmpty:bool = True
+            item:Preset
+            for item in self._Presets:
+                if item.PresetId == presetId:
+                    # found it - add it to the list.
+                    elm.append(item.ToElement())
+                    isEmpty = False
+                    break
+                
+            # did we find a preset for this id?  if not and we are adding
+            # empty presets, then create an empty preset and add it to the list.
+            if isEmpty == True and includeEmptyPresets == True:
+                item = Preset(presetId, name="empty preset")
+                elm.append(item.ToElement())
         
-        item:Preset
-        for item in self._Presets:
-            elm.append(item.ToElement())
         return elm
 
         
@@ -150,7 +173,7 @@ class PresetList:
         return msg
 
 
-    def ToXmlString(self, encoding: str = 'utf-8') -> str:
+    def ToXmlString(self, encoding:str='utf-8', includeEmptyPresets:bool=False) -> str:
         """ 
         Returns an xml string representation of the class. 
         
@@ -158,9 +181,12 @@ class PresetList:
             encoding (str):
                 encode type (e.g. 'utf-8', 'unicode', etc).  
                 Default is 'utf-8'.
+            includeEmptyPresets (bool):
+                True if the method should return all 6 preset slots, including empty ones;
+                otherwise, False (default) to return only presets with content items.
         """
         if encoding is None:
             encoding = 'utf-8'
-        elm = self.ToElement()
+        elm = self.ToElement(includeEmptyPresets=includeEmptyPresets)
         xml = tostring(elm, encoding=encoding).decode(encoding)
         return xml

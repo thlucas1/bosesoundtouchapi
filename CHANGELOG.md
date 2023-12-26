@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.44 ] - 2023/12/26
+
+  * Added `includeEmptyPresets:bool` argument to various `PresetList` methods - True if the method should return all 6 preset slots, including empty ones; otherwise, False (default) to return only non-empty presets.
+
 ###### [ 1.0.43 ] - 2023/12/22
 
   * Increased number of connection pools in PoolManager constructor from the default (10) to 30.  This should fix the "Connection pool is full, discarding connection ..." messages for environments with a large number of SoundTouch devices.
