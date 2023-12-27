@@ -1599,7 +1599,7 @@ class SoundTouchClient:
         return self.GetProperty(SoundTouchNodes.powerManagement, PowerManagement, refresh)
 
 
-    def GetPresetList(self, refresh=True) -> PresetList:
+    def GetPresetList(self, refresh=True, resolveSourceTitles:bool=False) -> PresetList:
         """
         Gets the current preset list configuration of the device.
 
@@ -1607,6 +1607,9 @@ class SoundTouchClient:
             refresh (bool):
                 True to query the device for realtime information and refresh the cache;
                 otherwise, False to just return the cached information.
+            resolveSourceTitles (bool):
+                True to resolve the `SourceTitle` property value for all preset items
+                in the list; otherwise, False to return the list without source titles.
 
         Returns:
             A `PresetList` object that contains preset list configuration of the device.
@@ -1619,8 +1622,21 @@ class SoundTouchClient:
         </details>
         """
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("PresetList", self.Device.DeviceName))
-        return self.GetProperty(SoundTouchNodes.presets, PresetList, refresh)
+        presetList:PresetList = self.GetProperty(SoundTouchNodes.presets, PresetList, refresh)
+    
+        # are we resolving source titles?
+        if resolveSourceTitles == True:
+            
+            # get source list configuration.
+            sourceList:SourceList = self.GetProperty(SoundTouchNodes.sources, SourceList, refresh)
+            
+            # resolve source title for all list items.
+            preset:Preset
+            for preset in presetList:
+                preset.SourceTitle = sourceList.GetTitleBySource(preset.Source, preset.SourceAccount)
         
+        return presetList
+    
 
     def GetProductCecHdmiControl(self, refresh=True) -> ProductCecHdmiControl:
         """
@@ -1775,7 +1791,7 @@ class SoundTouchClient:
         return self.GetProperty(SoundTouchNodes.rebroadcastlatencymode, RebroadcastLatencyMode, refresh)
 
 
-    def GetRecentList(self, refresh=True) -> RecentList:
+    def GetRecentList(self, refresh=True, resolveSourceTitles:bool=False) -> RecentList:
         """
         Gets the current recent list configuration of the device.
 
@@ -1783,6 +1799,9 @@ class SoundTouchClient:
             refresh (bool):
                 True to query the device for realtime information and refresh the cache;
                 otherwise, False to just return the cached information.
+            resolveSourceTitles (bool):
+                True to resolve the `SourceTitle` property value for all recent items
+                in the list; otherwise, False to return the list without source titles.
 
         Returns:
             A `RecentList` object that contains recent list configuration of the device.
@@ -1795,7 +1814,20 @@ class SoundTouchClient:
         </details>
         """
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("RecentList", self.Device.DeviceName))
-        return self.GetProperty(SoundTouchNodes.recents, RecentList, refresh)
+        recentList:RecentList = self.GetProperty(SoundTouchNodes.recents, RecentList, refresh)
+        
+        # are we resolving source titles?
+        if resolveSourceTitles == True:
+            
+            # get source list configuration.
+            sourceList:SourceList = self.GetProperty(SoundTouchNodes.sources, SourceList, refresh)
+            
+            # resolve source title for all list items.
+            recent:Recent
+            for recent in recentList:
+                recent.SourceTitle = sourceList.GetTitleBySource(recent.Source, recent.SourceAccount)
+
+        return recentList
         
 
     def GetRequestToken(self, refresh=True) -> SimpleConfig:

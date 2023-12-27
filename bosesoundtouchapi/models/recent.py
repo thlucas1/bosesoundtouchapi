@@ -29,6 +29,9 @@ class Recent:
         self._CreatedOn:int = None
         self._ContentItem:ContentItem = ContentItem()
 
+        # helper properties (non-xml).
+        self._SourceTitle:str = None
+
         if (root is None):
             
             pass
@@ -147,6 +150,25 @@ class Recent:
 
 
     @property
+    def SourceTitle(self) -> str:
+        """ 
+        The source title of media content (e.g. "Tunein", "Airplay", "NAS Music Server", etc). 
+        
+        This property is not part of the returned xml of the configuration, but is set after
+        a call to `SoundTouchClient.GetRecentList(resolveSourceTitles=True)' so that source
+        titles can be displayed by user-interfaces.
+        """
+        return self._SourceTitle
+
+    @SourceTitle.setter
+    def SourceTitle(self, value:str):
+        """ 
+        Sets the SourceTitle property value.
+        """
+        self._SourceTitle = value
+
+
+    @property
     def TypeValue(self) -> str:
         """ Specifies the type of the content item. """
         if self._ContentItem is None:
@@ -167,6 +189,7 @@ class Recent:
         if self._DeviceId is not None and len(self._DeviceId) > 0: elm.set('deviceID', str(self._DeviceId))
         if self._RecentId is not None and self._RecentId > 0: elm.set('id', str(self._RecentId))
         if self._CreatedOn is not None and self._CreatedOn > 0: elm.set('createdOn', str(self._CreatedOn))
+        if self._SourceTitle is not None and len(self._SourceTitle) > 0: elm.set('SourceTitle', str(self._SourceTitle))
         
         if self._ContentItem is not None:
             elmNode = self._ContentItem.ToElement()
@@ -184,6 +207,7 @@ class Recent:
         if self._ContentItem is not None: msg = '%s %s' % (msg, str(self._ContentItem))
         if self._DeviceId is not None: msg = '%s DeviceId="%s"' % (msg, str(self._DeviceId))
         msg = '%s CreatedOn="%s"' % (msg, str(self._CreatedOn))
+        if self._SourceTitle is not None: msg = '%s SourceTitle="%s"' % (msg, str(self._SourceTitle))
         return msg 
         
 

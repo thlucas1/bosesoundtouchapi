@@ -6,6 +6,12 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.45 ] - 2023/12/26
+
+  * Added `resolveSourceTitles:bool` argument to `SoundTouchClient`.`GetPresetList` and `GetRecentList` methods, so that a friendly source title can be displayed in user-interfaces.
+  * Added `Preset`.`SourceTitle` property - contains a friendly source title that can be displayed in user-interfaces.
+  * Added `Recent`.`SourceTitle` property - contains a friendly source title that can be displayed in user-interfaces.
+
 ###### [ 1.0.44 ] - 2023/12/26
 
   * Added `includeEmptyPresets:bool` argument to various `PresetList` methods - True if the method should return all 6 preset slots, including empty ones; otherwise, False (default) to return only non-empty presets.
