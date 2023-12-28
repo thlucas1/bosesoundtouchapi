@@ -515,7 +515,7 @@ class SoundTouchClient:
         </details>
         """
         # validations.
-        if not members or len(members) == 0:
+        if members is None or len(members) == 0:
             raise SoundTouchError('Members argument was not supplied, or has no members', logsi=_logsi)
         delay = self._ValidateDelay(delay, 3, 10)
         
@@ -533,7 +533,7 @@ class SoundTouchClient:
         for member in members:
             tempZone.AddMember(member, _logsi)
 
-        _logsi.LogVerbose("Adding zone members from SoundTouch device: '%s' - %s" % (
+        _logsi.LogVerbose("Adding zone members to SoundTouch device: '%s' - %s" % (
             self.Device.DeviceName, tempZone.ToStringMemberSummary()))
         
         # add the member zones from the device.
@@ -546,6 +546,7 @@ class SoundTouchClient:
         return result
 
 
+    # Pandora removed Bookmark functionality in 2022.
     # def Bookmark(self) -> None:
     #     """ 
     #     Bookmarks the currently playing media.
@@ -703,6 +704,9 @@ class SoundTouchClient:
         if zone.Members[0].DeviceId != zone.MasterDeviceId:
             zone.Members.insert(0, ZoneMember(zone.MasterIpAddress, zone.MasterDeviceId))
 
+        _logsi.LogVerbose("Creating master zone for SoundTouch device: '%s' - %s" % (
+            self.Device.DeviceName, zone.ToStringMemberSummary()))
+        
         # create the zone.
         result = self.Put(SoundTouchNodes.setZone, zone.ToXmlString())
         
@@ -3365,7 +3369,7 @@ class SoundTouchClient:
         </details>
         """
         # validations.
-        if not members or len(members) == 0:
+        if members is None or len(members) == 0:
             raise SoundTouchError('Members argument contained no zone members to remove', logsi=_logsi)
         delay = self._ValidateDelay(delay, 5, 10)
         
@@ -4610,6 +4614,98 @@ class SoundTouchClient:
             self.Action(SoundTouchKeys.THUMBS_UP, KeyStates.Press)
         else:
             _logsi.LogVerbose(MSG_TRACE_RATING_NOT_ENABLED % nowPlaying.ToString())
+
+
+    def ToggleZoneMember(self, member:ZoneMember, delay:int=2) -> SoundTouchMessage:
+        """
+        Toggles the given zone member in the master device's zone.  If the member exists in the
+        zone then it is removed; if the member does not exist in the zone, then it is added.
+        
+        Args:
+            member (ZoneMember):
+                A `ZoneMember` object to add to / remove from the master zone.
+            delay (int):
+                Time delay (in seconds) to wait AFTER processing the zone member changes.
+                This delay will give the device time to process the change before another 
+                command is accepted.  
+                Default is 3; value range is 0 - 10.
+                
+        Raises:
+            SoundTouchError:
+                Master zone status could not be retrieved.  
+                Member argument was not supplied, or is not of type `ZoneMember`.  
+                Member argument did not specify a value for the DeviceId property.
+        
+        The SoundTouch master device cannot find zone members without their device id.  
+        
+        A new zone will automatically be created if need be.
+
+        This method should only be called on the master device of a zone.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/ToggleZoneMember.py
+        ```
+        </details>
+        """
+        # validations.
+        if member is None or (not isinstance(member, ZoneMember)):
+            raise SoundTouchError('Members argument was not supplied, or is not of type ZoneMember', logsi=_logsi)
+        delay = self._ValidateDelay(delay, 3, 10)
+        
+        # get master zone status.
+        # we do this to retrieve the master zone device id.
+        masterZone:Zone = self.GetZoneStatus(refresh=True)
+        if masterZone is None:
+            raise SoundTouchError('Master zone status could not be retrieved', logsi=_logsi)
+
+        # does the zone member already exist in the master zone?
+        isMember:bool = False
+        zoneMember:ZoneMember
+        for zoneMember in masterZone.Members:
+            if member.DeviceId == zoneMember.DeviceId:
+                isMember = True
+                break
+            
+        # does the member exist in the master zone?
+        if isMember == True:
+            
+            # create a temporary Zone object (used to remove zone members)
+            # and add the zone member that we want to remove.
+            tempZone:Zone = Zone(masterZone.MasterDeviceId)
+            tempZone.AddMember(member, _logsi)
+
+            # remove zone member from the master zone.
+            _logsi.LogVerbose("Removing zone member from SoundTouch device: '%s' - %s" % (
+                self.Device.DeviceName, tempZone.ToStringMemberSummary()))
+            result = self.Put(SoundTouchNodes.removeZoneSlave, tempZone.ToXmlString())
+            
+        elif len(masterZone.Members) == 0:
+            
+            # if no members then create a new master zone configuration on the device.
+            tempZone:Zone = Zone(self.Device.DeviceId, self.Device.Host,True) # <- master
+            tempZone.AddMember(member, _logsi)
+            result = self.CreateZone(tempZone, delay)
+            delay = 0  # already delayed in CreateZone method
+            
+        else:
+
+            # create a temporary Zone object (used to add zone members)
+            # and add the zone member that we want to add.
+            tempZone:Zone = Zone(masterZone.MasterDeviceId)
+            tempZone.AddMember(member, _logsi)
+
+            # add zone member to the master zone.
+            _logsi.LogVerbose("Adding zone member to SoundTouch device: '%s' - %s" % (
+                self.Device.DeviceName, tempZone.ToStringMemberSummary()))
+            result = self.Put(SoundTouchNodes.addZoneSlave, tempZone.ToXmlString())
+            
+        if delay > 0:
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
+            time.sleep(delay)
+
+        return result
 
 
     def ToString(self) -> str:

@@ -146,6 +146,7 @@
     <Compile Include="docs\include\samplecode\SmartInspectPython\ClassLogging.py" />
     <Compile Include="docs\include\samplecode\SmartInspectPython\MainLogging.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\Action.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\ToggleZoneMember.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\Bookmark.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\ClearBluetoothPaired.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\GetInformation.py" />
