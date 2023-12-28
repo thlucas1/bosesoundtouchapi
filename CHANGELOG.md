@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.47 ] - 2023/12/28
+
+  * Increased number of connection pools in PoolManager constructor from 30 to 75.  This should fix the "Connection pool is full, discarding connection ..." messages for environments with a large number of SoundTouch devices.
+
 ###### [ 1.0.46 ] - 2023/12/28
 
   * Added method `SoundTouchClient`.`ToggleZoneMember` - Toggles the given zone member in the master device's zone.  If the member exists in the zone then it is removed; if the member does not exist in the zone, then it is added.  A new zone is automatically created if necessary.

@@ -105,7 +105,7 @@ class SoundTouchDevice:
                 timeout = Timeout(connect=float(connectTimeout), read=None)
                 manager = PoolManager(headers={'User-Agent': 'BoseSoundTouchApi/1.0.0'},
                                       timeout=timeout,
-                                      num_pools=30
+                                      num_pools=75
                                      )
         
             # get SoundTouch device information; if it fails then we are done.
