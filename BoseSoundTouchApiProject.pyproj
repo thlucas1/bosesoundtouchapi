@@ -33,6 +33,8 @@
     <Compile Include="bosesoundtouchapi\firmware\soundtouchfirmwarerelease.py" />
     <Compile Include="bosesoundtouchapi\firmware\__init__.py" />
     <Compile Include="bosesoundtouchapi\models\component.py" />
+    <Compile Include="bosesoundtouchapi\models\shufflesettingtypes.py" />
+    <Compile Include="bosesoundtouchapi\models\repeatsettingtypes.py" />
     <Compile Include="bosesoundtouchapi\models\introspect.py" />
     <Compile Include="bosesoundtouchapi\models\info.py" />
     <Compile Include="bosesoundtouchapi\models\playstatustypes.py" />

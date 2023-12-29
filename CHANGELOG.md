@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.50 ] - 2023/12/29
+
+  * Added model `RepeatSettingTypes` - repeat setting types enumeration.
+  * Added model `ShuffleSettingTypes` - shuffle setting types enumeration.
+
 ###### [ 1.0.49 ] - 2023/12/29
 
   * Added method `SoundTouchClient`.`MediaSeekToTime` - Start playing the current media at the specified position in seconds (e.g. seek to time) if the currently playing media supports it.

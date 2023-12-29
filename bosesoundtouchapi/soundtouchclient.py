@@ -1562,6 +1562,8 @@ class SoundTouchClient:
         - `<skipEnabled />` node will be present if the currently playing media content supports skip control.  
         - `<shuffleSetting>` node will be present if the currently playing media supports shuffle mode.  
         - `<repeatSetting>` node will be present if the currently playing media supports repeat mode.  
+        - `<time>` node (e.g. current play position and duration) will only update the position value every 30 seconds for 
+        devices that are members of a zone, while the master zone will update the position value every second.
 
         <details>
           <summary>Sample Code</summary>

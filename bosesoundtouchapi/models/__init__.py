@@ -37,6 +37,7 @@ from .producthdmiassignmentcontrols import ProductHdmiAssignmentControls
 from .rebroadcastlatencymode import RebroadcastLatencyMode
 from .recentlist import RecentList, Recent
 from .removestation import RemoveStation
+from .repeatsettingtypes import RepeatSettingTypes
 from .search import Search, SearchTerm
 from .searchfiltertypes import SearchFilterTypes
 from .searchresponse import SearchResponse
@@ -45,6 +46,7 @@ from .searchsorttypes import SearchSortTypes
 from .searchstation import SearchStation
 from .searchstationresults import SearchStationResults, SearchStationSongs, SearchStationArtists
 from .serviceAvailability import ServiceAvailability, Service
+from .shufflesettingtypes import ShuffleSettingTypes
 from .simpleconfig import SimpleConfig
 from .softwareupdatecheckresponse import SoftwareUpdateCheckResponse
 from .softwareupdatequeryresponse import SoftwareUpdateQueryResponse
@@ -100,6 +102,7 @@ __all__ = [
     'RebroadcastLatencyMode',
     'RecentList', 'Recent',
     'RemoveStation',
+    'RepeatSettingTypes',
     'Search', 'SearchTerm',
     'SearchFilterTypes',
     'SearchResponse',
@@ -108,6 +111,7 @@ __all__ = [
     'SearchStation',
     'SearchStationResults', 'SearchStationSongs', 'SearchStationArtists',
     'ServiceAvailability', 'Service',
+    'ShuffleSettingTypes',
     'SimpleConfig',
     'SoftwareUpdateCheckResponse',
     'SoftwareUpdateQueryResponse',
