@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.48 ] - 2023/12/28
+
+  * Adjusted the maxsize value of the PoolManager constructor.  This WILL fix the "Connection pool is full, discarding connection ..." messages for environments with a large number of SoundTouch devices.  The attempts prior to this fix were adjusting the wrong parameter (num_pools instead of maxsize).
+  * Added SourceTitle property to the `NavigateResponse` class.  This returns a user-friendly source title for the `SoundTouchClient`.`GetMusicServiceStations` and `GetMusicLibraryItems` methods.
+
 ###### [ 1.0.47 ] - 2023/12/28
 
   * Increased number of connection pools in PoolManager constructor from 30 to 75.  This should fix the "Connection pool is full, discarding connection ..." messages for environments with a large number of SoundTouch devices.

@@ -31,6 +31,9 @@ class NavigateResponse:
         self._SourceAccount:str = None
         self._TotalItems:int = None
         
+        # helper properties (non-xml).
+        self._SourceTitle:str = None
+
         if (root is None):
             
             pass
@@ -92,6 +95,25 @@ class NavigateResponse:
     def SourceAccount(self) -> str:
         """ The account associated with the Source. """
         return self._SourceAccount
+
+
+    @property
+    def SourceTitle(self) -> str:
+        """ 
+        The source title of media content (e.g. "Pandora (userid)", etc). 
+        
+        This property is not part of the returned xml of the configuration, but is set after
+        a call to `SoundTouchClient.GetMusicServiceStations` and `SoundTouchClient.GetMusicLibraryItems` 
+        so that the source title can be displayed by user-interfaces.
+        """
+        return self._SourceTitle
+
+    @SourceTitle.setter
+    def SourceTitle(self, value:str):
+        """ 
+        Sets the SourceTitle property value.
+        """
+        self._SourceTitle = value
 
 
     @property
@@ -176,7 +198,12 @@ class NavigateResponse:
         elm = Element('items')
         elm.set('totalItems', str(self._TotalItems))
         elm.set('itemCount', str(self.ItemCount))
-        
+
+        # include the source title if this is not a request body.
+        if isRequestBody == False:
+            if self._SourceTitle is not None and len(self._SourceTitle) > 0: elm.set('SourceTitle', str(self._SourceTitle))
+
+        # include all items.
         item:NavigateItem
         for item in self._Items:
             elm.append(item.ToElement())
@@ -195,6 +222,7 @@ class NavigateResponse:
         msg:str = 'NavigateResponse:'
         msg = '%s Source="%s"' % (msg, str(self._Source))
         msg = '%s SourceAccount="%s"' % (msg, str(self._SourceAccount))
+        if self._SourceTitle is not None: msg = '%s SourceTitle="%s"' % (msg, str(self._SourceTitle))
         if self._TotalItems is not None: msg = '%s TotalItems="%s"' % (msg, str(self.TotalItems))
         
         if includeItems == True:

@@ -81,6 +81,7 @@ class SoundTouchDevice:
         ```
         </details>
         """
+        self._ConnectTimeout:int = connectTimeout
         self._Information:Information = Information()
         self._Host:str = host
         self._Port:int = int(port)
@@ -101,11 +102,15 @@ class SoundTouchDevice:
             manager = proxyManager 
             if proxyManager is None:
         
-                # create new pool manager with specified timeouts.
+                # create new pool manager with specified timeouts and limits.
+                # note that we do not need many connections for the device class, as client will
+                # be the heavy lifter and consuming the most connections.
                 timeout = Timeout(connect=float(connectTimeout), read=None)
                 manager = PoolManager(headers={'User-Agent': 'BoseSoundTouchApi/1.0.0'},
                                       timeout=timeout,
-                                      num_pools=75
+                                      num_pools=10,   # number of connection pools to allocate.
+                                      maxsize=5,      # maximum number of connections to keep in the pool.
+                                      block=True      # limit number of connections to the device.
                                      )
         
             # get SoundTouch device information; if it fails then we are done.
@@ -187,6 +192,16 @@ class SoundTouchDevice:
         device's components (e.g. SCM, LPM, BASS, etc).
         """
         return self._Information._Components
+
+
+    @property
+    def ConnectTimeout(self) -> int:
+        """ 
+        Controls how long (in seconds) a connection request is allowed to run before being aborted.  
+        Only valid if the proxy argument is null (e.g. default proxy manager is used) on the class
+        constructor.
+        """
+        return self._ConnectTimeout
 
 
     @property

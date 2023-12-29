@@ -77,9 +77,23 @@ class SoundTouchClient:
         """
         self._ConfigurationCache:dict = {}
         self._Device:SoundTouchDevice = device
-        self._Manager:PoolManager = PoolManager(num_pools=5, headers={'User-Agent': 'BoseSoundTouchApi/1.0.0'})
+        self._Manager:PoolManager = manager
         self._RaiseErrors:bool = bool(raiseErrors)
         self._SnapshotSettings:dict = {}
+        
+        # if pool manager instance is none or not a PoolManager instance, then create one.
+        # we increase the maximum number of connections to keep in the pool (maxsize=) to avoid the following warnings:
+        # "WARNING:urllib3.connectionpool:Connection pool is full, discarding connection: x.x.x.x. Connection pool size: 1"
+        if (manager is None) or (not isinstance(manager,PoolManager)):
+
+            # create new pool manager with specified timeouts and limits.
+            timeout = Timeout(connect=float(device.ConnectTimeout), read=None)
+            self._Manager = PoolManager(headers={'User-Agent': 'BoseSoundTouchApi/1.0.0'},
+                                        timeout=timeout,
+                                        num_pools=10,   # number of connection pools to allocate.
+                                        maxsize=30,     # maximum number of connections to keep in the pool.
+                                        block=True      # limit number of connections to the device.
+                                        )
         
         # cache configurations that we have already obtained.
         self._ConfigurationCache[SoundTouchNodes.info.Path] = device._Information
@@ -1390,6 +1404,12 @@ class SoundTouchClient:
         # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("navigate", navigate.ContainerTitle, self.Device.DeviceName))
         result:NavigateResponse = self.Put(SoundTouchNodes.navigate, navigate, NavigateResponse)
+        
+        # add the source title to the results from the cached source list.
+        sourceList:SourceList = self.GetProperty(SoundTouchNodes.sources, SourceList, False)
+        if sourceList is not None:
+            result.SourceTitle = sourceList.GetTitleBySource(result.Source, result.SourceAccount)
+
         return result
 
 
@@ -1428,6 +1448,12 @@ class SoundTouchClient:
         # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("navigate", navigate.ContainerTitle, self.Device.DeviceName))
         result:NavigateResponse = self.Put(SoundTouchNodes.navigate, navigate, NavigateResponse)
+        
+        # add the source title to the results from the cached source list.
+        sourceList:SourceList = self.GetProperty(SoundTouchNodes.sources, SourceList, False)
+        if sourceList is not None:
+            result.SourceTitle = sourceList.GetTitleBySource(result.Source, result.SourceAccount)
+
         return result
 
 

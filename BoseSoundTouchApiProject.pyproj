@@ -286,6 +286,7 @@
     <Compile Include="test\testVS_SoundTouchDiscovery.py" />
     <Compile Include="test\testVS_SoundTouchClient.py" />
     <Compile Include="test\test_Firmware.py" />
+    <Compile Include="test\test_MultiThreading.py" />
     <Compile Include="test\test_SampleCode.py" />
     <Compile Include="test\test_ZeroconfDiscovery.py" />
     <Compile Include="test\test_StatusNotifications.py" />
