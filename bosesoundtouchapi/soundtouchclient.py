@@ -2476,6 +2476,43 @@ class SoundTouchClient:
         self.SetUserPlayControl(UserPlayControlTypes.Play)
 
 
+    def MediaSeekToTime(self, startSecond:int=1, delay:int=1) -> None:
+        """ 
+        Start playing the current media at the specified position in seconds (e.g. seek to time).
+        
+        Args:
+            startSecond (int):
+                Starting position (in seconds) of where to start playing the media content.
+            delay (int):
+                Time delay (in seconds) to wait AFTER changing the track position.  
+                This delay will give the device time to process the change before another 
+                command is accepted.  
+                Default is 1; value range is 0 - 10.
+                
+        The now playing media must support seek operations for this method to be successful.
+        Query the `NowPlayingStatus`.`IsSeekSupported` flag to verify if seek operations are
+        supported for the currently playing media.
+        
+        The track position is not changed if the startSecond argument falls outside of the 
+        current media total track time.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/MediaSeekToTime.py
+        ```
+        </details>
+        """
+        # validations.
+        delay = self._ValidateDelay(delay, 1, 10)
+        
+        self.SetUserTrackControl(UserTrackControlTypes.SeekToTime, startSecond)
+
+        if delay > 0:
+            _logsi.LogVerbose(MSG_TRACE_DELAY_DEVICE % (delay, self.Device.DeviceName))
+            time.sleep(delay)
+
+
     def MediaShuffleOff(self) -> None:
         """ 
         Disables shuffling of the current media playlist. 
@@ -4449,7 +4486,7 @@ class SoundTouchClient:
         return self.Put(SoundTouchNodes.userRating, userRating)
 
 
-    def SetUserTrackControl(self, userTrackControlType:UserTrackControlTypes) -> SoundTouchMessage:
+    def SetUserTrackControl(self, userTrackControlType:UserTrackControlTypes, startSecond:int=None) -> SoundTouchMessage:
         """
         Sends a user track control type command to control track playback (next, previous, repeat, 
         shuffle, etc).
@@ -4457,6 +4494,9 @@ class SoundTouchClient:
         Args:
             userTrackControlType (UserTrackControlTypes):
                 User track control type to send.
+            startSecond (int):
+                Starting position (in seconds) of where to start playing the media content.
+                This argument is only valid for UserTrackControlTypes.SEEK_TO_TIME requests.
 
         Raises:
             SoundTouchError:  
@@ -4482,7 +4522,7 @@ class SoundTouchClient:
         
         # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("userTrackControl", userTrackControlType.value, self.Device.DeviceName))
-        userTrackControl:UserTrackControl = UserTrackControl(userTrackControlType)
+        userTrackControl:UserTrackControl = UserTrackControl(userTrackControlType, startSecond)
         return self.Put(SoundTouchNodes.userTrackControl, userTrackControl)
 
 

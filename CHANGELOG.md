@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.49 ] - 2023/12/29
+
+  * Added method `SoundTouchClient`.`MediaSeekToTime` - Start playing the current media at the specified position in seconds (e.g. seek to time) if the currently playing media supports it.
+
 ###### [ 1.0.48 ] - 2023/12/28
 
   * Adjusted the maxsize value of the PoolManager constructor.  This WILL fix the "Connection pool is full, discarding connection ..." messages for environments with a large number of SoundTouch devices.  The attempts prior to this fix were adjusting the wrong parameter (num_pools instead of maxsize).

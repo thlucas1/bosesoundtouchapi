@@ -146,6 +146,7 @@
     <Compile Include="docs\include\samplecode\SmartInspectPython\ClassLogging.py" />
     <Compile Include="docs\include\samplecode\SmartInspectPython\MainLogging.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\Action.py" />
+    <Compile Include="docs\include\samplecode\SoundTouchClient\MediaSeekToTime.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\ToggleZoneMember.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\Bookmark.py" />
     <Compile Include="docs\include\samplecode\SoundTouchClient\ClearBluetoothPaired.py" />
@@ -278,6 +279,11 @@
     <Compile Include="docs\include\samplecode\SoundTouchWebSocket\_ClassInit.py" />
     <Compile Include="setup.py" />
     <Compile Include="test\testVS_SoundTouchClient_DestructiveMethods.py" />
+    <Compile Include="test\testVS_SoundTouchClient_MusicSvc_Spotify.py" />
+    <Compile Include="test\testVS_SoundTouchClient_MusicSvc_SiriusXM.py" />
+    <Compile Include="test\testVS_SoundTouchClient_MusicSvc_Amazon.py" />
+    <Compile Include="test\testVS_SoundTouchClient_MusicSvc_IHeart.py" />
+    <Compile Include="test\testVS_SoundTouchClient_MusicSvc_Deezer.py" />
     <Compile Include="test\testVS_SoundTouchDevice.py" />
     <Compile Include="test\testVS_SoundTouchClient_MusicLib_NAS.py" />
     <Compile Include="test\testVS_SoundTouchClient_MusicSvc_Pandora.py" />
