@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.51 ] - 2023/12/29
+
+  * Updated model `NowPlayingStatus.IsShuffleEnabled` property, as it was reporting the wring shuffle setting.
+
 ###### [ 1.0.50 ] - 2023/12/29
 
   * Added model `RepeatSettingTypes` - repeat setting types enumeration.

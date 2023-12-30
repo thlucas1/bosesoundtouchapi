@@ -4,6 +4,8 @@ from xml.etree.ElementTree import Element
 # our package imports.
 from ..bstutils import export, _xmlFind, _xmlGetAttrInt, _xmlFindBool, _xmlGetAttrBool
 from .contentitem import ContentItem
+from .shufflesettingtypes import ShuffleSettingTypes
+from .repeatsettingtypes import RepeatSettingTypes
 
 @export
 class NowPlayingStatus:
@@ -297,7 +299,7 @@ class NowPlayingStatus:
         """ 
         True if shuffle play is enabled; otherwise, False. 
         """
-        if self._ShuffleSetting is None: 
+        if self._ShuffleSetting is None or self._ShuffleSetting == ShuffleSettingTypes.Off.value:
             return False
         return True
 
@@ -466,9 +468,9 @@ class NowPlayingStatus:
         if self._PlayStatus is not None and len(self._PlayStatus) > 0: msg = '%s\n PlayStatus="%s"' % (msg, str(self._PlayStatus))
         if self._Position is not None and self._Position > 0: msg = '%s\n Position="%s"' % (msg, str(self._Position))
         if self._Rating is not None and len(self._Rating) > 0: msg = '%s\n Rating="%s"' % (msg, str(self._Rating))
-        if self._RepeatSetting is not None and len(self._RepeatSetting) > 0: msg = '%s\n Repeat="%s"' % (msg, str(self._RepeatSetting))
+        if self._RepeatSetting is not None and len(self._RepeatSetting) > 0: msg = '%s\n RepeatSetting="%s"' % (msg, str(self._RepeatSetting))
         if self._SessionId is not None and len(self._SessionId) > 0: msg = '%s\n SessionId="%s"' % (msg, str(self._SessionId))
-        if self._ShuffleSetting is not None and len(self._ShuffleSetting) > 0: msg = '%s\n Shuffle="%s"' % (msg, str(self._ShuffleSetting))
+        if self._ShuffleSetting is not None and len(self._ShuffleSetting) > 0: msg = '%s\n ShuffleSetting="%s"' % (msg, str(self._ShuffleSetting))
         if self._StationLocation is not None and len(self._StationLocation) > 0: msg = '%s\n StationLocation="%s"' % (msg, str(self._StationLocation))
         if self._StationName is not None and len(self._StationName) > 0: msg = '%s\n StationName="%s"' % (msg, str(self._StationName))
         if self._StreamType is not None and len(self._StreamType) > 0: msg = '%s\n StreamType="%s"' % (msg, str(self._StreamType))
