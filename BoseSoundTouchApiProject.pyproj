@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>b57aea50-a094-4619-b41e-cdade13693c6</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>test\test_SampleCode.py</StartupFile>
+    <StartupFile>test\test_Navigate_TopMenu.py</StartupFile>
     <SearchPath>.;test</SearchPath>
     <WorkingDirectory>C:\Users\thluc\source\repos\BoseSoundTouchApiProject</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -295,6 +295,9 @@
     <Compile Include="test\testVS_SoundTouchClient.py" />
     <Compile Include="test\test_Firmware.py" />
     <Compile Include="test\test_MultiThreading.py" />
+    <Compile Include="test\test_Navigate_TopMenu.py" />
+    <Compile Include="test\test_Navigate_Menu.py" />
+    <Compile Include="test\test_Navigate.py" />
     <Compile Include="test\test_SampleCode.py" />
     <Compile Include="test\test_ZeroconfDiscovery.py" />
     <Compile Include="test\test_StatusNotifications.py" />
@@ -330,6 +333,7 @@
     <Folder Include="docs\include\samplecode\SoundTouchClient\" />
     <Folder Include="docs\include\samplecode\SmartInspectPython\" />
     <Folder Include="dist\" />
+    <Folder Include="research\" />
     <Folder Include="test\" />
   </ItemGroup>
   <ItemGroup>
@@ -423,7 +427,7 @@
     <Content Include="README.md" />
     <Content Include="readthedocs.yaml" />
     <Content Include="requirements.txt" />
-    <Content Include="test\developer_notes.txt" />
+    <Content Include="research\developer_notes.txt" />
     <Content Include="test\smartinspect.cfg" />
   </ItemGroup>
   <ItemGroup>

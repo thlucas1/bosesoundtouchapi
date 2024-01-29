@@ -16,12 +16,12 @@ try:
     print("\nMy %s Music Service Stations:\n%s" % (results.Source, results.ToString(True)))
         
     # get my PANDORA music service content - sort by date created, descending.
-    criteria:Navigate = Navigate(SoundTouchSources.PANDORA, "thlucas@yahoo.com")
+    criteria:Navigate = Navigate(SoundTouchSources.PANDORA, "YourMusicServiceUserId")
     results:NavigateResponse = client.GetMusicServiceStations(criteria)
     print("\nMy %s Music Service Stations (sorted by DateCreated DESC):\n%s" % (results.Source, results.ToString(True)))
 
     # get my PANDORA music service content - sort by station name, ascending.
-    criteria:Navigate = Navigate(SoundTouchSources.PANDORA, "thlucas@yahoo.com", sortType=NavigateSortTypes.StationName)
+    criteria:Navigate = Navigate(SoundTouchSources.PANDORA, "YourMusicServiceUserId", sortType=NavigateSortTypes.StationName)
     results:NavigateResponse = client.GetMusicServiceStations(criteria)
     print("\nMy %s Music Service Stations (sorted by StationName ASC):\n%s" % (results.Source, results.ToString(True)))
 

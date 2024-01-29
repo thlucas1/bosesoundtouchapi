@@ -170,10 +170,10 @@ artifacts/
 # ------------------------------------------------------------------------------------------------------
 # THIS project's files and directories to ignore:
 # ------------------------------------------------------------------------------------------------------
+/research/
 /test/developer_notes.txt
 /test/test_*.py
 /test/testVS_*.py
-/test/stu/
 /Git*.cmd
 # include PDOC documentation
 !docspdoc/build/
