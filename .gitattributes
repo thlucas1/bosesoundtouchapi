@@ -3,8 +3,12 @@
 
 # correct GitHub "Languages" detection behavior.
 # without this, GitHub reports the repository as an HTML application.
-.docspdoc/** linguist-documentation
-*.html linguist-detectable=false
+docs/** linguist-documentation
+docspdoc/** linguist-documentation
+test/** linguist-documentation
+*.bat linguist-detectable=false
+*.yaml linguist-detectable=false
+*.txt linguist-detectable=false
 
 # handle files with specified extensions as described.
 *.doc    diff=astextplain
