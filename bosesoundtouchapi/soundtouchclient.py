@@ -1823,7 +1823,7 @@ class SoundTouchClient:
         return self.GetProperty(SoundTouchNodes.rebroadcastlatencymode, RebroadcastLatencyMode, refresh)
 
 
-    def GetRecentList(self, refresh=True, resolveSourceTitles:bool=False) -> RecentList:
+    def GetRecentList(self, refresh=True, resolveSourceTitles:bool=False, filterSourceTitle:str=None) -> RecentList:
         """
         Gets the current recent list configuration of the device.
 
@@ -1834,6 +1834,10 @@ class SoundTouchClient:
             resolveSourceTitles (bool):
                 True to resolve the `SourceTitle` property value for all recent items
                 in the list; otherwise, False to return the list without source titles.
+            filterSourceTitle (str):
+                Limits the results of the recents list to the specified source title.
+                Setting this argument automatically sets the `resolveSourceTitles` argument to True.
+                The value specified is case-sensitive when comparing to the list items.
 
         Returns:
             A `RecentList` object that contains recent list configuration of the device.
@@ -1845,6 +1849,11 @@ class SoundTouchClient:
         ```
         </details>
         """
+        # was a source title filter specified?  if so, then force source title resolution.
+        if filterSourceTitle is not None:
+            resolveSourceTitles = True
+
+        # get recently played list.
         _logsi.LogVerbose(MSG_TRACE_GET_CONFIG_OBJECT % ("RecentList", self.Device.DeviceName))
         recentList:RecentList = self.GetProperty(SoundTouchNodes.recents, RecentList, refresh)
         
@@ -1858,7 +1867,16 @@ class SoundTouchClient:
             recent:Recent
             for recent in recentList:
                 recent.SourceTitle = sourceList.GetTitleBySource(recent.Source, recent.SourceAccount)
-
+                
+        # was filter source title specified?  if so, then return only results for the source title.
+        if filterSourceTitle is not None:
+            sourceListFiltered:SourceList = SourceList()
+            sourceListFiltered._DeviceId = sourceList.DeviceId
+            for recent in recentList:
+                if recent.SourceTitle == filterSourceTitle:
+                    sourceListFiltered.SourceItems.append(recent)
+            return sourceListFiltered
+        
         return recentList
         
 

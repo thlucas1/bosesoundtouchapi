@@ -152,6 +152,14 @@ class SoundTouchWebSocket:
         self.ClearListeners()
 
 
+    def __repr__(self) -> str:
+        return self.ToString()
+
+
+    def __str__(self) -> str:
+        return self.ToString()
+
+
     @property
     def Client(self) -> SoundTouchClient:
         """ 
@@ -516,3 +524,14 @@ class SoundTouchWebSocket:
             # close socket (only kwargs accepted: status:int, reason:bytes=b"xxx" 123 chars max)
             self._WebsocketClient.close(status=STATUS_NORMAL, reason=b"goodbye")
             self._WebsocketClient = None
+
+
+    def ToString(self) -> str:
+        """
+        Returns a displayable string representation of the class.
+        """
+        msg:str = 'SoundTouchWebSocket:'
+        if self._Device is not None:
+            msg = "%s\n Port='%s'" % (msg, str(self._Port))
+            msg = "%s\n PingInterval='%s'" % (msg, str(self._PingInterval))
+        return msg

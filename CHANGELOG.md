@@ -6,9 +6,14 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.52 ] - 2023/02/12
+
+  * Updated urllib3 requirements to "urllib3>=1.21.1,<1.27", to ensure urllib3 version 2.0 is not used.  Home Assistant requires urllib3 version less than 2.
+  * Updated `SoundTouchClient`.`GetRecentList` - Added capability to filter the recently played list by source title.
+
 ###### [ 1.0.51 ] - 2023/12/29
 
-  * Updated model `NowPlayingStatus.IsShuffleEnabled` property, as it was reporting the wring shuffle setting.
+  * Updated model `NowPlayingStatus.IsShuffleEnabled` property, as it was reporting the wrong shuffle setting.
 
 ###### [ 1.0.50 ] - 2023/12/29
 

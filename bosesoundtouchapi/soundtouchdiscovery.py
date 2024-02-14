@@ -112,7 +112,7 @@ class SoundTouchDiscovery:
         A dictionary of discovered `SoundTouchDevice` instances that were detected
         on the network.
         
-        This property is only populated if the `IsDeviceObjectCreated` property is True.
+        This property is only populated if the `AreDevicesVerified` property is True.
         
         Dictionary keys will be in the form of "address:port", where "address" is the device
         ipv4 address and the "port" is the ipv4 port number the SoundTouch web-services api

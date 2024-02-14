@@ -58,9 +58,9 @@ setup(
     
     # set minimum dependencies requirements.
     install_requires=[
-        'smartinspectPython==3.0.30',
+        'smartinspectPython==3.0.33',
         'tinytag==1.10.0',
-        'urllib3',
+        'urllib3>=1.21.1,<1.27',
         'websocket-client==1.6.4',
         'xmltodict',
         'zeroconf'
