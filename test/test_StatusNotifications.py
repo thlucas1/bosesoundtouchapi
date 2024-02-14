@@ -118,6 +118,7 @@ try:
                 
         # create and start a websocket to receive notifications from the device.
         socket = SoundTouchWebSocket(client, pingInterval=10)
+        print(socket)
         
         # create event handler class instance.
         ehc:EventHandlerClass = EventHandlerClass()

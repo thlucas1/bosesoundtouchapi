@@ -531,7 +531,6 @@ class SoundTouchWebSocket:
         Returns a displayable string representation of the class.
         """
         msg:str = 'SoundTouchWebSocket:'
-        if self._Device is not None:
-            msg = "%s\n Port='%s'" % (msg, str(self._Port))
-            msg = "%s\n PingInterval='%s'" % (msg, str(self._PingInterval))
+        msg = "%s Port='%s'" % (msg, str(self._Port))
+        msg = "%s PingInterval='%s'" % (msg, str(self._PingInterval))
         return msg

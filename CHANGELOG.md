@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.53 ] - 2023/02/14
+
+  * Updated `SoundTouchWebSocket`.`ToString` method to correct a bug that was referencing an undefined attribute.
+
 ###### [ 1.0.52 ] - 2023/02/12
 
   * Updated urllib3 requirements to "urllib3>=1.21.1,<1.27", to ensure urllib3 version 2.0 is not used.  Home Assistant requires urllib3 version less than 2.
