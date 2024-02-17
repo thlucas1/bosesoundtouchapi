@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.54 ] - 2023/02/17
+
+  * Updated `SoundTouchWebSocket`.`StopNotification` method to ensure that the underlying event loop thread is shut down when notifications are stopped.
+  * Updated `SoundTouchWebSocket`.`StartNotification` method to ensure that the underlying event loop thread is a daemon thread, so it does not delay process termination.
+
 ###### [ 1.0.53 ] - 2023/02/14
 
   * Updated `SoundTouchWebSocket`.`ToString` method to correct a bug that was referencing an undefined attribute.

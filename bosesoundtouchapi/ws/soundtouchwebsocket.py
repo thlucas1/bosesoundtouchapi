@@ -506,7 +506,8 @@ class SoundTouchWebSocket:
             # start the run_forever loop to receive notifications.
             _logsi.LogVerbose("Starting SoundTouch web socket event listener thread")
             self._Thread = _SoundTouchWebSocketThread(self._WebsocketClient, self._PingInterval, SoundTouchWebSocket._PING_TIMEOUT)
-            self._Thread.name = 'SoundTouchWSNotifyThread'
+            self._Thread.name = 'SoundTouchWSNotifyThreadDaemon'
+            self._Thread.daemon = True
             self._Thread.start()
 
 
@@ -519,11 +520,30 @@ class SoundTouchWebSocket:
         """
         if self._WebsocketClient != None:
             
-            _logsi.LogVerbose("Stopping SoundTouch web socket event listener thread")
+            try:
+
+                # stop the run_forever loop thread if it is still running.
+                _logsi.LogVerbose("Stopping SoundTouch web socket notification thread")
+                if self._Thread is not None:
+                    if self._Thread._wsocket is not None:
+                        self._Thread._wsocket.keep_running = False
+                self._Thread = None
             
-            # close socket (only kwargs accepted: status:int, reason:bytes=b"xxx" 123 chars max)
-            self._WebsocketClient.close(status=STATUS_NORMAL, reason=b"goodbye")
-            self._WebsocketClient = None
+                # close socket (only kwargs accepted: status:int, reason:bytes=b"xxx" 123 chars max).
+                # this will also set the underlying thread ws_keep_running to False, which stops the thread.
+                _logsi.LogVerbose("Closing SoundTouch web socket connection")
+                self._WebsocketClient.close(status=STATUS_NORMAL, reason=b"goodbye")
+                
+            except Exception:
+
+                # ignore exceptions at this point, since we just need to close the socket.
+                pass
+            
+            finally:
+                
+                # reset websocket client instance.
+                self._WebsocketClient = None
+                self._Thread = None
 
 
     def ToString(self) -> str:

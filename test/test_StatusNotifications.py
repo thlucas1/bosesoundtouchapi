@@ -173,9 +173,10 @@ try:
                 # wait 1 second.
                 time.sleep(1)
                 
-                if i == 1:
-                    socket.StopNotification()
-                    break
+                # if i == 1:
+                #     socket.StopNotification()
+                #     break
+
                 # if i == 10:
                 #     print("Rebooting device ...")
                 #     msg = device.RebootDevice()
