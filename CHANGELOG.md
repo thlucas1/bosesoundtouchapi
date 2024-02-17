@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.55 ] - 2023/02/17
+
+  * Updated `SoundTouchWebSocket`.`NotifyListeners` method to suppress logging of exception details to the system logger for websocket error events.
+
 ###### [ 1.0.54 ] - 2023/02/17
 
   * Updated `SoundTouchWebSocket`.`StopNotification` method to ensure that the underlying event loop thread is shut down when notifications are stopped.
