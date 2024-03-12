@@ -19,11 +19,49 @@ class NowPlayingStatus:
     the `ConnectionStatus` property applies only to BLUETOOTH sources. 
     """
 
-    def __init__(self, root:Element) -> None:
+    def __init__(self, source:str=None, sourceAccount:str=None,
+                 album:str=None, artist:str=None, artistId:str=None, artUrl:str=None,
+                 description:str=None, duration:int=None, genre:str=None, playStatus:str=None, position:int=None, 
+                 sessionId:str=None, stationLocation:str=None, stationName:str=None,
+                 track:str=None, trackId:str=None,
+                 root:Element=None
+                 ) -> None:
         """
         Initializes a new instance of the class.
         
         Args:
+            source (SoundTouchSources|str):
+                Source input.
+            sourceAccount (str):
+                Source account this content item is played with.
+            album (str):
+                The album of the playing track (if present). 
+            artist (str):
+                The creator of the track (if present). 
+            artistId (str):
+                Unique identifier of the artist, as provided by the source music service (if present). 
+            artUrl (str):
+                A url link to the art image of the station (if present). 
+            description (str):
+                A brief description that was added to the track (if present). 
+            duration (int):
+                The track's duration (if present).
+            genre (str):
+                The genre of the track (if present). 
+            playStatus (str):
+                Indicates whether the device is currently playing the embedded track. 
+            position (int):
+                The current position of the playing media (if present). 
+            sessionId (str):
+                Unique identifier of the session, as provided by the source music service (if present). 
+            stationLocation (str):
+                The station's location.
+            stationName (str):
+                The station's name (if present). 
+            track (str):
+                The current media track name (if present). 
+            trackId (str):
+                Unique identifier of the track, as provided by the source music service (if present). 
             root (Element):
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
@@ -68,8 +106,38 @@ class NowPlayingStatus:
         # inactivityTimeoutExpired. 
 
         if (root is None):
+            
+            if duration is not None and (not isinstance(duration, int)):
+                duration = None
+            if position is not None and (not isinstance(position, int)):
+                position = None
 
-            pass
+            if album is not None: self._Album = str(album)
+            if artist is not None: self._Artist = str(artist)
+            if artistId is not None: self._ArtistId = str(artistId)
+            if artUrl is not None: self._ArtUrl = str(artUrl)
+            if description is not None: self._Description = str(description)
+            if duration is not None: self._Duration = duration
+            if genre is not None: self._Genre = str(genre)
+            if playStatus is not None: self._PlayStatus = str(playStatus)
+            if position is not None: self._Position = position
+            if sessionId is not None: self._SessionId = str(sessionId)
+            if source is not None: self._Source = str(source)
+            if sourceAccount is not None: self._SourceAccount = str(sourceAccount)
+            if stationLocation is not None: self._StationLocation = str(stationLocation)
+            if stationName is not None: self._StationName = str(stationName)
+            if track is not None: self._Track = str(track)
+            if trackId is not None: self._TrackId = str(trackId)
+            
+            ci:ContentItem = ContentItem(source=source, sourceAccount=sourceAccount, isPresetable=False, containerArt=artUrl)
+            self._ContentItem = ci
+            
+            self._IsAdvertisement = None
+            self._IsFavorite = None
+            self._IsFavoriteEnabled = None
+            self._IsRatingEnabled = None
+            self._IsSkipEnabled = None
+            self._IsSkipPreviousEnabled = None
         
         else:
 

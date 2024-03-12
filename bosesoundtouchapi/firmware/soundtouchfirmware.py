@@ -3,7 +3,7 @@ The `firmware` namespace contains classes related to the Bose SoundTouch
 Firmware update process.
 """
 # external package imports.
-import requests
+import urllib3.request
 import xml.etree.ElementTree as xmltree
 
 # our package imports.
@@ -173,15 +173,17 @@ class SoundTouchFirmware:
         try:
             
             # download the file, and load it into an Element object.
-            resp = requests.get(url, allow_redirects=True)
-            root = xmltree.fromstring(resp.content.decode('utf-8'))
+            http = urllib3.PoolManager()
+            resp = http.request("GET", url, redirect=True)
+            #resp = requests.get(url, allow_redirects=True)
+            root = xmltree.fromstring(resp.data.decode('utf-8'))
             
             # verify it's the index.
             if (root.tag == 'INDEX') and (root.get('REVISION', None) is not None):
                 return root
             
             # if it's not a recognizable index, then raise an exception.
-            raise SoundTouchError('Index url (%s) content was not recognized as a firmware index' % url, logsi=_logsi)
+            raise SoundTouchError('Index url (%s) data content was not recognized as a firmware index' % url, logsi=_logsi)
                 
         except SoundTouchError: pass    # error already logged.
         except Exception as ex:

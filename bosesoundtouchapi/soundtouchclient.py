@@ -2881,6 +2881,15 @@ class SoundTouchClient:
         Attempting to send an Audio Notification to an incompatible device will return a 
         `403 Forbidden` error.
         
+        `play_info` supports the following file formats and bit rates:  
+        - MP3: 8 kbit/s ~ 320 kbit/s  
+        - AAC: 24 kbit/s ~ 128 kbit/s  
+        - HE-AAC: 48 kbit/s ~ 64 kbit/s  
+        - WMA: 8 kbit/s ~ 329 kbit/s  
+        - Vorbis: 32 kbit/S ~ 500 kbit/s  
+        - FLAC: VBR: 0bit/s ~ 1.4 Mbit/s, up to CD quality (2 channels / 48 kHz / 16 bit)  
+        - ALAC: 300 kbit/s ~ 5 Mbit/s, HD (2 channels / 96 kHz / 32 bit)  
+               
         <details>
           <summary>Sample Code</summary>
         ```python
@@ -4844,6 +4853,91 @@ class SoundTouchClient:
         _logsi.LogVerbose(MSG_TRACE_DEVICE_COMMAND_WITH_PARM % ("updateGroup", name, self.Device.DeviceName))
         result:Group = self.Put(SoundTouchNodes.updateGroup, group, Group)
         return result
+
+
+    def UpdateNowPlayingStatusForSource(self, source:str, sourceAccount:str, 
+                                        album:str=None, artist:str=None, artistId:str=None, artUrl:str=None,
+                                        description:str=None, duration:int=None, genre:str=None, playStatus:str=None, position:int=None, 
+                                        sessionId:str=None, stationLocation:str=None, stationName:str=None,
+                                        track:str=None, trackId:str=None,
+                                        ) -> NowPlayingStatus:
+        """
+        Updates the NowPlayingStatus object for a given source and sourceAccount.
+
+        Args:
+            source (SoundTouchSources|str):
+                Source input this content item is played with.
+            sourceAccount (str):
+                Source account this content item is played with.
+            album (str):
+                The album of the playing track (if present). 
+            artist (str):
+                The creator of the track (if present). 
+            artistId (str):
+                Unique identifier of the artist, as provided by the source music service (if present). 
+            artUrl (str):
+                A url link to the art image of the station (if present). 
+            description (str):
+                A brief description that was added to the track (if present). 
+            duration (int):
+                The track's duration (if present).
+            genre (str):
+                The genre of the track (if present). 
+            playStatus (str):
+                Indicates whether the device is currently playing the embedded track. 
+            position (int):
+                The current position of the playing media (if present). 
+            sessionId (str):
+                Unique identifier of the session, as provided by the source music service (if present). 
+            stationLocation (str):
+                The station's location.
+            stationName (str):
+                The station's name (if present). 
+            track (str):
+                The current media track name (if present). 
+            trackId (str):
+                Unique identifier of the track, as provided by the source music service (if present). 
+                
+        Returns:
+            A `NowPlayingStatus` that was built and added to the cache.
+
+        Use this method to update a NowPlayingStatus, which can be used by external entities that 
+        want to keep track of external sources that are currently playing on the SoundTouch device.
+        For example, you could have a Home Assistant media player playing TV content on the SoundTouch
+        and it could keep track of what is currently playing for a source that the SoundTouch API does
+        not track (e.g. PRODUCT:TV, PRODUCT:HDMI_1, etc).
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchClient/UpdateNowPlayingStatusForSource.py
+        ```
+        </details>
+        """
+        # validations.
+        if isinstance(source, SoundTouchSources):
+            source = str(source.value)
+            
+        if source is None or len(source.strip()) == 0:
+            raise SoundTouchError(BSTAppMessages.ARGUMENT_REQUIRED_ERROR % "source", logsi=_logsi)
+        if sourceAccount is None or len(sourceAccount.strip()) == 0:
+            raise SoundTouchError(BSTAppMessages.ARGUMENT_REQUIRED_ERROR % "sourceAccount", logsi=_logsi)
+
+        # create a new NowPlayingStatus instance with the details.
+        nowPlaying:NowPlayingStatus = NowPlayingStatus(
+            source=source, sourceAccount=sourceAccount, 
+            album=album, artist=artist, artistId=artistId, artUrl=artUrl, description=description, 
+            duration=duration, genre=genre, playStatus=playStatus, position=position, 
+            sessionId=sessionId, stationLocation=stationLocation, stationName=stationName,
+            track=track, trackId=trackId
+            )
+        
+        # update the source-specific NowPlayingStatus configuration.
+        path = SoundTouchNodes.nowPlaying.Path
+        cacheKey = f"{path}-{source}:{sourceAccount}"
+        _logsi.LogVerbose("Updating source-specific NowPlayingStatus object for source '%s' for device '%s'" % (cacheKey, self.Device.DeviceName))
+        self.ConfigurationCache[cacheKey] = nowPlaying
+        return nowPlaying
 
 
     def VolumeDown(self) -> None:

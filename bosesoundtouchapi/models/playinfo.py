@@ -39,6 +39,15 @@ class PlayInfo(SoundTouchModelRequest):
             root (Element):
                 xmltree Element item to load arguments from.  
                 If specified, then other passed arguments are ignored.
+                
+        The `play_info` service supports the following file formats and bit rates:  
+        - MP3: 8 kbit/s ~ 320 kbit/s  
+        - AAC: 24 kbit/s ~ 128 kbit/s  
+        - HE-AAC: 48 kbit/s ~ 64 kbit/s  
+        - WMA: 8 kbit/s ~ 329 kbit/s  
+        - Vorbis: 32 kbit/S ~ 500 kbit/s  
+        - FLAC: VBR: 0bit/s ~ 1.4 Mbit/s, up to CD quality (2 channels / 48 kHz / 16 bit)  
+        - ALAC: 300 kbit/s ~ 5 Mbit/s, HD (2 channels / 96 kHz / 32 bit)  
         """
         self._AppKey:str = None
         self._Service:str = None

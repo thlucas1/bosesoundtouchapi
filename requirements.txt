@@ -7,6 +7,6 @@ urllib3>=1.21.1,<1.27
 websocket-client==1.6.4
 xmltodict
 zeroconf
-# twine
-# wheel>=0.41.2
-# pdoc>=14.0.0
+twine
+wheel>=0.41.2
+pdoc>=14.0.0
