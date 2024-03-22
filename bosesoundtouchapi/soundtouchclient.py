@@ -711,8 +711,8 @@ class SoundTouchClient:
         # with the master device listed as the first member, followed by the other zone members:
 
         # <zone master="9070658C9D4A">
-        #     <member ipaddress="192.168.1.131">9070658C9D4A</member>   <- master
-        #     <member ipaddress="192.168.1.130">E8EB11B9B723</member>   <- member #1
+        #     <member ipaddress="192.168.1.xx1">9070658C9D4A</member>   <- master
+        #     <member ipaddress="192.168.1.xx0">E8EB11B9B723</member>   <- member #1
         #     ... more zone members
         # </zone>
         if zone.Members[0].DeviceId != zone.MasterDeviceId:
@@ -2798,7 +2798,9 @@ class SoundTouchClient:
             album = "Google TTS"
         if track is None:
             track = sayText
-        if volumeLevel is None or volumeLevel < 0 or volumeLevel > 100:
+        if volumeLevel is None:
+            volumeLevel = 0
+        if volumeLevel < 0 or volumeLevel > 100:
             volumeLevel = 30
             
         # SoundTouch will fail the request if volume level is less than 10 or greater than 70.

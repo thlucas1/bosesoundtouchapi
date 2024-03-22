@@ -4,7 +4,7 @@ from bosesoundtouchapi.models import *
 try:
     
     # create SoundTouch device instance.
-    device:SoundTouchDevice = SoundTouchDevice("192.168.1.131") # Bose SoundTouch 10
+    device:SoundTouchDevice = SoundTouchDevice("192.168.1.81") # Bose SoundTouch 10
             
     # create SoundTouch client instance from device.
     client:SoundTouchClient = SoundTouchClient(device)
@@ -15,8 +15,8 @@ try:
 
     # initialize the new group configuration.
     group:Group = Group(name="Bose-ST10-1 + Bose-ST10-4", masterDeviceId="9070658C9D4A")
-    group.AddRole(GroupRole("192.168.1.131", "9070658C9D4A", GroupRoleTypes.Left))
-    group.AddRole(GroupRole("192.168.1.134", "F45EAB3115DA", GroupRoleTypes.Right))
+    group.AddRole(GroupRole("192.168.1.81", "9070658C9D4A", GroupRoleTypes.Left))
+    group.AddRole(GroupRole("192.168.1.84", "F45EAB3115DA", GroupRoleTypes.Right))
             
     # create a new group configuration on the device.
     print("\nCreating Group: %s" % group.Name)

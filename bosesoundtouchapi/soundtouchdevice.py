@@ -251,8 +251,8 @@ class SoundTouchDevice:
         The format of the returned url is:  
         `http://{Host}:8091/logread.dat`
 
-        Example with Host = '192.168.1.131':  
-        `http://192.168.1.131/logread.dat`
+        Example with Host = '192.168.1.81':  
+        `http://192.168.1.81/logread.dat`
         """
         return f'http://{self.Host}/logread.dat'
 
@@ -332,8 +332,8 @@ class SoundTouchDevice:
         The format of the returned url is:  
         http://{Host}:8091/pts.dat
 
-        Example with Host = '192.168.1.131':  
-        `http://192.168.1.131/pts.dat`
+        Example with Host = '192.168.1.81':  
+        `http://192.168.1.81/pts.dat`
         """
         return f'http://{self.Host}/pts.dat'
 
@@ -366,8 +366,8 @@ class SoundTouchDevice:
         The format of the returned url is:  
         `http://{Host}:8091/XD/BO5EBO5E-F00D-F00D-FEED-{DeviceId}.xml`
 
-        Example with Host = '192.168.1.131', DeviceId = 'E8EB11B9B723':  
-        'http://192.168.1.130:8091/XD/BO5EBO5E-F00D-F00D-FEED-E8EB11B9B723.xml'
+        Example with Host = '192.168.1.81', DeviceId = 'E8EB11B9B723':  
+        'http://192.168.1.80:8091/XD/BO5EBO5E-F00D-F00D-FEED-E8EB11B9B723.xml'
         """
         return f'http://{self.Host}:8091/XD/BO5EBO5E-F00D-F00D-FEED-{self.DeviceId}.xml'
 

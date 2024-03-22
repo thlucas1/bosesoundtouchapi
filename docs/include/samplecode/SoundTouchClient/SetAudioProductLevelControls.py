@@ -4,7 +4,7 @@ from bosesoundtouchapi.models import *
 try:
     
     # create SoundTouch device instance.
-    device:SoundTouchDevice = SoundTouchDevice("192.168.1.130")
+    device:SoundTouchDevice = SoundTouchDevice("192.168.1.80")
             
     # create SoundTouch client instance from device.
     client:SoundTouchClient = SoundTouchClient(device)

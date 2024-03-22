@@ -4,16 +4,16 @@ from bosesoundtouchapi.models import *
 try:
 
     # create SoundTouch device instance.
-    device:SoundTouchDevice = SoundTouchDevice("192.168.1.131") # Bose SoundTouch 10
+    device:SoundTouchDevice = SoundTouchDevice("192.168.1.81") # Bose SoundTouch 10
 
     # create SoundTouch client instance from device.
     client:SoundTouchClient = SoundTouchClient(device)
 
     # build list of zone members to add.
     zoneMembers:list = []
-    zoneMembers.append(ZoneMember("192.168.1.130", "E8EB11B9B723"))
-    zoneMembers.append(ZoneMember("192.168.1.132", "F9BC35A6D825"))
-    zoneMembers.append(ZoneMember("192.168.1.133", "B8BD47C7F452"))
+    zoneMembers.append(ZoneMember("192.168.1.80", "E8EB11B9B723"))
+    zoneMembers.append(ZoneMember("192.168.1.82", "F9BC35A6D825"))
+    zoneMembers.append(ZoneMember("192.168.1.83", "B8BD47C7F452"))
 
     # get current zone configuration status.
     zoneBefore:Zone = client.GetZoneStatus()

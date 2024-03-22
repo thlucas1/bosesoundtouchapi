@@ -271,6 +271,21 @@ class NowPlayingStatus:
 
 
     @property
+    def ContainerArtUrl(self) -> str:
+        """ 
+        A url link to the art image of the station or track that is playing.
+        The selected `ContentItem.ContainerArt` url is returned if present; 
+        otherwise, the `ArtUrl` value is returned;
+        otherwise, null is returned.
+        
+        This is a helper property, and not part of the SoundTouch Web Services specification.
+        """
+        if (self._ContentItem is not None) and (self._ContentItem.ContainerArt is not None):
+            return self._ContentItem.ContainerArt
+        return self._ArtUrl
+
+
+    @property
     def ContentItem(self) -> 'ContentItem':
         """ 
         The selected ContentItem. 
@@ -312,7 +327,13 @@ class NowPlayingStatus:
     def IsAdvertisement(self) -> bool:
         """ 
         True if the currently playing track is an advertisement; otherwise, False.
+        
+        Note that not all sources track advertisements.
+        - TuneIn source does not track advertisements; 
+        - Pandora music service source tracks advertisements.
         """
+        if self._IsAdvertisement is None:
+            return False
         return self._IsAdvertisement
 
 
@@ -320,7 +341,11 @@ class NowPlayingStatus:
     def IsFavorite(self) -> bool:
         """ 
         True if the track has been marked as a favorite; otherwise, False.
+        
+        Note that not all sources track favorites.  
         """
+        if self._IsFavorite is None:
+            return False
         return self._IsFavorite
 
 
@@ -519,12 +544,13 @@ class NowPlayingStatus:
         if self._ArtUrl is not None and len(self._ArtUrl) > 0: msg = '%s\n ArtUrl="%s"' % (msg, str(self._ArtUrl))
         if self._ConnectionDeviceName is not None and len(self._ConnectionDeviceName) > 0: msg = '%s\n ConnectionDeviceName="%s"' % (msg, str(self._ConnectionDeviceName))
         if self._ConnectionStatus is not None and len(self._ConnectionStatus) > 0: msg = '%s\n ConnectionStatus="%s"' % (msg, str(self._ConnectionStatus))
+        if self.ContainerArtUrl is not None: msg = '%s\n ContainerArtUrl="%s"' % (msg, str(self.ContainerArtUrl))
         if self._Description is not None and len(self._Description) > 0: msg = '%s\n Description="%s"' % (msg, str(self._Description))
         if self._DeviceId is not None and len(self._DeviceId) > 0: msg = '%s\n DeviceId="%s"' % (msg, str(self._DeviceId))
         if self._Duration is not None and self._Duration > 0: msg = '%s\n Duration="%s"' % (msg, str(self._Duration))
         if self._Genre is not None and len(self._Genre) > 0: msg = '%s\n Genre="%s"' % (msg, str(self._Genre))
-        if self._IsAdvertisement is not None: msg = '%s\n IsAdvertisement="%s"' % (msg, str(self._IsAdvertisement).lower())
-        if self._IsFavorite is not None: msg = '%s\n IsFavorite="%s"' % (msg, str(self._IsFavorite).lower())
+        if self.IsAdvertisement is not None: msg = '%s\n IsAdvertisement="%s"' % (msg, str(self.IsAdvertisement).lower())
+        if self.IsFavorite is not None: msg = '%s\n IsFavorite="%s"' % (msg, str(self.IsFavorite).lower())
         if self._IsFavoriteEnabled is not None: msg = '%s\n IsFavoriteEnabled="%s"' % (msg, str(self._IsFavoriteEnabled).lower())
         if self._IsRatingEnabled is not None: msg = '%s\n IsRateEnabled="%s"' % (msg, str(self._IsRatingEnabled).lower())
         if self.IsRepeatEnabled is not None: msg = '%s\n IsRepeatEnabled="%s"' % (msg, str(self.IsRepeatEnabled).lower())

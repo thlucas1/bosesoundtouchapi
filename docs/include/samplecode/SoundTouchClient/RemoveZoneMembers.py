@@ -4,14 +4,14 @@ from bosesoundtouchapi.models import *
 try:
 
     # create SoundTouch device instance.
-    device:SoundTouchDevice = SoundTouchDevice("192.168.1.131") # Bose SoundTouch 10
+    device:SoundTouchDevice = SoundTouchDevice("192.168.1.81") # Bose SoundTouch 10
 
     # create SoundTouch client instance from device.
     client:SoundTouchClient = SoundTouchClient(device)
 
     # build list of zone members to remove.
     zoneMembers:list = []
-    zoneMembers.append(ZoneMember("192.168.1.130", "E8EB11B9B723"))
+    zoneMembers.append(ZoneMember("192.168.1.80", "E8EB11B9B723"))
 
     # get current zone configuration status.
     zoneBefore:Zone = client.GetZoneStatus()

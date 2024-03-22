@@ -4,7 +4,7 @@ from bosesoundtouchapi.models import *
 try:
     
     # create SoundTouch device instance.
-    device:SoundTouchDevice = SoundTouchDevice("192.168.1.131") # Bose SoundTouch 10
+    device:SoundTouchDevice = SoundTouchDevice("192.168.1.81") # Bose SoundTouch 10
             
     # create SoundTouch client instance from device.
     client:SoundTouchClient = SoundTouchClient(device)
@@ -15,7 +15,7 @@ try:
 
     # initialize the new master zone configuration.
     masterZone:Zone = Zone(client.Device.DeviceId, client.Device.Host, True) # <- master
-    masterZone.AddMember(ZoneMember("192.168.1.130", "E8EB11B9B723"))        # <- member
+    masterZone.AddMember(ZoneMember("192.168.1.80", "E8EB11B9B723"))        # <- member
             
     # create a new master zone configuration on the device.
     client.CreateZone(masterZone)

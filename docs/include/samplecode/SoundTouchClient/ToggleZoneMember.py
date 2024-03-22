@@ -4,13 +4,13 @@ from bosesoundtouchapi.models import *
 try:
 
     # create SoundTouch device instance.
-    device:SoundTouchDevice = SoundTouchDevice("192.168.1.131") # Bose SoundTouch 10
+    device:SoundTouchDevice = SoundTouchDevice("192.168.1.81") # Bose SoundTouch 10
 
     # create SoundTouch client instance from device.
     client:SoundTouchClient = SoundTouchClient(device)
 
     # build zone member to toggle.
-    zoneMember:ZoneMember = ZoneMember("192.168.1.132", "5072249B7B1D")
+    zoneMember:ZoneMember = ZoneMember("192.168.1.82", "5072249B7B1D")
 
     # get current zone configuration status.
     zoneStatus:Zone = client.GetZoneStatus()

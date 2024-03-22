@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.57 ] - 2024/03/22
+
+  * Added `NowPlayingStatus.ContainerArtUrl` property to return the `ContentItem.ContainerArt` url if present; otherwise, the `ArtUrl` value is returned.
+
 ###### [ 1.0.56 ] - 2024/03/04
 
   * Added method `SoundTouchClient.UpdateNowPlayingStatusForSource` to update source-specific NowPlayingStatus object for a given source and sourceAccount value.

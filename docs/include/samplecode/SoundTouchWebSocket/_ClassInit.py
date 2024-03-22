@@ -62,8 +62,8 @@ try:
     socket:SoundTouchWebSocket = None
 
     # create SoundTouch device instance.
-    device:SoundTouchDevice = SoundTouchDevice("192.168.1.131") # Bose SoundTouch 10
-    #device:SoundTouchDevice = SoundTouchDevice("192.168.1.130") # Bose SoundTouch 300
+    device:SoundTouchDevice = SoundTouchDevice("192.168.1.81") # Bose SoundTouch 10
+    #device:SoundTouchDevice = SoundTouchDevice("192.168.1.80") # Bose SoundTouch 300
             
     # create SoundTouch client instance from device.
     client:SoundTouchClient = SoundTouchClient(device)

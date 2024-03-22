@@ -3,7 +3,7 @@ from bosesoundtouchapi import *
 try:
     
     # create SoundTouch device instance.
-    device:SoundTouchDevice = SoundTouchDevice("192.168.1.131") # Bose SoundTouch 10
+    device:SoundTouchDevice = SoundTouchDevice("192.168.1.81") # Bose SoundTouch 10
 
     # display device basic details and all installed components.
     print(device.ToString(True))
