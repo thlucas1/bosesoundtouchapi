@@ -274,15 +274,18 @@ class NowPlayingStatus:
     def ContainerArtUrl(self) -> str:
         """ 
         A url link to the art image of the station or track that is playing.
-        The selected `ContentItem.ContainerArt` url is returned if present; 
-        otherwise, the `ArtUrl` value is returned;
-        otherwise, null is returned.
+        The following logic is implemented to return an image url:
+        - the `ArtUrl` value is returned if present;  
+        - the `ContentItem.ContainerArt` url is returned if present;  
+        - if neither of the above, then null is returned.  
         
         This is a helper property, and not part of the SoundTouch Web Services specification.
         """
-        if (self._ContentItem is not None) and (self._ContentItem.ContainerArt is not None):
+        if (self._ArtUrl is not None):
+            return self._ArtUrl
+        elif (self._ContentItem is not None) and (self._ContentItem.ContainerArt is not None):
             return self._ContentItem.ContainerArt
-        return self._ArtUrl
+        return None
 
 
     @property

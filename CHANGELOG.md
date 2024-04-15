@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.58 ] - 2024/04/15
+
+  * Updated `NowPlayingStatus.ContainerArtUrl` property to return the correct image url of the playing content: the `ArtUrl` value is returned if present; otheriwse the `ContentItem.ContainerArt` url is returned if present; otherwise, None is returned.  Prior to this fix, the `ContentItem.ContainerArt` value was considered first which did not always match the `ArtUrl` value and thus caused an incorrect image to be displayed for the currently playing artist and track value.
+
 ###### [ 1.0.57 ] - 2024/03/22
 
   * Added `NowPlayingStatus.ContainerArtUrl` property to return the `ContentItem.ContainerArt` url if present; otherwise, the `ArtUrl` value is returned.
