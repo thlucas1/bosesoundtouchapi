@@ -120,6 +120,31 @@ class MediaItemContainer:
         return self._ContentItem._TypeValue
 
 
+    def ToDictionary(self, encoding:str='utf-8') -> dict:
+        """
+        Returns a dictionary representation of the class.
+        
+        Args:
+            encoding (str):
+                encode type (e.g. 'utf-8', 'unicode', etc).  
+                Default is 'utf-8'.
+        """
+        if encoding is None:
+            encoding = 'utf-8'
+            
+        contentItem:dict = {}
+        if self._ContentItem is not None:
+            contentItem = self._ContentItem.ToDictionary(encoding)
+        
+        result:dict = {}
+        
+        if self._Offset is not None: 
+            result['Offset'] = self._Offset
+        result['ContentItem'] = contentItem
+        
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Overridden.  

@@ -108,6 +108,34 @@ class SearchStationResults:
         return len(self._SongItems)
 
 
+    def ToDictionary(self, encoding:str='utf-8') -> dict:
+        """
+        Returns a dictionary representation of the class.
+        
+        Args:
+            encoding (str):
+                encode type (e.g. 'utf-8', 'unicode', etc).  
+                Default is 'utf-8'.
+        """
+        if encoding is None:
+            encoding = 'utf-8'
+            
+        result:dict = {}
+
+        if self._DeviceId is not None: 
+            result['DeviceId'] = self._DeviceId
+        if self._Source is not None: 
+            result['Source'] = self._Source
+        if self._SourceAccount is not None: 
+            result['SourceAccount'] = self._SourceAccount
+        result['TotalArtistItems'] = self.TotalArtistItems
+        result['TotalSongItems'] = self.TotalSongItems
+        result['ArtistItems'] = [ item.ToDictionary(encoding) for item in self._ArtistItems ]
+        result['SongItems'] = [ item.ToDictionary(encoding) for item in self._SongItems ]
+
+        return result
+
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Returns an xmltree Element node representation of the class. 

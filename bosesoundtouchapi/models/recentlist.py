@@ -1,7 +1,6 @@
 # external package imports.
 from typing import Iterator
 from xml.etree.ElementTree import Element, tostring
-import xmltodict
 
 # our package imports.
 from ..bstutils import export
@@ -98,8 +97,8 @@ class RecentList:
 
 
     def ToDictionary(self, encoding:str='utf-8') -> dict:
-        """ 
-        Returns a dictionary representation of the class. 
+        """
+        Returns a dictionary representation of the class.
         
         Args:
             encoding (str):
@@ -108,14 +107,14 @@ class RecentList:
         """
         if encoding is None:
             encoding = 'utf-8'
-        elm = self.ToElement()
-        xml = tostring(elm, encoding=encoding).decode(encoding)
+            
+        result:dict = {}
         
-        # convert xml to dictionary.
-        oDict:dict = xmltodict.parse(xml,
-                                     encoding=encoding,
-                                     process_namespaces=False)
-        return oDict
+        if self._LastUpdatedOn is not None: 
+            result['LastUpdatedOn'] = self._LastUpdatedOn
+        result['Recents'] = [ item.ToDictionary(encoding) for item in self._Recents ]
+
+        return result
 
 
     def ToElement(self, isRequestBody:bool=False) -> Element:

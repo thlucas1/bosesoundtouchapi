@@ -143,6 +143,38 @@ class SourceItem:
             self._SourceTitle = '%s (%s)' % (self._Source.title(), self._SourceAccount)
 
 
+    def ToDictionary(self, encoding:str='utf-8') -> dict:
+        """
+        Returns a dictionary representation of the class.
+        
+        Args:
+            encoding (str):
+                encode type (e.g. 'utf-8', 'unicode', etc).  
+                Default is 'utf-8'.
+        """
+        if encoding is None:
+            encoding = 'utf-8'
+            
+        result:dict = {}
+        
+        if self._IsLocal is not None: 
+            result['IsLocal'] = self._IsLocal
+        if self._IsMultiroomAllowed is not None: 
+            result['IsMultiroomAllowed'] = self._IsMultiroomAllowed
+        if self._Source is not None: 
+            result['Source'] = self._Source
+        if self._SourceAccount is not None: 
+            result['SourceAccount'] = self._SourceAccount
+        if self._Status is not None: 
+            result['Status'] = self._Status
+        if self._FriendlyName is not None: 
+            result['FriendlyName'] = self._FriendlyName
+        if self._SourceTitle is not None: 
+            result['SourceTitle'] = self._SourceTitle
+
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Returns an xmltree Element node representation of the class. 

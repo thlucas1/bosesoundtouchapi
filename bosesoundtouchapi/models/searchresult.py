@@ -107,6 +107,36 @@ class SearchResult:
         return self._Token
 
 
+    def ToDictionary(self, encoding:str='utf-8') -> dict:
+        """
+        Returns a dictionary representation of the class.
+        
+        Args:
+            encoding (str):
+                encode type (e.g. 'utf-8', 'unicode', etc).  
+                Default is 'utf-8'.
+        """
+        if encoding is None:
+            encoding = 'utf-8'
+            
+        result:dict = {}
+
+        if self._Artist is not None: 
+            result['Artist'] = self._Artist
+        if self._Logo is not None: 
+            result['Logo'] = self._Logo
+        if self._Name is not None: 
+            result['Name'] = self._Name
+        if self._Source is not None: 
+            result['Source'] = self._Source
+        if self._SourceAccount is not None: 
+            result['SourceAccount'] = self._SourceAccount
+        if self._Token is not None: 
+            result['Token'] = self._Token
+
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Returns an xmltree Element node representation of the class. 

@@ -1,7 +1,6 @@
 # external package imports.
 from typing import Iterator
 from xml.etree.ElementTree import Element, tostring
-import xmltodict
 
 # our package imports.
 from ..bstutils import export
@@ -119,8 +118,8 @@ class SearchStationSongs:
 
 
     def ToDictionary(self, encoding:str='utf-8') -> dict:
-        """ 
-        Returns a dictionary representation of the class. 
+        """
+        Returns a dictionary representation of the class.
         
         Args:
             encoding (str):
@@ -129,14 +128,14 @@ class SearchStationSongs:
         """
         if encoding is None:
             encoding = 'utf-8'
-        elm = self.ToElement()
-        xml = tostring(elm, encoding=encoding).decode(encoding)
+            
+        result:dict = {}
         
-        # convert xml to dictionary.
-        oDict:dict = xmltodict.parse(xml,
-                                     encoding=encoding,
-                                     process_namespaces=False)
-        return oDict
+        if self.ItemCount is not None: 
+            result['ItemCount'] = self.ItemCount
+        result['Items'] = [ item.ToDictionary(encoding) for item in self._Items ]
+
+        return result
 
 
     def ToElement(self, isRequestBody:bool=False) -> Element:

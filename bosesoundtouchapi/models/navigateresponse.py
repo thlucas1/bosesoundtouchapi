@@ -1,7 +1,6 @@
 # external package imports.
 from typing import Iterator
 from xml.etree.ElementTree import Element, tostring
-import xmltodict
 
 # our package imports.
 from ..bstutils import export, _xmlFindInt
@@ -166,8 +165,8 @@ class NavigateResponse:
 
 
     def ToDictionary(self, encoding:str='utf-8') -> dict:
-        """ 
-        Returns a dictionary representation of the class. 
+        """
+        Returns a dictionary representation of the class.
         
         Args:
             encoding (str):
@@ -176,14 +175,23 @@ class NavigateResponse:
         """
         if encoding is None:
             encoding = 'utf-8'
-        elm = self.ToElement()
-        xml = tostring(elm, encoding=encoding).decode(encoding)
-        
-        # convert xml to dictionary.
-        oDict:dict = xmltodict.parse(xml,
-                                     encoding=encoding,
-                                     process_namespaces=False)
-        return oDict
+            
+        result:dict = {}
+
+        # self._Items:list[NavigateItem] = []
+
+        if self._Source is not None: 
+            result['Source'] = self._Source
+        if self._SourceAccount is not None: 
+            result['SourceAccount'] = self._SourceAccount
+        if self._SourceTitle is not None: 
+            result['SourceTitle'] = self._SourceTitle
+        if self._TotalItems is not None: 
+            result['TotalItems'] = self._TotalItems
+        result['ItemCount'] = self.ItemCount
+        result['Items'] = [ item.ToDictionary(encoding) for item in self._Items ]
+
+        return result
 
 
     def ToElement(self, isRequestBody:bool=False) -> Element:

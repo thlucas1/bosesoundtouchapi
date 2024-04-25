@@ -1,7 +1,6 @@
 # external package imports.
 from typing import Iterator
 from xml.etree.ElementTree import Element, tostring
-import xmltodict
 
 # our package imports.
 from ..bstutils import export
@@ -92,8 +91,8 @@ class PresetList:
 
 
     def ToDictionary(self, encoding:str='utf-8', includeEmptyPresets:bool=False) -> dict:
-        """ 
-        Returns a dictionary representation of the class. 
+        """
+        Returns a dictionary representation of the class.
         
         Args:
             encoding (str):
@@ -105,15 +104,37 @@ class PresetList:
         """
         if encoding is None:
             encoding = 'utf-8'
-        elm = self.ToElement(includeEmptyPresets=includeEmptyPresets)
-        xml = tostring(elm, encoding=encoding).decode(encoding)
+            
+        presets:list = []
         
-        # convert xml to dictionary.
-        oDict:dict = xmltodict.parse(xml,
-                                     encoding=encoding,
-                                     process_namespaces=False)
-        return oDict
+        # process all possible presets.
+        maxPresetCount:int = 6
+        for presetId in range(1, maxPresetCount + 1):
+            
+            # search for preset id in the list.
+            isEmpty:bool = True
+            item:Preset
+            for item in self._Presets:
+                if item.PresetId == presetId:
+                    # found it - add it to the list.
+                    presets.append(item.ToDictionary(encoding))
+                    isEmpty = False
+                    break
+                
+            # did we find a preset for this id?  if not and we are adding
+            # empty presets, then create an empty preset and add it to the list.
+            if isEmpty == True and includeEmptyPresets == True:
+                item = Preset(presetId, name="empty preset")
+                presets.append(item.ToDictionary(encoding))
 
+        result:dict = {}
+        
+        if self._LastUpdatedOn is not None: 
+            result['LastUpdatedOn'] = self._LastUpdatedOn
+        result['Presets'] = presets
+
+        return result
+        
 
     def ToElement(self, isRequestBody:bool=False, includeEmptyPresets:bool=False) -> Element:
         """ 

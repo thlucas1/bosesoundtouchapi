@@ -253,6 +253,62 @@ class NavigateItem:
         return self._UtcTime
 
 
+    def ToDictionary(self, encoding:str='utf-8') -> dict:
+        """
+        Returns a dictionary representation of the class.
+        
+        Args:
+            encoding (str):
+                encode type (e.g. 'utf-8', 'unicode', etc).  
+                Default is 'utf-8'.
+        """
+        if encoding is None:
+            encoding = 'utf-8'
+            
+        contentItem:dict = {}
+        if self._ContentItem is not None:
+            contentItem = self._ContentItem.ToDictionary(encoding)
+        
+        mediaItemContainer:dict = {}
+        if self._MediaItemContainer is not None:
+            mediaItemContainer = self._MediaItemContainer.ToDictionary(encoding)
+        
+        result:dict = {}
+
+        if self._BackupUrl is not None: 
+            result['BackupUrl'] = self._BackupUrl
+        if self._BitRate is not None: 
+            result['BitRate'] = self._BitRate
+        if self._Description is not None: 
+            result['Description'] = self._Description
+        if self._Format is not None: 
+            result['Format'] = self._Format
+        if self._Location is not None: 
+            result['Location'] = self._Location
+        if self._Logo is not None: 
+            result['Logo'] = self._Logo
+        if self._Mime is not None: 
+            result['Mime'] = self._Mime
+        if self._Name is not None: 
+            result['Name'] = self._Name
+        if self._Playable is not None: 
+            result['Playable'] = self._Playable
+        if self._Reliability is not None: 
+            result['Reliability'] = self._Reliability
+        if self._Token is not None: 
+            result['Token'] = self._Token
+        if self._TypeValue is not None: 
+            result['TypeValue'] = self._TypeValue
+        if self._Url is not None: 
+            result['Url'] = self._Url
+        if self._UtcTime is not None: 
+            result['UtcTime'] = self._UtcTime
+        result['ContentItem'] = contentItem
+        result['MediaItemContainer'] = mediaItemContainer
+
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Returns an xmltree Element node representation of the class. 

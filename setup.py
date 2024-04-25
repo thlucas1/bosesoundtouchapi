@@ -62,7 +62,6 @@ setup(
         'tinytag==1.10.0',
         'urllib3>=1.21.1,<1.27',
         'websocket-client==1.6.4',
-        'xmltodict',
         'zeroconf'
     ],
     

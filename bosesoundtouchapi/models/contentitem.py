@@ -141,6 +141,42 @@ class ContentItem(SoundTouchModelRequest):
         return self._TypeValue
 
 
+    def ToDictionary(self, encoding:str='utf-8') -> dict:
+        """
+        Returns a dictionary representation of the class.
+        
+        Args:
+            encoding (str):
+                encode type (e.g. 'utf-8', 'unicode', etc).  
+                Default is 'utf-8'.
+        """
+        if encoding is None:
+            encoding = 'utf-8'
+            
+        result:dict = {}
+        
+        if self._ContainerArt is not None: 
+            result['ContainerArt'] = self._ContainerArt
+        if self._IsNavigate is not None: 
+            result['IsNavigate'] = self._IsNavigate
+        if self._IsPresetable is not None: 
+            result['IsPresetable'] = self._IsPresetable
+        if self._Location is not None: 
+            result['Location'] = self._Location
+        if self._Name is not None: 
+            result['Name'] = self._Name
+        if self._Offset is not None: 
+            result['Offset'] = self._Offset
+        if self._Source is not None: 
+            result['Source'] = self._Source
+        if self._SourceAccount is not None: 
+            result['SourceAccount'] = self._SourceAccount
+        if self._TypeValue is not None: 
+            result['TypeValue'] = self._TypeValue
+        
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Overridden.  

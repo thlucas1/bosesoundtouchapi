@@ -26,6 +26,7 @@ class Recent:
                 If specified, then other passed arguments are ignored.
         """
         self._RecentId:int = None
+        self._DeviceId:str = None
         self._CreatedOn:int = None
         self._ContentItem:ContentItem = ContentItem()
 
@@ -175,6 +176,37 @@ class Recent:
             return None
         return self._ContentItem._TypeValue
 
+
+    def ToDictionary(self, encoding:str='utf-8') -> dict:
+        """
+        Returns a dictionary representation of the class.
+        
+        Args:
+            encoding (str):
+                encode type (e.g. 'utf-8', 'unicode', etc).  
+                Default is 'utf-8'.
+        """
+        if encoding is None:
+            encoding = 'utf-8'
+            
+        contentItem:dict = {}
+        if self._ContentItem is not None:
+            contentItem = self._ContentItem.ToDictionary(encoding)
+        
+        result:dict = {}
+        
+        if self._RecentId is not None: 
+            result['RecentId'] = self._RecentId
+        if self._CreatedOn is not None: 
+            result['CreatedOn'] = self._CreatedOn
+        if self._DeviceId is not None: 
+            result['DeviceId'] = self._DeviceId
+        if self._SourceTitle is not None: 
+            result['SourceTitle'] = self._SourceTitle
+        result['ContentItem'] = contentItem
+
+        return result
+        
 
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
