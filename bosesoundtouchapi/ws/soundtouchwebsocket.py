@@ -1,6 +1,7 @@
 # external package imports.
 import time
 from threading import Thread
+import threading
 from websocket import WebSocketApp, STATUS_NORMAL
 from xml.etree import ElementTree as xmltree
 
@@ -142,7 +143,7 @@ class SoundTouchWebSocket:
         self._Port:int = int(port)
         self._Thread = None
         self._WebsocketClient:WebSocketApp = None
-        
+        self._Lock = threading.RLock()        
 
     def __enter__(self) -> 'SoundTouchWebSocket':
         # if called via a context manager (e.g. "with" statement).
@@ -364,64 +365,66 @@ class SoundTouchWebSocket:
             # are we processing recently played cache updates?  if not, then don't bother.
             if (not self._Client.RecentListCacheEnabled):
                 return
+
+            # acquire thread lock to ensure only 1 thread executes the following code at a time.
+            # otherwise we wind up with multiple entries for the same track!
+            with self._Lock:
             
-            # parse the NowPlayingStatus details, and ensure the content is fully playing
-            # and within the first 10 seconds of play position.  we do this, as the device 
-            # generates a few nowPlayingUpdated events in various play states (buffering, playing, etc).
-            nowPlaying:NowPlayingStatus = NowPlayingStatus(root=event[0])
-            if (nowPlaying.IsPlaying) and (nowPlaying.Position < 10):
-                        
-                _logsi.LogVerbose("Processing NowPlayingUpdated event for RecentListCache updates")
+                # parse the NowPlayingStatus details, and ensure the content is fully playing
+                # and within the first 10 seconds of play position.  we do this, as the device 
+                # generates a few nowPlayingUpdated events in various play states (buffering, playing, etc).
+                nowPlaying:NowPlayingStatus = NowPlayingStatus(root=event[0])
+                if (nowPlaying.IsPlaying) and (nowPlaying.Position < 10):
+                         
+                    # if SPOTIFY source, convert tracklisturl reference to uri reference.
+                    # if the playing content is a context (e.g. artist, playlist, album, etc), then the
+                    # context info is in the NowPlayingStatus contentItem data and the TRACK info is in the 
+                    # individual fields.  Failure to do this results in duplicate items in the cache
+                    # with just the contentItem Name field different.
+                    if nowPlaying.Source == 'SPOTIFY':
+                        nowPlaying.ContentItem.Name = nowPlaying.Track
+                        nowPlaying.ContentItem.ContainerArt = nowPlaying.ContainerArtUrl
+                        nowPlaying.ContentItem.Location = nowPlaying.TrackId
+                        nowPlaying.ContentItem.TypeValue = 'uri'
 
-                # use current epoch time for created on value.
-                epoch_time:int = int(time.time())
+                    # use current epoch time for created on value.
+                    epoch_time:int = int(time.time())
 
-                # does the item already exist in the cache?
-                idx:int = self._Client.RecentListCache.IndexOfName(nowPlaying.ContentItem.Source, nowPlaying.ContentItem.Name)
-                recent:Recent = None
-                if idx == -1:
+                    # does the item already exist in the cache?
+                    idx:int = self._Client.RecentListCache.IndexOfName(nowPlaying.ContentItem.Source, nowPlaying.ContentItem.Name)
+                    recent:Recent = None
+                    if idx == -1:
                     
-                    # insert new recently played item at top of the list.
-                    recent = Recent()
-                    self._Client.RecentListCache.Recents.insert(0, recent)
-                    _logsi.LogObject(SILevel.Verbose, "RecentListCache item is being added for device '%s'" % self._Client.Device.DeviceName, recent, excludeNonPublic=True)
+                        # insert new recently played item at top of the list.
+                        recent = Recent()
+                        self._Client.RecentListCache.Recents.insert(0, recent)
+                        _logsi.LogObject(SILevel.Verbose, "RecentListCache item is being added for device '%s'" % self._Client.Device.DeviceName, recent, excludeNonPublic=True)
                     
-                    # have we exceeded max items?  if so, then remove the oldest entry.
-                    if (len(self._Client.RecentListCache.Recents) > self._Client.RecentListCacheMaxItems):
-                        self._Client.RecentListCache.Recents.pop()
-                else:
+                        # have we exceeded max items?  if so, then remove the oldest entry.
+                        if (len(self._Client.RecentListCache.Recents) > self._Client.RecentListCacheMaxItems):
+                            self._Client.RecentListCache.Recents.pop()
+                    else:
 
-                    # remove the found item from the list, and re-add it at the top.
-                    # this keeps the list in reverse sorted order by CreatedOn date.
-                    recent = self._Client.RecentListCache.Recents.pop(idx)
-                    self._Client.RecentListCache.Recents.insert(0, recent)
-                    _logsi.LogObject(SILevel.Verbose, "RecentListCache item is being updated for device '%s'" % self._Client.Device.DeviceName, recent, excludeNonPublic=True)
+                        # remove the found item from the list, and re-add it at the top.
+                        # this keeps the list in reverse sorted order by CreatedOn date.
+                        recent = self._Client.RecentListCache.Recents.pop(idx)
+                        self._Client.RecentListCache.Recents.insert(0, recent)
+                        _logsi.LogObject(SILevel.Verbose, "RecentListCache item is being updated for device '%s'" % self._Client.Device.DeviceName, recent, excludeNonPublic=True)
 
-                # set recently played item properties from NowPlayingStatus.
-                recent.ContentItem = nowPlaying.ContentItem
-                recent.CreatedOn = epoch_time
-                recent.DeviceId = self._Client.Device.DeviceId
-                recent.RecentId = recent.CreatedOn
+                    # set recently played item properties from NowPlayingStatus.
+                    recent.ContentItem = nowPlaying.ContentItem
+                    recent.CreatedOn = epoch_time
+                    recent.DeviceId = self._Client.Device.DeviceId
+                    recent.RecentId = recent.CreatedOn
                 
-                # add the source title to the results from the cached source list.
-                sourceList:SourceList = self._Client.GetProperty(SoundTouchNodes.sources, SourceList, False)
-                if sourceList is not None:
-                    recent.SourceTitle = sourceList.GetTitleBySource(recent.Source, recent.SourceAccount)
+                    # add the source title to the results from the cached source list.
+                    sourceList:SourceList = self._Client.GetProperty(SoundTouchNodes.sources, SourceList, False)
+                    if sourceList is not None:
+                        recent.SourceTitle = sourceList.GetTitleBySource(recent.Source, recent.SourceAccount)
 
-                # if SPOTIFY source, convert tracklisturl reference to uri reference.
-                # if the playing content is a context (e.g. artist, playlist, album, etc), then the
-                # context info is in the NowPlayingStatus contentItem data and the TRACK info is in the 
-                # individual fields.  Failure to do this results in duplicate items in the cache
-                # with just the contentItem Name field different.
-                if recent.Source == 'SPOTIFY':
-                    recent.ContentItem.ContainerArt = nowPlaying.ContainerArtUrl
-                    recent.ContentItem.Location = nowPlaying.TrackId
-                    recent.ContentItem.Name = nowPlaying.Track
-                    recent.ContentItem.TypeValue = 'uri'
-
-                # save changes to the file system.
-                self._Client.RecentListCache.LastUpdatedOn = epoch_time
-                self._Client._RecentListCacheStore()
+                    # save changes to the file system.
+                    self._Client.RecentListCache.LastUpdatedOn = epoch_time
+                    self._Client._RecentListCacheStore()
                             
         except Exception as ex:
             

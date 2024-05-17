@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.63 ] - 2024/05/17
+
+  * Updated Recently Played List cache logic to be thread-safe to avoid duplicate recently played items.
+
 ###### [ 1.0.62 ] - 2024/05/17
 
   * Updated Recently Played List cache logic to set the SourceTitle value for recently played items.
