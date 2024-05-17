@@ -11,7 +11,8 @@ from bosesoundtouchapi.soundtouchclient import SoundTouchClient
 from bosesoundtouchapi.soundtouchnotifycategorys import SoundTouchNotifyCategorys
 from bosesoundtouchapi.models.nowplayingstatus import NowPlayingStatus
 from bosesoundtouchapi.models.recent import Recent
-
+from bosesoundtouchapi.models.sourcelist import SourceList
+from bosesoundtouchapi.uri.soundtouchnodes import SoundTouchNodes
 
 # get smartinspect logger reference; create a new session for this module name.
 import logging
@@ -400,7 +401,12 @@ class SoundTouchWebSocket:
                 recent.ContentItem = nowPlaying.ContentItem
                 recent.CreatedOn = epoch_time
                 recent.DeviceId = self._Client.Device.DeviceId
-                recent.RecentId = recent.CreatedOn                   
+                recent.RecentId = recent.CreatedOn
+                
+                # add the source title to the results from the cached source list.
+                sourceList:SourceList = self._Client.GetProperty(SoundTouchNodes.sources, SourceList, False)
+                if sourceList is not None:
+                    recent.SourceTitle = sourceList.GetTitleBySource(recent.Source, recent.SourceAccount)
 
                 # if SPOTIFY source, convert tracklisturl reference to uri reference.
                 # if the playing content is a context (e.g. artist, playlist, album, etc), then the

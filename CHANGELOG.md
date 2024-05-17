@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.62 ] - 2024/05/17
+
+  * Updated Recently Played List cache logic to set the SourceTitle value for recently played items.
+
 ###### [ 1.0.61 ] - 2024/05/17
 
   * Updated Recently Played List cache logic to convert Spotify tracklisturl references to uri references.  If the playing content is a context (e.g. artist, playlist, album, etc), then the context info is in the NowPlayingStatus contentItem data and the TRACK info is in the individual fields.  Failure to do this results in duplicate items in the cache with just the contentItem Name field different.
