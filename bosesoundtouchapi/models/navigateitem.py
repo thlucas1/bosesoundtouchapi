@@ -22,7 +22,7 @@ class NavigateItem:
     SoundTouch device NavigateItem configuration object.
        
     This class contains the attributes and sub-items that represent a
-    single source item configuration of the device.
+    single navigate item configuration of the device.
     """
 
     def __init__(self, source:str=None, sourceAccount:str=None, 

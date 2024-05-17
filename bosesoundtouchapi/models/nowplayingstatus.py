@@ -361,6 +361,15 @@ class NowPlayingStatus:
 
 
     @property
+    def IsPlaying(self) -> bool:
+        """ 
+        Returns true if the current `PlayStatus` is "PLAY_STATE", which indicates the content is
+        fully playing (e.g. not buffered, etc); otherwise, False.
+        """
+        return (self._PlayStatus == "PLAY_STATE")
+
+
+    @property
     def IsRatingEnabled(self) -> bool:
         """ 
         True if track rating is enabled; otherwise, False.
@@ -427,7 +436,7 @@ class NowPlayingStatus:
     @property
     def PlayStatus(self) -> str:
         """ 
-        Indicates whether the device is currently playing the embedded track. 
+        Indicates the current play status of the item (e.g. "PLAY_STATE", "BUFFERING_STATE", etc.)
         """
         return self._PlayStatus
 
@@ -510,8 +519,8 @@ class NowPlayingStatus:
     @property
     def StreamType(self) -> str:
         """ 
-        The stream type of the current track (TRACK_ONDEMAND when playing from
-        an external resource).
+        The stream type of the current track (e.g. "RADIO_STREAMING", "TRACK_ONDEMAND" when playing from
+        an external resource, etc).
         """
         return self._StreamType
 

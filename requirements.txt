@@ -1,11 +1,15 @@
 # pip>=22.0.4
 # setuptools>=58.1.0
+
+platformdirs==4.1.0
 smartinspectPython==3.0.33
 tinytag==1.10.0
 # urllib3 version must be less than 2.0.
 urllib3>=1.21.1,<1.27
 websocket-client==1.6.4
 zeroconf
-twine
-wheel>=0.41.2
-pdoc>=14.0.0
+
+# required for building the project.
+twine==4.0.2
+wheel==0.41.2
+pdoc==14.3.0

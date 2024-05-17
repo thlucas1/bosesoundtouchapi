@@ -2,12 +2,14 @@
 from datetime import datetime
 from functools import reduce
 from io import BytesIO
+import os
+import platformdirs
 import re
 import time
 from tinytag import TinyTag
 import urllib.parse
 from urllib3 import PoolManager, Timeout
-from xml.etree.ElementTree import fromstring, tostring, Element
+from xml.etree.ElementTree import fromstring, Element
 from xml.etree import ElementTree
 
 # our package imports.
@@ -79,6 +81,10 @@ class SoundTouchClient:
         self._Device:SoundTouchDevice = device
         self._Manager:PoolManager = manager
         self._RaiseErrors:bool = bool(raiseErrors)
+        self._RecentListCache:RecentList = RecentList()
+        self._RecentListCacheEnabled:bool = False
+        self._RecentListCacheMaxItems:int = 100
+        self._RecentListCachePath:str = None
         self._SnapshotSettings:dict = {}
         
         # if pool manager instance is none or not a PoolManager instance, then create one.
@@ -202,6 +208,49 @@ class SoundTouchClient:
 
 
     @property
+    def RecentListCache(self) -> RecentList:
+        """ 
+        A RecentList object that contains locally cached information about
+        recently played content.
+        
+        Returns:
+            The `_RecentListCache' property value.
+        """
+        return self._RecentListCache
+    
+
+    @property
+    def RecentListCacheEnabled(self) -> bool:
+        """ 
+        Recently played cache enabled flag.
+        
+        Returns:
+            True if recently played caching is enabled; otherwise, false.
+        """
+        return self._RecentListCacheEnabled
+    
+
+    @property
+    def RecentListCacheMaxItems(self) -> int:
+        """ 
+        Maximum number of items to keep in the recently played cache.
+        """
+        return self._RecentListCacheMaxItems
+    
+
+    @property
+    def RecentListCachePath(self) -> str:
+        """ 
+        Recently played cache storage path.
+        
+        Returns:
+            The path of the recently played cache file, if caching is enabled;
+            otherwise, null.
+        """
+        return self._RecentListCachePath
+    
+
+    @property
     def SnapshotSettings(self) -> dict:
         """
         A dictionary of configuration objects that are used by the Snapshot
@@ -310,6 +359,59 @@ class SoundTouchClient:
             # ignore exceptions, no metadata available is acceptable.
             return None
         
+
+    def _RecentListCacheLoad(self) -> None:
+        """
+        Loads the `RecentListcache` from the local file system.
+        """
+        try:
+            
+            # does the cache storage file exist?
+            if os.path.exists(self._RecentListCachePath):
+
+                # load cache file contents.
+                tree = ElementTree.parse(self._RecentListCachePath)
+                root:Element = tree.getroot()
+                self._RecentListCache = RecentList(root=root)
+                
+                # trace.
+                _logsi.LogXmlFile(SILevel.Verbose, "RecentListCache file loaded for device '%s' - path: %s" % (self.Device.DeviceName, self.RecentListCachePath), self._RecentListCachePath,)
+        
+        except Exception as ex:
+            
+            # trace and ignore exceptions.
+            _logsi.LogException("RecentListCache file load error for device '%s' (path=%s): %s" % (self.Device.DeviceName, self._RecentListCachePath, str(ex)), ex)
+            
+            # reset recent list object.
+            self._RecentListCache = RecentList()
+
+
+    def _RecentListCacheStore(self) -> None:
+        """
+        Stores the `RecentListcache` to the local file system.
+        """
+        try:
+            
+            # is caching enabled?  if not, then don't bother.
+            if not self._RecentListCacheEnabled:
+                return
+
+            # get xml element representation of the cache.
+            root:Element = self.RecentListCache.ToElement()
+            ElementTree.indent(root)  # pretty print
+            tree = ElementTree.ElementTree(root)
+
+            # save the cache to disk.
+            tree.write(self._RecentListCachePath, encoding='utf-8', xml_declaration=True)
+
+            # trace.
+            _logsi.LogXmlFile(SILevel.Verbose, "RecentListCache file saved for device '%s' - path: %s" % (self.Device.DeviceName, self.RecentListCachePath), self._RecentListCachePath,)
+
+        except Exception as ex:
+            
+            # trace and ignore exceptions.
+            _logsi.LogException("RecentListCache file save error for device '%s' (path=%s): %s" % (self.Device.DeviceName, self._RecentListCachePath, str(ex)), ex)
+
 
     def _ValidateDelay(self, delay:int, default:int=5, maxDelay:int=10) -> int:
         """
@@ -4942,6 +5044,79 @@ class SoundTouchClient:
         return nowPlaying
 
 
+    def UpdateRecentListCacheStatus(self,
+                                    enabled:bool=True,
+                                    cacheStorageDirectory:str=None,
+                                    maxItems:int=100,
+                                    ) -> None:
+        """
+        Controls tracking of the local recently played items cache.
+
+        Args:
+            enabled (bool):
+                True to enable the cache; false to disable the cache.
+            cacheStorageDirectory (str):
+                Local file system directory location where the cache file will be stored.  
+                The platformdirs site configuration location will be used if not specified.  
+            maxItems (str):
+                Maximum number of items to store in the cache; older items are dropped from
+                the cache once this value is reached.  
+                Default is 100.  
+                
+        If enabled, the `RecentListCache` property will be updated with played media content
+        information.  The maximum number of items to keep in the cache is controlled by the 
+        `maxItems` argument; older items are automatically removed from the cache once the
+        maximum number of items has been reached.
+        
+        The cache is stored to the local file system each time an item is added to the cache.  
+        The file is located in the directory specified by the `cacheStorageDirectory` argument.  
+        The name of the cache file is `recently_played_cache_<DEVICE_ID>.xml`, where DEVICE_ID 
+        is the SoundTouch device identifier (e.g. `recently_played_cache_9070658C9D4A.xml`).
+        
+        This overcomes the issue with the device recent list processing where the cover art url's 
+        are removed from the list.  Note that the cached recent list could be different than the 
+        device recent list, as the cache is a function of this API; e.g. items played on the
+        device outside of this API will not be stored in the cache.
+        
+        <details>
+          <summary>Sample Code</summary>
+        ```python
+        .. include:: ../docs/include/samplecode/SoundTouchWebSocket/_ClassInit.py
+        ```
+        </details>
+        """
+        # validations.
+        if isinstance(maxItems, int):
+            if maxItems < 1:
+                maxItems = 100
+            self._RecentListCacheMaxItems = maxItems
+                
+        # store arguments to attributes.
+        self._RecentListCacheEnabled = enabled
+        
+        # is cache enabled?
+        if (enabled):
+            
+            # verify cache storage directory exists.
+            if cacheStorageDirectory is None:
+                cacheStorageDirectory = platformdirs.site_config_dir('bosesoundtouchapi', ensure_exists=True, appauthor=False)
+            os.makedirs(cacheStorageDirectory, exist_ok=True)  # succeeds even if directory exists.
+
+            # formulate the cache storage file name.
+            self._RecentListCachePath = os.path.join(cacheStorageDirectory, "recently_played_cache_%s.xml" % (self.Device.DeviceId))
+            
+            # load the cache.
+            self._RecentListCacheLoad()
+
+            # trace.
+            _logsi.LogVerbose("RecentListCache is enabled for device '%s' (maxItems=%s)" % (self.Device.DeviceName, self._RecentListCacheMaxItems))
+
+        else:
+
+            # trace.
+            _logsi.LogVerbose("RecentListCache is disabled for device '%s'" % self.Device.DeviceName)
+            
+        
     def VolumeDown(self) -> None:
         """ 
         Decrease the volume of the device by one. 

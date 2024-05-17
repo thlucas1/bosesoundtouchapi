@@ -86,7 +86,7 @@ class NavigateResponse:
 
     @property
     def Source(self) -> str:
-        """ Music service source where the result was obtained from (e.g. "PANDORA", "SPOTIFY", etc). """
+        """ Music service source where the result was obtained from (e.g. "PANDORA", etc). """
         return self._Source
 
 

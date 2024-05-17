@@ -4,6 +4,7 @@ echo Script starting.
 
 echo Setting Python Search path (PYTHONPATH).
 set PYTHONPATH=C:\Users\thluc\source\repos\BoseSoundTouchApiProject;C:\Users\thluc\source\repos\BoseSoundTouchApiProject\bosesoundtouchapi
+set PDOC_DISPLAY_ENV_VARS=1
 
 
 echo Changing working directory to package source folder.

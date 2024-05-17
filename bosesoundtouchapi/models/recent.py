@@ -1,10 +1,8 @@
 # external package imports.
-import time
 from xml.etree.ElementTree import Element, tostring
 
 # our package imports.
-from ..bstutils import export, _xmlFind, _xmlGetAttrBool, _xmlGetAttrInt
-from ..soundtouchsources import SoundTouchSources
+from ..bstutils import export, _xmlGetAttrInt
 from .contentitem import ContentItem
 
 @export
@@ -79,6 +77,14 @@ class Recent:
         """ ContentItem value. """
         return self._ContentItem
 
+    @ContentItem.setter
+    def ContentItem(self, value:ContentItem):
+        """ 
+        Sets the ContentItem property value.
+        """
+        if isinstance(value, ContentItem):
+            self._ContentItem = value
+
 
     @property
     def ContainerArt(self) -> str:
@@ -93,11 +99,27 @@ class Recent:
         """ Date and time (in epoch format) of when the recent was created. """
         return self._CreatedOn
     
+    @CreatedOn.setter
+    def CreatedOn(self, value:int):
+        """ 
+        Sets the CreatedOn property value.
+        """
+        if isinstance(value, int):
+            self._CreatedOn = value
+
 
     @property
     def DeviceId(self) -> str:
         """ Device identifier the configuration information was obtained from. """
         return self._DeviceId
+
+    @DeviceId.setter
+    def DeviceId(self, value:str):
+        """ 
+        Sets the DeviceId property value.
+        """
+        if isinstance(value, str):
+            self._DeviceId = value
 
     
     @property
@@ -126,8 +148,16 @@ class Recent:
 
     @property
     def RecentId(self) -> int:
-        """ The recent identifier (1 - 6). """
+        """ The recent identifier. """
         return self._RecentId
+
+    @RecentId.setter
+    def RecentId(self, value:int):
+        """ 
+        Sets the RecentId property value.
+        """
+        if isinstance(value, int):
+            self._RecentId = value
 
 
     @property
@@ -220,11 +250,14 @@ class Recent:
         elm = Element('recent')
         if self._DeviceId is not None and len(self._DeviceId) > 0: elm.set('deviceID', str(self._DeviceId))
         if self._RecentId is not None and self._RecentId > 0: elm.set('id', str(self._RecentId))
-        if self._CreatedOn is not None and self._CreatedOn > 0: elm.set('createdOn', str(self._CreatedOn))
+        if self._CreatedOn is not None and self._CreatedOn > 0: elm.set('utcTime', str(self._CreatedOn))
         if self._SourceTitle is not None and len(self._SourceTitle) > 0: elm.set('SourceTitle', str(self._SourceTitle))
         
+        # for some reason, the 'recent' element uses 'contentItem' instead of 'ContentItem' like most
+        # of the other elements returned!  we will account for this by updating the content item tag name.
         if self._ContentItem is not None:
             elmNode = self._ContentItem.ToElement()
+            elmNode.tag = 'contentItem'
             elm.append(elmNode)
 
         return elm

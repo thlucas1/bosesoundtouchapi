@@ -6,6 +6,11 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.60 ] - 2024/05/17
+
+  * Added Recently Played List cache processing.  This allows a cache of recently played content items to be stored on the local file system.  WebSocket support must be enabled for the caching to work, as it utilizes the nowPlayingUpdated event to drive played content to the cache.
+  * Updated `Recent` model with setter properties so that a recent item could be created without xml.
+
 ###### [ 1.0.59 ] - 2024/04/25
 
   * Removed `xmltodict` requirement.

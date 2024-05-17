@@ -47,7 +47,7 @@ class RecentList:
                 
             # sort items on CreatedOn property, descending order (latest first).
             if len(self._Recents) > 0:
-                self._Recents.sort(key=lambda x: x.CreatedOn, reverse=True)
+                self._Recents.sort(key=lambda x: (x.CreatedOn or 0), reverse=True)
 
 
     def __getitem__(self, key) -> Recent:
@@ -94,6 +94,28 @@ class RecentList:
         The list of `Recent` items. 
         """
         return self._Recents
+
+
+    def ContainsName(self, source:str, name:str) -> Recent:
+        """
+        Checks the list items for a matching source and name value.
+        
+        Args:
+            source (str):
+                Source to find in the list.
+            name (str):
+                Name to find in the list.
+                
+        Returns:
+            A `Recent` instance if the name was found; otherwise, null.
+        """
+        item:Recent
+        for item in self._Recents:
+            if source == item.Source and item.Name == name:
+                return item
+
+        # if not found then return null.
+        return None
 
 
     def ToDictionary(self, encoding:str='utf-8') -> dict:

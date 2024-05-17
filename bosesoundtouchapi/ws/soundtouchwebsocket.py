@@ -1,4 +1,5 @@
 # external package imports.
+import time
 from threading import Thread
 from websocket import WebSocketApp, STATUS_NORMAL
 from xml.etree import ElementTree as xmltree
@@ -8,6 +9,8 @@ from bosesoundtouchapi.bstappmessages import BSTAppMessages
 from bosesoundtouchapi.bstutils import export
 from bosesoundtouchapi.soundtouchclient import SoundTouchClient
 from bosesoundtouchapi.soundtouchnotifycategorys import SoundTouchNotifyCategorys
+from bosesoundtouchapi.models.nowplayingstatus import NowPlayingStatus
+from bosesoundtouchapi.models.recent import Recent
 
 
 # get smartinspect logger reference; create a new session for this module name.
@@ -341,6 +344,65 @@ class SoundTouchWebSocket:
         self.NotifyListeners(SoundTouchNotifyCategorys.WebSocketPong.value, SoundTouchNotifyCategorys.WebSocketPong.value)
 
 
+    def _ProcessEvent_NowPlayingUpdated(self, category:str, event:xmltree.Element) -> None:
+        """
+        Processes a 'nowPlayingUpdated' event.
+
+        Updates the client RecentListCache with playing track information, if 
+        RecentListCache support is enabled. 
+
+        Args:
+            category (str):
+                The category of which listeners should be notified from.
+            event (xmltree.Element):
+                The event represents either an XML-Element with event.tag == category,
+                or an Exception type if category = `SoundTouchNotifyCategorys.WebSocketError`.
+        """
+        try:
+                
+            # are we processing recently played cache updates?  if not, then don't bother.
+            if (not self._Client.RecentListCacheEnabled):
+                return
+            
+            # parse the NowPlayingStatus details, and ensure the content is fully playing
+            # and within the first 10 seconds of play position.  we do this, as the device 
+            # generates a few nowPlayingUpdated events in various play states (buffering, playing, etc).
+            nowPlaying:NowPlayingStatus = NowPlayingStatus(root=event[0])
+            if (nowPlaying.IsPlaying) and (nowPlaying.Position < 10):
+                        
+                _logsi.LogVerbose("Processing NowPlayingUpdated event for RecentListCache updates")
+
+                # use current epoch time for created on value.
+                epoch_time:int = int(time.time())
+
+                # does the item already exist in the cache?  add it if not.
+                recent:Recent = self._Client.RecentListCache.ContainsName(nowPlaying.ContentItem.Source, nowPlaying.ContentItem.Name)
+                if recent is None:
+                    recent:Recent = Recent()
+                    recent.ContentItem = nowPlaying.ContentItem
+                    recent.CreatedOn = epoch_time
+                    recent.DeviceId = self._Client.Device.DeviceId
+                    recent.RecentId = recent.CreatedOn
+                    self._Client.RecentListCache.Recents.insert(0, recent)
+                    _logsi.LogObject(SILevel.Verbose, "RecentListCache item was added for device '%s'" % self._Client.Device.DeviceName, recent, excludeNonPublic=True)
+                    
+                    # have we exceeded max items?  if so, then remove the oldest entry.
+                    if (len(self._Client.RecentListCache.Recents) > self._Client.RecentListCacheMaxItems):
+                        self._Client.RecentListCache.Recents.pop()
+                else:
+                    # otherwise update the last played date to reflect the current date.
+                    recent.CreatedOn = epoch_time
+                    _logsi.LogObject(SILevel.Verbose, "RecentListCache item was updated for device '%s'" % self._Client.Device.DeviceName, recent, excludeNonPublic=True)
+                    
+                # save changes to the file system.
+                self._Client.RecentListCache.LastUpdatedOn = epoch_time
+                self._Client._RecentListCacheStore()
+                            
+        except Exception as ex:
+            
+            _logsi.LogException(BSTAppMessages.BST_WEBSOCKET_EVENTHANDLER_ERROR % (category, str(ex)), ex, logToSystemLogger=False)
+
+
     def AddListener(self, category:SoundTouchNotifyCategorys, listener) -> bool:
         """
         Adds a listener provided here to the given category.
@@ -423,6 +485,10 @@ class SoundTouchWebSocket:
                 or an Exception type if category = `SoundTouchNotifyCategorys.WebSocketError`.
         """
         category = str(category)
+        
+        # is this a nowPlayingUpdated event?
+        if (category == 'nowPlayingUpdated') and (event != None) and (isinstance(event, xmltree.Element)):
+            self._ProcessEvent_NowPlayingUpdated(category, event)
 
         # are listeners defined for ANY category?  if so, then notify them.
         if ('*' in self._CachedListeners):
