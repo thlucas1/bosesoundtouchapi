@@ -92,6 +92,14 @@ class ContentItem(SoundTouchModelRequest):
         """ Item's container art url. """
         return self._ContainerArt
 
+    @ContainerArt.setter
+    def ContainerArt(self, value:str):
+        """ 
+        Sets the ContainerArt property value.
+        """
+        if isinstance(value, str):
+            self._ContainerArt = value
+
 
     @property
     def IsNavigate(self) -> bool:
@@ -110,11 +118,27 @@ class ContentItem(SoundTouchModelRequest):
         """ If present, a direct url link to the media. """
         return self._Location
 
+    @Location.setter
+    def Location(self, value:str):
+        """ 
+        Sets the Location property value.
+        """
+        if isinstance(value, str):
+            self._Location = value
+
 
     @property
     def Name(self) -> str:
         """ Item's name. """
         return self._Name
+
+    @Name.setter
+    def Name(self, value:str):
+        """ 
+        Sets the Name property value.
+        """
+        if isinstance(value, str):
+            self._Name = value
 
 
     @property
@@ -139,6 +163,14 @@ class ContentItem(SoundTouchModelRequest):
     def TypeValue(self) -> str:
         """ Specifies the type of this item. """
         return self._TypeValue
+
+    @TypeValue.setter
+    def TypeValue(self, value:str):
+        """ 
+        Sets the TypeValue property value.
+        """
+        if isinstance(value, str):
+            self._TypeValue = value
 
 
     def ToDictionary(self, encoding:str='utf-8') -> dict:

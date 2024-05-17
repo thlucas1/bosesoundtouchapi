@@ -375,25 +375,44 @@ class SoundTouchWebSocket:
                 # use current epoch time for created on value.
                 epoch_time:int = int(time.time())
 
-                # does the item already exist in the cache?  add it if not.
-                recent:Recent = self._Client.RecentListCache.ContainsName(nowPlaying.ContentItem.Source, nowPlaying.ContentItem.Name)
-                if recent is None:
-                    recent:Recent = Recent()
-                    recent.ContentItem = nowPlaying.ContentItem
-                    recent.CreatedOn = epoch_time
-                    recent.DeviceId = self._Client.Device.DeviceId
-                    recent.RecentId = recent.CreatedOn
+                # does the item already exist in the cache?
+                idx:int = self._Client.RecentListCache.IndexOfName(nowPlaying.ContentItem.Source, nowPlaying.ContentItem.Name)
+                recent:Recent = None
+                if idx == -1:
+                    
+                    # insert new recently played item at top of the list.
+                    recent = Recent()
                     self._Client.RecentListCache.Recents.insert(0, recent)
-                    _logsi.LogObject(SILevel.Verbose, "RecentListCache item was added for device '%s'" % self._Client.Device.DeviceName, recent, excludeNonPublic=True)
+                    _logsi.LogObject(SILevel.Verbose, "RecentListCache item is being added for device '%s'" % self._Client.Device.DeviceName, recent, excludeNonPublic=True)
                     
                     # have we exceeded max items?  if so, then remove the oldest entry.
                     if (len(self._Client.RecentListCache.Recents) > self._Client.RecentListCacheMaxItems):
                         self._Client.RecentListCache.Recents.pop()
                 else:
-                    # otherwise update the last played date to reflect the current date.
-                    recent.CreatedOn = epoch_time
-                    _logsi.LogObject(SILevel.Verbose, "RecentListCache item was updated for device '%s'" % self._Client.Device.DeviceName, recent, excludeNonPublic=True)
-                    
+
+                    # remove the found item from the list, and re-add it at the top.
+                    # this keeps the list in reverse sorted order by CreatedOn date.
+                    recent = self._Client.RecentListCache.Recents.pop(idx)
+                    self._Client.RecentListCache.Recents.insert(0, recent)
+                    _logsi.LogObject(SILevel.Verbose, "RecentListCache item is being updated for device '%s'" % self._Client.Device.DeviceName, recent, excludeNonPublic=True)
+
+                # set recently played item properties from NowPlayingStatus.
+                recent.ContentItem = nowPlaying.ContentItem
+                recent.CreatedOn = epoch_time
+                recent.DeviceId = self._Client.Device.DeviceId
+                recent.RecentId = recent.CreatedOn                   
+
+                # if SPOTIFY source, convert tracklisturl reference to uri reference.
+                # if the playing content is a context (e.g. artist, playlist, album, etc), then the
+                # context info is in the NowPlayingStatus contentItem data and the TRACK info is in the 
+                # individual fields.  Failure to do this results in duplicate items in the cache
+                # with just the contentItem Name field different.
+                if recent.Source == 'SPOTIFY':
+                    recent.ContentItem.ContainerArt = nowPlaying.ContainerArtUrl
+                    recent.ContentItem.Location = nowPlaying.TrackId
+                    recent.ContentItem.Name = nowPlaying.Track
+                    recent.ContentItem.TypeValue = 'uri'
+
                 # save changes to the file system.
                 self._Client.RecentListCache.LastUpdatedOn = epoch_time
                 self._Client._RecentListCacheStore()

@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.61 ] - 2024/05/17
+
+  * Updated Recently Played List cache logic to convert Spotify tracklisturl references to uri references.  If the playing content is a context (e.g. artist, playlist, album, etc), then the context info is in the NowPlayingStatus contentItem data and the TRACK info is in the individual fields.  Failure to do this results in duplicate items in the cache with just the contentItem Name field different.
+
 ###### [ 1.0.60 ] - 2024/05/17
 
   * Added Recently Played List cache processing.  This allows a cache of recently played content items to be stored on the local file system.  WebSocket support must be enabled for the caching to work, as it utilizes the nowPlayingUpdated event to drive played content to the cache.

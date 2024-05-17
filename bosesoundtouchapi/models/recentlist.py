@@ -118,6 +118,28 @@ class RecentList:
         return None
 
 
+    def IndexOfName(self, source:str, name:str) -> Recent:
+        """
+        Returns the index of the list item matching the source and name value.
+        
+        Args:
+            source (str):
+                Source to find in the list.
+            name (str):
+                Name to find in the list.
+                
+        Returns:
+            The index of the item if found; otherwise, -1.
+        """
+        item:Recent
+        for idx, item in enumerate(self._Recents):
+            if source == item.Source and item.Name == name:
+                return idx
+            
+        # if not found then return -1.
+        return -1
+
+
     def ToDictionary(self, encoding:str='utf-8') -> dict:
         """
         Returns a dictionary representation of the class.
