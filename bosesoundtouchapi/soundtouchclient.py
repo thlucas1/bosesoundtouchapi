@@ -5066,7 +5066,8 @@ class SoundTouchClient:
         If enabled, the `RecentListCache` property will be updated with played media content
         information.  The maximum number of items to keep in the cache is controlled by the 
         `maxItems` argument; older items are automatically removed from the cache once the
-        maximum number of items has been reached.
+        maximum number of items has been reached.  A value of 1 is assigned if the `maxItems` 
+        argument is less than 1.
         
         The cache is stored to the local file system each time an item is added to the cache.  
         The file is located in the directory specified by the `cacheStorageDirectory` argument.  
@@ -5088,7 +5089,7 @@ class SoundTouchClient:
         # validations.
         if isinstance(maxItems, int):
             if maxItems < 1:
-                maxItems = 100
+                maxItems = 1
             self._RecentListCacheMaxItems = maxItems
                 
         # store arguments to attributes.

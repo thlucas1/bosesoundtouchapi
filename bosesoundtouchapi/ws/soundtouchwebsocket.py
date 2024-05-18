@@ -398,18 +398,18 @@ class SoundTouchWebSocket:
                         # insert new recently played item at top of the list.
                         recent = Recent()
                         self._Client.RecentListCache.Recents.insert(0, recent)
-                        _logsi.LogObject(SILevel.Verbose, "RecentListCache item is being added for device '%s'" % self._Client.Device.DeviceName, recent, excludeNonPublic=True)
                     
-                        # have we exceeded max items?  if so, then remove the oldest entry.
-                        if (len(self._Client.RecentListCache.Recents) > self._Client.RecentListCacheMaxItems):
-                            self._Client.RecentListCache.Recents.pop()
+                        # have we exceeded max items?  if so, then remove the oldest entry(s).
+                        # we put it in a loop in case the max items configuration was changed to a lower value.
+                        while (len(self._Client.RecentListCache.Recents) > self._Client.RecentListCacheMaxItems):
+                            recentRemoved:Recent = self._Client.RecentListCache.Recents.pop()
+                            _logsi.LogObject(SILevel.Verbose, "RecentListCache item was removed for device '%s': '%s'" % (self._Client.Device.DeviceName, recentRemoved.Name), recentRemoved, excludeNonPublic=True)
                     else:
 
                         # remove the found item from the list, and re-add it at the top.
                         # this keeps the list in reverse sorted order by CreatedOn date.
                         recent = self._Client.RecentListCache.Recents.pop(idx)
                         self._Client.RecentListCache.Recents.insert(0, recent)
-                        _logsi.LogObject(SILevel.Verbose, "RecentListCache item is being updated for device '%s'" % self._Client.Device.DeviceName, recent, excludeNonPublic=True)
 
                     # set recently played item properties from NowPlayingStatus.
                     recent.ContentItem = nowPlaying.ContentItem
@@ -421,6 +421,9 @@ class SoundTouchWebSocket:
                     sourceList:SourceList = self._Client.GetProperty(SoundTouchNodes.sources, SourceList, False)
                     if sourceList is not None:
                         recent.SourceTitle = sourceList.GetTitleBySource(recent.Source, recent.SourceAccount)
+
+                    # trace.
+                    _logsi.LogObject(SILevel.Verbose, "RecentListCache item is being added / updated for device '%s': '%s'" % (self._Client.Device.DeviceName, recent.Name), recent, excludeNonPublic=True)
 
                     # save changes to the file system.
                     self._Client.RecentListCache.LastUpdatedOn = epoch_time

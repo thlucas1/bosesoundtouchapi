@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.65 ] - 2024/05/18
+
+  * Updated recently played cache processing to remove older cache items if the `RecentListCacheMaxItems` value is changed.
+
 ###### [ 1.0.64 ] - 2024/05/18
 
   * Updated `RecentList` and `PresetList` to default their `LastUpdatedOn` properties to the current date if not set.
