@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.64 ] - 2024/05/18
+
+  * Updated `RecentList` and `PresetList` to default their `LastUpdatedOn` properties to the current date if not set.
+
 ###### [ 1.0.63 ] - 2024/05/17
 
   * Updated Recently Played List cache logic to be thread-safe to avoid duplicate recently played items.

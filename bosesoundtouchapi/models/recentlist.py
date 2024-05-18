@@ -1,4 +1,5 @@
 # external package imports.
+import time
 from typing import Iterator
 from xml.etree.ElementTree import Element, tostring
 
@@ -48,6 +49,11 @@ class RecentList:
             # sort items on CreatedOn property, descending order (latest first).
             if len(self._Recents) > 0:
                 self._Recents.sort(key=lambda x: (x.CreatedOn or 0), reverse=True)
+                
+        # if LastUpdatedOn not set, then use current epoch time.
+        if (self._LastUpdatedOn is None) or (self._LastUpdatedOn == 0):
+            epoch_time = int(time.time())
+            self._LastUpdatedOn = epoch_time
 
 
     def __getitem__(self, key) -> Recent:
@@ -84,8 +90,11 @@ class RecentList:
         """ 
         Sets the LastUpdatedOn property value.
         """
-        if isinstance(value, int) and value > -1:
-            self._LastUpdatedOn = value
+        if isinstance(value, int):
+            if value > 0:
+                self._LastUpdatedOn = value
+            else:
+                self._LastUpdatedOn = int(time.time())  # current epoch time
 
 
     @property
@@ -94,28 +103,6 @@ class RecentList:
         The list of `Recent` items. 
         """
         return self._Recents
-
-
-    def ContainsName(self, source:str, name:str) -> Recent:
-        """
-        Checks the list items for a matching source and name value.
-        
-        Args:
-            source (str):
-                Source to find in the list.
-            name (str):
-                Name to find in the list.
-                
-        Returns:
-            A `Recent` instance if the name was found; otherwise, null.
-        """
-        item:Recent
-        for item in self._Recents:
-            if source == item.Source and item.Name == name:
-                return item
-
-        # if not found then return null.
-        return None
 
 
     def IndexOfName(self, source:str, name:str) -> Recent:

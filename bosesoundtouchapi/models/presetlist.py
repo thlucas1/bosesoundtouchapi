@@ -1,4 +1,5 @@
 # external package imports.
+import time
 from typing import Iterator
 from xml.etree.ElementTree import Element, tostring
 
@@ -43,6 +44,11 @@ class PresetList:
                 if config.UpdatedOn is not None and config.UpdatedOn > self._LastUpdatedOn:
                     self._LastUpdatedOn = config.UpdatedOn
 
+        # if LastUpdatedOn not set, then use current epoch time.
+        if (self._LastUpdatedOn is None) or (self._LastUpdatedOn == 0):
+            epoch_time = int(time.time())
+            self._LastUpdatedOn = epoch_time
+            
 
     def __getitem__(self, key) -> Preset:
         return self._Presets[key]
@@ -78,8 +84,11 @@ class PresetList:
         """ 
         Sets the LastUpdatedOn property value.
         """
-        if isinstance(value, int) and value > -1:
-            self._LastUpdatedOn = value
+        if isinstance(value, int) and value > 0:
+            if value > 0:
+                self._LastUpdatedOn = value
+            else:
+                self._LastUpdatedOn = int(time.time())  # current epoch time
 
 
     @property
