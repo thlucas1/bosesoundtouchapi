@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.66 ] - 2024/05/18
+
+  * Updated recently played cache processing to remove older cache items if the `RecentListCacheMaxItems` value is changed.  The previous release was only removing old cache items if a NEW cache entry was being created.  This fix will also remove the items if an existing item is updated.
+
 ###### [ 1.0.65 ] - 2024/05/18
 
   * Updated recently played cache processing to remove older cache items if the `RecentListCacheMaxItems` value is changed.

@@ -399,11 +399,6 @@ class SoundTouchWebSocket:
                         recent = Recent()
                         self._Client.RecentListCache.Recents.insert(0, recent)
                     
-                        # have we exceeded max items?  if so, then remove the oldest entry(s).
-                        # we put it in a loop in case the max items configuration was changed to a lower value.
-                        while (len(self._Client.RecentListCache.Recents) > self._Client.RecentListCacheMaxItems):
-                            recentRemoved:Recent = self._Client.RecentListCache.Recents.pop()
-                            _logsi.LogObject(SILevel.Verbose, "RecentListCache item was removed for device '%s': '%s'" % (self._Client.Device.DeviceName, recentRemoved.Name), recentRemoved, excludeNonPublic=True)
                     else:
 
                         # remove the found item from the list, and re-add it at the top.
@@ -424,6 +419,12 @@ class SoundTouchWebSocket:
 
                     # trace.
                     _logsi.LogObject(SILevel.Verbose, "RecentListCache item is being added / updated for device '%s': '%s'" % (self._Client.Device.DeviceName, recent.Name), recent, excludeNonPublic=True)
+
+                    # have we exceeded max items?  if so, then remove the oldest entry(s).
+                    # we put it in a loop in case the max items configuration was changed to a lower value.
+                    while (len(self._Client.RecentListCache.Recents) > self._Client.RecentListCacheMaxItems):
+                        recentRemoved:Recent = self._Client.RecentListCache.Recents.pop()
+                        _logsi.LogObject(SILevel.Verbose, "RecentListCache item was removed for device '%s': '%s'" % (self._Client.Device.DeviceName, recentRemoved.Name), recentRemoved, excludeNonPublic=True)
 
                     # save changes to the file system.
                     self._Client.RecentListCache.LastUpdatedOn = epoch_time

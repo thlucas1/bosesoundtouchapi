@@ -112,7 +112,7 @@ try:
     client:SoundTouchClient = SoundTouchClient(device)
     
     # activate recent list cache.
-    client.UpdateRecentListCacheStatus(True, maxItems=100)
+    client.UpdateRecentListCacheStatus(True, maxItems=8)
 
     # get device capabilities - must have IsWebSocketApiProxyCapable=True 
     # in order to support notifications.
