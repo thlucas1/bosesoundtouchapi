@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.68 ] - 2024/10/04
+
+  * Fixed various python `SyntaxWarning: "is not" with 'int' literal.` warnings that were being generated when code was executed.  Something changed with Home Assistant (or python) recently that turned these "used to be ignored" warnings into actual warnings that wind up in the HA System Log.
+
 ###### [ 1.0.67 ] - 2024/10/04
 
   * Fixed various python `SyntaxWarning: invalid escape sequence '\ '` warnings that were being generated when code was executed.  Something changed with Home Assistant recently that turned these "used to be ignored" warnings into actual warnings that wind up in the HA System Log!  This is due to invalid escaped characters in various string comments that are used for documentation purposes (e.g. """ this is a code comment """).

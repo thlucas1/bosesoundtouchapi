@@ -67,6 +67,6 @@ class SoundTouchWarning(Exception):
         """
         msg:str = 'SoundTouchWarning:'
         msg = '%s "%s"' % (msg, str(self._Message))
-        if self._WarningCode is not 0:
+        if self._WarningCode != 0:
             msg = '%s, code="%s"' % (msg, str(self._WarningCode))
         return msg 
