@@ -51,7 +51,7 @@ class SoundTouchDevice:
         Args:
             host (str):
                 An Ipv4 address of the device; it must the following regular expression
-                pattern for a IP V4 network address: r"\d{1,3}([.]\d{1,3}){3}".
+                pattern for a IP V4 network address: r"\\d{1,3}([.]\\d{1,3}){3}".
             connectTimeout (int):
                 Controls how long (in seconds) a connection request is allowed to run 
                 before being aborted.  

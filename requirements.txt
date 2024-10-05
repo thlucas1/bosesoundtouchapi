@@ -10,6 +10,6 @@ websocket-client==1.6.4
 zeroconf
 
 # required for building the project.
-twine==4.0.2
+twine==5.1.1
 wheel==0.41.2
 pdoc==14.3.0

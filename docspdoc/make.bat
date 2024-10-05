@@ -10,6 +10,10 @@ echo Activating python virtual environment.
 call "..\env\scripts\activate.bat"
 
 
+echo Setting build environment variables manually ...
+SET PYTHONWARNINGS=always
+
+
 echo Setting build environment variables via buildEnv.py ...
 FOR /F "delims=|" %%G IN ('"python.exe .\buildEnv.py"') DO SET "%%G"
 echo.

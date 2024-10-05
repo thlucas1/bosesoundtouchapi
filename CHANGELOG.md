@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.67 ] - 2024/10/04
+
+  * Fixed various python `SyntaxWarning: invalid escape sequence '\ '` warnings that were being generated when code was executed.  Something changed with Home Assistant recently that turned these "used to be ignored" warnings into actual warnings that wind up in the HA System Log!  This is due to invalid escaped characters in various string comments that are used for documentation purposes (e.g. """ this is a code comment """).
+
 ###### [ 1.0.66 ] - 2024/05/18
 
   * Updated recently played cache processing to remove older cache items if the `RecentListCacheMaxItems` value is changed.  The previous release was only removing old cache items if a NEW cache entry was being created.  This fix will also remove the items if an existing item is updated.
