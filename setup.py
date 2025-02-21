@@ -81,7 +81,7 @@ setup(
         'Topic :: Software Development :: Libraries',
         'Topic :: Multimedia :: Sound/Audio',
         'Natural Language :: English',
-        'License :: Free To Use But Restricted',
+        'License :: OSI Approved :: MIT License'
     ],
     
     # provide some links to list on the Pypi.org site.

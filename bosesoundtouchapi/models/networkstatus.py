@@ -84,6 +84,20 @@ class NetworkStatus:
         return self._SerialNumber
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'device_id': self._DeviceId,
+            'serial_number': self._SerialNumber,
+            'interface_count': self.InterfaceCount,
+            'interfaces': [ item.ToDictionary() for item in self._Interfaces ],
+        }
+        return result
+        
+
     def ToString(self, includeItems:bool=False) -> str:
         """
         Returns a displayable string representation of the class.

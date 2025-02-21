@@ -69,6 +69,17 @@ class MediaServerList:
         return self._MediaServers
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'media_servers': [ item.ToDictionary() for item in self._MediaServers ],
+        }
+        return result
+        
+
     def ToString(self, includeItems:bool=False) -> str:
         """
         Returns a displayable string representation of the class.

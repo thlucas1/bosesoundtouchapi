@@ -157,6 +157,20 @@ class Zone:
             self._Members.append(member)
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'is_zone_master': self._IsZoneMaster,
+            'master_device_id': self._MasterDeviceId,
+            'master_ip_address': self._MasterIpAddress,
+            'members': [ item.ToDictionary() for item in self._Members ],
+        }
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Returns an xmltree Element node representation of the class. 

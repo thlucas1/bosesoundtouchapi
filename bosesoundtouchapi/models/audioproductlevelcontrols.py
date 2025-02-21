@@ -74,6 +74,26 @@ class AudioProductLevelControls(SoundTouchModelRequest):
         return self._RearSurroundSpeakersLevel
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        frontCenterSpeakerLevel:dict = {}
+        if self._FrontCenterSpeakerLevel is not None:
+            frontCenterSpeakerLevel = self._FrontCenterSpeakerLevel.ToDictionary()
+
+        rearSurroundSpeakersLevel:dict = {}
+        if self._RearSurroundSpeakersLevel is not None:
+            rearSurroundSpeakersLevel = self._RearSurroundSpeakersLevel.ToDictionary()
+
+        result:dict = \
+        {
+            'front_center_speaker_level': frontCenterSpeakerLevel,
+            'rear_surround_speakers_level': rearSurroundSpeakersLevel,
+        }
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Overridden.  

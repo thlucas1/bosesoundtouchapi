@@ -82,6 +82,18 @@ class SupportedUrls:
         return self._Urls
 
             
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'device_id': self._DeviceId,
+            'urls': [ item.ToDictionary() for item in self._Urls ],
+        }
+        return result
+        
+
     def ToString(self, includeItems:bool=False) -> str:
         """
         Returns a displayable string representation of the class.

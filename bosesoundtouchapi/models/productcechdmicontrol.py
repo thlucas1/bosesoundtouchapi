@@ -66,6 +66,17 @@ class ProductCecHdmiControl(SoundTouchModelRequest):
                 self._CecMode = value
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'cec_mode': self.CecMode,
+        }
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Overridden.  

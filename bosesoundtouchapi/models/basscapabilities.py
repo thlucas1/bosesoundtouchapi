@@ -23,6 +23,7 @@ class BassCapabilities:
                 If specified, then other passed arguments are ignored.
         """
         self._Default:int = None
+        self._DeviceId:str = None
         self._IsAvailable:bool = None
         self._Maximum:int = None
         self._Minimum:int = None
@@ -34,6 +35,7 @@ class BassCapabilities:
         else:
 
             self._Default = _xmlFindInt(root, 'bassDefault')
+            self._DeviceId = root.get('deviceID')
             self._IsAvailable = _xmlFindBool(root, 'bassAvailable')
             self._Maximum = _xmlFindInt(root, 'bassMax')
             self._Minimum = _xmlFindInt(root, 'bassMin')
@@ -54,6 +56,12 @@ class BassCapabilities:
 
 
     @property
+    def DeviceId(self) -> str:
+        """ Device identifier the configuration information was obtained from. """
+        return self._DeviceId
+
+    
+    @property
     def IsAvailable(self) -> bool:
         """ Returns True if the bass level of the device is adjustable; otherwise, False. """
         return self._IsAvailable
@@ -71,11 +79,27 @@ class BassCapabilities:
         return self._Minimum
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'device_id': self._DeviceId,
+            'default': self._Default,
+            'is_available': self._IsAvailable,
+            'maximum': self._Maximum,
+            'minimum': self._Minimum,
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.
         """
         msg:str = 'BassCapabilities:'
+        if self._DeviceId is not None and len(self._DeviceId) > 0: msg = '%s DeviceId="%s"' % (msg, str(self._DeviceId))
         if self._IsAvailable is not None: msg = '%s Available=%s' % (msg, str(self._IsAvailable).lower())
         if self._Minimum is not None: msg = '%s Min=%d' % (msg, self._Minimum)
         if self._Maximum is not None: msg = '%s Max=%d' % (msg, self._Maximum)

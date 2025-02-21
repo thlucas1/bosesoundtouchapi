@@ -75,6 +75,19 @@ class SimpleConfig(SoundTouchModelRequest):
         return self._Value
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'attribute': self._Attribute,
+            'config_name': self._ConfigName,
+            'value': self._Value,
+        }
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Overridden.  

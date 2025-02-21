@@ -541,6 +541,49 @@ class NowPlayingStatus:
         return self._TrackId
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'device_id': self._DeviceId,
+            'source': self._Source,
+            'source_account': self._SourceAccount,
+            'content_item': self._ContentItem.ToDictionary(),
+            'album': self._Album,
+            'artist': self._Artist,
+            'artist_id': self._ArtistId,
+            'art_image_status': self._ArtImageStatus,
+            'art_url': self._ArtUrl,
+            'connection_device_name': self._ConnectionDeviceName,
+            'connection_status': self._ConnectionStatus,
+            'description': self._Description,
+            'duration': self._Duration,
+            'position': self._Position,
+            'genre': self._Genre,
+            'is_advertisement': self._IsAdvertisement,
+            'is_favorite': self._IsFavorite,
+            'is_favorite_enabled': self._IsFavoriteEnabled,
+            'is_rating_enabled': self._IsRatingEnabled,
+            'is_skip_enabled': self._IsSkipEnabled,
+            'is_skip-previous_enabled': self._IsSkipPreviousEnabled,
+            'is_skip_previous_supported': self._IsSkipPreviousSupported,
+            'is_seek_supported': self._IsSeekSupported,
+            'play_status': self._PlayStatus,
+            'rating': self._Rating,
+            'repeat_setting': self._RepeatSetting,
+            'session_id': self._SessionId,
+            'shuffle_setting': self._ShuffleSetting,
+            'station_location': self._StationLocation,
+            'station_name': self._StationName,
+            'stream_type': self._StreamType,
+            'track': self._Track,
+            'track_id': self._TrackId,
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

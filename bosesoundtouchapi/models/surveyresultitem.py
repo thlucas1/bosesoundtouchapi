@@ -98,6 +98,20 @@ class SurveyResultItem:
         return self._Ssid
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'secure': self._Secure,
+            'signal_strength': self._SignalStrength,
+            'ssid': self._Ssid,
+            'security_types': [ item for item in self._SecurityTypes ],
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

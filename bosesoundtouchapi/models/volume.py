@@ -82,6 +82,20 @@ class Volume(SoundTouchModelRequest):
         return self._Target
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'device_id': self._DeviceId,
+            'actual': self._Actual,
+            'is_muted': self._IsMuted,
+            'target': self._Target,
+        }
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Overridden.  

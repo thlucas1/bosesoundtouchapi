@@ -48,6 +48,17 @@ class BlueToothInfo:
         return self._MacAddress
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'mac_address': self._MacAddress,
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

@@ -139,6 +139,21 @@ class ControlLevelInfo(SoundTouchModelRequest):
                 self._Value = value
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'control_type': self._ControlType,
+            'min_value': self._MinValue,
+            'max_value': self._MaxValue,
+            'step': self._Step,
+            'value': self._Value,
+        }
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Overridden.  

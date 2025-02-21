@@ -76,6 +76,26 @@ class AudioProductToneControls(SoundTouchModelRequest):
         return self._Treble
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        bass:dict = {}
+        if self._Bass is not None:
+            bass = self._Bass.ToDictionary()
+
+        treble:dict = {}
+        if self._Treble is not None:
+            treble = self._Treble.ToDictionary()
+
+        result:dict = \
+        {
+            'bass': bass,
+            'treble': treble,
+        }
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Overridden.  

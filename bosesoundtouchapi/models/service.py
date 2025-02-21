@@ -83,6 +83,19 @@ class Service:
         return self._ServiceType
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'is_available': self._IsAvailable,
+            'reason': self._Reason,
+            'service_type': self._ServiceType,
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

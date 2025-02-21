@@ -68,6 +68,19 @@ class Bass(SoundTouchModelRequest):
         return self._Target
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'device_id': self._DeviceId,
+            'actual': self._Actual,
+            'target': self._Target,
+        }
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Overridden.  
@@ -106,6 +119,7 @@ class Bass(SoundTouchModelRequest):
         Returns a displayable string representation of the class.
         """
         msg:str = 'Bass:'
+        if self._DeviceId is not None and len(self._DeviceId) > 0: msg = '%s DeviceId="%s"' % (msg, str(self._DeviceId))
         if self._Actual is not None: msg = '%s Actual=%d' % (msg, self._Actual)
         if self._Target is not None: msg = '%s Target=%d' % (msg, self._Target)
         return msg 

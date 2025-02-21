@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.69 ] - 2025/02/20
+
+  * Added `ToDictionary` methods to all classes that can return information.
+
 ###### [ 1.0.68 ] - 2024/10/04
 
   * Fixed various python `SyntaxWarning: "is not" with 'int' literal.` warnings that were being generated when code was executed.  Something changed with Home Assistant (or python) recently that turned these "used to be ignored" warnings into actual warnings that wind up in the HA System Log.

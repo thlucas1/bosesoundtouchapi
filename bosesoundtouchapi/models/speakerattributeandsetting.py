@@ -122,6 +122,22 @@ class SpeakerAttributeAndSetting(SoundTouchModelRequest):
         return self._Wireless
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'control_type': self._ControlType,
+            'active': self._Active,
+            'available': self._Available,
+            'controllable': self._Controllable,
+            'wireless': self._Wireless,
+            'is_any_property_set': self.IsAnyPropertySet,
+        }
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Overridden.  

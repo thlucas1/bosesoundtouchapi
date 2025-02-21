@@ -121,6 +121,24 @@ class MediaServer:
         return self._ServerId
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'server_id': self._ServerId,
+            'mac_address': self._MacAddress,
+            'ip_address': self._IpAddress,
+            'manufacturer': self._Manufacturer,
+            'model_name': self._ModelName,
+            'friendly_name': self._FriendlyName,
+            'model_description': self._ModelDescription,
+            'location': self._Location,
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

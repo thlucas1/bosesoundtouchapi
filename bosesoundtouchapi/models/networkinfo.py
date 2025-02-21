@@ -74,6 +74,19 @@ class NetworkInfo:
         return self._WifiProfileCount
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'interface_count': self.InterfaceCount,
+            'wifi_profile_count': self._WifiProfileCount,
+            'interfaces': [ item.ToDictionary() for item in self._Interfaces ],
+        }
+        return result
+        
+
     def ToString(self, includeItems:bool=False) -> str:
         """
         Returns a displayable string representation of the class.

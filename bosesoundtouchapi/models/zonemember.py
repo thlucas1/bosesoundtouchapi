@@ -78,6 +78,19 @@ class ZoneMember:
         return self._IpAddress
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'device_id': self._DeviceId,
+            'device_role': self._DeviceRole,
+            'ip_address': self._IpAddress,
+        }
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Returns an xmltree Element node representation of the class. 

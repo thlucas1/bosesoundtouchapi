@@ -119,6 +119,25 @@ class NetworkInfoInterface:
         return self._TypeValue
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'frequency_khz': self._FrequencyKhz,
+            'ip_address': self._IpAddress,
+            'mac_address': self._MacAddress,
+            'mode': self._Mode,
+            'name': self._Name,
+            'signal': self._Signal,
+            'ssid': self._Ssid,
+            'state_value': self._State,
+            'type_value': self._TypeValue,
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

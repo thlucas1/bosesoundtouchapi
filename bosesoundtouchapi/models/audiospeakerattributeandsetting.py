@@ -81,6 +81,31 @@ class AudioSpeakerAttributeAndSetting(SoundTouchModelRequest):
         return self._SubWoofer02
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        rear:dict = {}
+        if self._Rear is not None:
+            rear = self._Rear.ToDictionary()
+
+        subwoofer_01:dict = {}
+        if self._SubWoofer01 is not None:
+            subwoofer_01 = self._SubWoofer01.ToDictionary()
+
+        subwoofer_02:dict = {}
+        if self._SubWoofer02 is not None:
+            subwoofer_02 = self._SubWoofer02.ToDictionary()
+
+        result:dict = \
+        {
+            'rear': rear,
+            'subwoofer_01': subwoofer_01,
+            'subwoofer_02': subwoofer_02,
+        }
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Overridden.  

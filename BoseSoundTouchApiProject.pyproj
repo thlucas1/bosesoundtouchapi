@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>b57aea50-a094-4619-b41e-cdade13693c6</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>test\test_StatusNotifications.py</StartupFile>
+    <StartupFile>test\test_GetMusicLibraryItems.py</StartupFile>
     <SearchPath>.;test</SearchPath>
     <WorkingDirectory>C:\Users\thluc\source\repos\BoseSoundTouchApiProject</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -17,7 +17,9 @@
     <IsWindowsApplication>False</IsWindowsApplication>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
-    <Environment>PYTHONIOENCODING=437:replace</Environment>
+    <Environment>PYTHONIOENCODING=437:replace
+PDOC_DISPLAY_ENV_VARS=1
+PYTHONWARNINGS=always</Environment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -281,6 +283,7 @@
     <Compile Include="docs\include\samplecode\SoundTouchWebSocket\_ClassInit.py" />
     <Compile Include="setup.py" />
     <Compile Include="test\testVS_SoundTouchClient_DestructiveMethods.py" />
+    <Compile Include="test\testVS_SoundTouchClient_MusicLib_DLNA.py" />
     <Compile Include="test\testVS_SoundTouchClient_MusicSvc_Spotify.py" />
     <Compile Include="test\testVS_SoundTouchClient_MusicSvc_SiriusXM.py" />
     <Compile Include="test\testVS_SoundTouchClient_MusicSvc_Amazon.py" />
@@ -294,6 +297,7 @@
     <Compile Include="test\testVS_SoundTouchDiscovery.py" />
     <Compile Include="test\testVS_SoundTouchClient.py" />
     <Compile Include="test\test_Firmware.py" />
+    <Compile Include="test\test_GetMusicLibraryItems.py" />
     <Compile Include="test\test_MultiThreading.py" />
     <Compile Include="test\test_Navigate_TopMenu.py" />
     <Compile Include="test\test_Navigate_Menu.py" />

@@ -181,6 +181,29 @@ class Information:
         return self._VariantMode
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'device_id': self._DeviceId,
+            'device_name': self._DeviceName,
+            'device_type': self._DeviceType,
+            'mac_address': self._MacAddress,
+            'module_type': self._ModuleType,
+            'region_code': self._RegionCode,
+            'country_code': self._CountryCode,
+            'streaming_account_uuid': self._StreamingAccountUUID,
+            'streaming_url': self._StreamingUrl,
+            'variant': self._Variant,
+            'variant_mode': self._VariantMode,
+            'network_info': [ item.ToDictionary() for item in self._NetworkInfo ],
+            'components': [ item.ToDictionary() for item in self._Components ],
+        }
+        return result
+        
+
     def ToString(self, includeItems:bool=False) -> str:
         """
         Returns a displayable string representation of the class.

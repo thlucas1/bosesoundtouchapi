@@ -70,6 +70,19 @@ class SoftwareUpdateCheckResponse:
         return self._ReleaseRevision
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'device_id': self._DeviceId,
+            'index_file_url': self._IndexFileUrl,
+            'release_revision': self._ReleaseRevision,
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

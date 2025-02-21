@@ -64,6 +64,19 @@ class InformationNetworkInfo:
         return self._TypeValue
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'mac_address': self._MacAddress,
+            'ip_address': self._IpAddress,
+            'type_value': self._TypeValue,
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

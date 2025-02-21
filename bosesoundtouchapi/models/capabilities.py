@@ -187,6 +187,30 @@ class Capabilities:
         return self._IsWebSocketApiProxyCapable
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'device_id': self._DeviceId,
+            'capabilities': self._Capabilities,
+            'is_bco_reset_capable': self._IsBcoResetCapable,
+            'is_clock_display_capable': self._IsClockDisplayCapable,
+            'is_disable_power_saving_capable': self._IsDisablePowerSavingCapable,
+            'is_dual_mode_capable': self._IsDualModeCapable,
+            'is_light_switch_capable': self._IsLightSwitchCapable,
+            'is_lr_stereo_capable': self._IsLrStereoCapable,
+            'is_websocket_api_proxy_capable': self._IsWebSocketApiProxyCapable,
+            'is_product_cec_hdmi_control_capable': self.IsProductCecHdmiControlCapable,
+            'is_product_hdmi_assignment_controls_capable': self.IsProductHdmiAssignmentControlsCapable,
+            'is_rebroadcast_latency_mode_capable': self.IsReBroadcastLatencyModeCapable,
+            'is_system_timeout_capable': self.IsSystemTimeoutCapable,
+            'is_system_timeout_control_capable': self.IsSystemTimeoutControlCapable,
+        }
+        return result
+        
+
     def ToString(self, includeItems:bool=False) -> str:
         """
         Returns a displayable string representation of the class.

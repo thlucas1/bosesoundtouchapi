@@ -47,6 +47,17 @@ class SystemTimeout:
         return self._IsPowersavingEnabled
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'is_powersaving_enabled': self._IsPowersavingEnabled,
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

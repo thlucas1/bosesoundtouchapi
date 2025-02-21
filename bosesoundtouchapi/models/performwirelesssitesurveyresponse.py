@@ -71,6 +71,18 @@ class PerformWirelessSiteSurveyResponse:
         return self._SurveyResultItems
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'survey_result_items_count': len(self._SurveyResultItems),
+            'survey_result_items': [ item.ToDictionary() for item in self._SurveyResultItems ],
+        }
+        return result
+        
+
     def ToString(self, includeItems:bool=False) -> str:
         """
         Returns a displayable string representation of the class.

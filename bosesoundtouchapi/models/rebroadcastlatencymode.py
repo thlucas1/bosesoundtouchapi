@@ -58,6 +58,18 @@ class RebroadcastLatencyMode:
         return self._Mode
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'controllable': self._Controllable,
+            'mode': self._Mode,
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

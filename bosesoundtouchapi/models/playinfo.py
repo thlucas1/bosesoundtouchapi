@@ -129,6 +129,22 @@ class PlayInfo(SoundTouchModelRequest):
         return self._Volume
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'app_key': self._AppKey,
+            'service_value': self._Service,
+            'message': self._Message,
+            'reason': self._Reason,
+            'url': self._Url,
+            'volume': self._Volume,
+        }
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Overridden.  

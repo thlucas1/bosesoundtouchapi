@@ -153,6 +153,34 @@ class ClockTime:
         return self._Year
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        localTime:dict = \
+        {
+            'year': self._Year,
+            'month': self._Month,
+            'day': self._Day,
+            'day_of_week': self._DayOfWeek,
+            'hour': self._Hour,
+            'minute': self._Minute,
+            'second': self._Second,
+        }
+
+        result:dict = \
+        {
+            'utc_time': self._UtcTime,
+            'cue_music': self._CueMusic,
+            'time_format': self._TimeFormat,
+            'brightness': self._Brightness,
+            'clock_error': self._ClockError,
+            'utc_sync_time': self._UtcSyncTime,
+            'local_time': localTime
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

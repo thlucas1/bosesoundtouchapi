@@ -60,6 +60,18 @@ class PowerManagement:
         return self._State
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'battery_capable': self._BatteryCapable,
+            'state_value': self._State,
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

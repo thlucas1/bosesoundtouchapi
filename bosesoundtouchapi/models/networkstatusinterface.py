@@ -122,6 +122,24 @@ class NetworkStatusInterface:
         return self._Ssid
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'frequency_khz': self._FrequencyKhz,
+            'kind': self._Kind,
+            'mac_address': self._MacAddress,
+            'name': self._Name,
+            'rssi': self._Rssi,
+            'is_running': self._IsRunning,
+            'ssid': self._Ssid,
+            'bindings': [ item for item in self._Bindings ],
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

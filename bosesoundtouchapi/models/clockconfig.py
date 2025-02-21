@@ -93,6 +93,22 @@ class ClockConfig:
         return self._UserUtcTime
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'brightness_level': self._BrightnessLevel,
+            'time_format': self._TimeFormat,
+            'timezone_info': self._TimeZoneInfo,
+            'user_enable': self._UserEnable,
+            'user_offset_minute': self._UserOffsetMinute,
+            'user_utc_time': self._UserUtcTime,
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

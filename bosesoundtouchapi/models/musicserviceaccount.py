@@ -94,6 +94,20 @@ class MusicServiceAccount(SoundTouchModelRequest):
         return self._Password
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'source': self._Source,
+            'display_name': self._DisplayName,
+            'password': self._Password,
+            'user_account': self._UserAccount,
+        }
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Overridden.  

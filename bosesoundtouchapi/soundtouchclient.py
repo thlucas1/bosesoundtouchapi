@@ -4296,7 +4296,7 @@ class SoundTouchClient:
 
         Args:
             controls (AudioProductLevelControls):
-                A `AudioProductLevelControls` object that contains audio product tone control
+                A `AudioProductLevelControls` object that contains audio product level control
                 values to set.
 
         Raises:

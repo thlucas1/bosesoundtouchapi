@@ -114,6 +114,19 @@ class AudioDspControls(SoundTouchModelRequest):
                 self._VideoSyncAudioDelay = value
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'audio_mode': self._AudioMode,
+            'supported_audio_modes': self._SupportedAudioModes,
+            'video_sync_audio_delay': self._VideoSyncAudioDelay,
+        }
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Overridden.  

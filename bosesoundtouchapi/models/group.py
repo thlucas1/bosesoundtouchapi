@@ -164,6 +164,22 @@ class Group(SoundTouchModelRequest):
             self._Roles.append(role)
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'group_id': self._GroupId,
+            'master_device_id': self._MasterDeviceId,
+            'name': self._Name,
+            'sender_ip_address': self._SenderIpAddress,
+            'status': self._Status,
+            'roles': [ item.ToDictionary() for item in self._Roles ],
+        }
+        return result
+        
+
     def ToElement(self, isRequestBody:bool=False) -> Element:
         """ 
         Returns an xmltree Element node representation of the class. 

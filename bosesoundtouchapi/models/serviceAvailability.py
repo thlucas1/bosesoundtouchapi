@@ -77,6 +77,18 @@ class ServiceAvailability:
         return self._Services
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'service_count': self.ServiceCount,
+            'services': [ item.ToDictionary() for item in self._Services ],
+        }
+        return result
+        
+
     def ToString(self, includeItems:bool=True) -> str:
         """
         Returns a displayable string representation of the class.

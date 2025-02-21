@@ -64,6 +64,19 @@ class Component:
         return self._SoftwareVersion
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'component_category': self._ComponentCategory,
+            'software_version': self._SoftwareVersion,
+            'serial_number': self._SerialNumber,
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

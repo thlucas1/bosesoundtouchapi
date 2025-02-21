@@ -102,6 +102,23 @@ class SoftwareUpdateQueryResponse:
         return self._State
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'device_id': self._DeviceId,
+            'can_abort': self._CanAbort,
+            'failure_code': self._FailureCode,
+            'failure_id': self._FailureId,
+            'has_failed': self.HasFailed,
+            'percent_complete': self._PercentComplete,
+            'state_value': self._State,
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.

@@ -49,6 +49,17 @@ class ProductHdmiAssignmentControls:
         return self._HdmiInputSelection01
 
 
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'hdmi_input_selection_01': self._HdmiInputSelection01,
+        }
+        return result
+        
+
     def ToString(self) -> str:
         """
         Returns a displayable string representation of the class.
