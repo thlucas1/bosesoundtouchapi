@@ -6,6 +6,12 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.70 ] - 2025/02/20
+
+  * Updated underlying `smartinspectPython` package requirement to version 3.0.34.
+  * Updated Python from v3.9 to v3.11.
+  * Updated minimum python version requirement from v3.5.1+ to v3.11.0+
+
 ###### [ 1.0.69 ] - 2025/02/20
 
   * Added `ToDictionary` methods to all classes that can return information.

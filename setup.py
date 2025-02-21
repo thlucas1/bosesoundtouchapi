@@ -9,7 +9,6 @@ from bosesoundtouchapi.bstconst import (
 # setup constants.
 NAME = 'bosesoundtouchapi'
 DESCRIPTION = 'BOSE SoundTouch API Python3 Library'
-#VERSION = '0.0.1'   # pulled from package constants above.
 
 # if installing using less than Python v3, then stop the install!
 import sys
@@ -54,11 +53,11 @@ setup(
     ],
     
     # set minimum python version requirement.
-    python_requires='>3.4.1',
+    python_requires='>3.11.0',
     
     # set minimum dependencies requirements.
     install_requires=[
-        'smartinspectPython==3.0.33',
+        'smartinspectPython>=3.0.34',
         'tinytag==1.10.0',
         'urllib3>=1.21.1,<1.27',
         'websocket-client==1.6.4',

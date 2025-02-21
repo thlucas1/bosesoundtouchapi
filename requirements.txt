@@ -2,7 +2,7 @@
 # setuptools>=58.1.0
 
 platformdirs==4.1.0
-smartinspectPython==3.0.33
+smartinspectPython>=3.0.34
 tinytag==1.10.0
 # urllib3 version must be less than 2.0.
 urllib3>=1.21.1,<1.27
