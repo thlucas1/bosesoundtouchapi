@@ -108,7 +108,7 @@ class Balance(SoundTouchModelRequest):
         {
             'device_id': self._DeviceId,
             'actual': self._Actual,
-            'default': self._Default,
+            'default_value': self._Default,
             'is_available': self._IsAvailable,
             'maximum': self._Maximum,
             'minimum': self._Minimum,

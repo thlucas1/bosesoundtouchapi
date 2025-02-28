@@ -1,4 +1,4 @@
-# pip>=22.0.4
+# pip>=21.0,<23.4
 # setuptools>=58.1.0
 
 platformdirs==4.1.0

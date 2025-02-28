@@ -86,7 +86,7 @@ class BassCapabilities:
         result:dict = \
         {
             'device_id': self._DeviceId,
-            'default': self._Default,
+            'default_value': self._Default,
             'is_available': self._IsAvailable,
             'maximum': self._Maximum,
             'minimum': self._Minimum,
