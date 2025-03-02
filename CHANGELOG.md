@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.72 ] - 2025/03/02
+
+  * Updated underlying `smartinspectpython` package requirement to version 3.0.35.
+
 ###### [ 1.0.71 ] - 2025/02/28
 
   * Updated various `ToDictionary` methods that were returning reserved TypeScript words as dictionary key names.  The following methods were affected: `Balance`, `BassCapabilities`.

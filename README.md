@@ -48,7 +48,7 @@ The following requirements must be met in order to utilize this API:
 The following Python-related requirements must be met in order to utilize this API:
 
 * Python 3.4 or greater (Python 2 not supported).
-* smartinspectPython package (>= 3.0.21) - for diagnostics and logging support.
+* smartinspectpython package (>= 3.0.35).
 * websocket-client package (>= 2.0).
 * urllib3 package (>= 1.2.0).
 

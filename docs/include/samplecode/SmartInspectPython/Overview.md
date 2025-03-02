@@ -93,7 +93,7 @@ _logsi:SISession = SiAuto.Main
     <summary>More Information on SmartInspect</summary><br/>
     You can use SmartInspectPython by itself to create log files for your own applications.  
     Use the following command to install SmartInspectPython suppport from PyPi.org:  
-    `pip install smartinspectPython`
+    `pip install smartinspectpython`
     <br/>
     <br/>
     The SmarrtInspect Redistributable Console Viewer (free) is required to view SmartInspect Log (.sil) formatted files, as well capture packets via the TcpProtocol or PipeProtocol connections.  
