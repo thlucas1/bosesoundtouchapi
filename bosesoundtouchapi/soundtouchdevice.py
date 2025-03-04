@@ -470,6 +470,39 @@ class SoundTouchDevice:
         return response
         
         
+    def ToDictionary(self) -> dict:
+        """
+        Returns a dictionary representation of the class.
+        """
+        result:dict = \
+        {
+            'device_id': self.DeviceId,
+            'device_name': self.DeviceName,
+            'device_type': self.DeviceType,
+            'country_code': self.CountryCode,
+            'connect_timeout': self._ConnectTimeout,
+            'host': self._Host,
+            'ip_port': self._Port,
+            'log_read_url': self.LogReadUrl,
+            'mac_address': self.MacAddress,
+            'module_type': self.ModuleType,
+            'pts_url': self.PtsUrl,
+            'region_code': self.RegionCode,
+            'streaming_account_uuid': self.StreamingAccountUUID,
+            'streaming_url': self.StreamingUrl,
+            'upnp_url': self.UpnpUrl,
+            'variant': self.Variant,
+            'variant_mode': self.VariantMode,
+
+            'components': [ item.ToDictionary() for item in self.Components ],
+            'network_info': [ item.ToDictionary() for item in self.NetworkInfo ],
+            'supported_uris': [ str(item) for item in self.SupportedUris ],
+            'unknown_url_names': [ item for item in self.UnknownUrlNames ],
+            'unsupported_url_names': [ item for item in self.UnSupportedUrlNames ],
+        }
+        return result
+
+
     def ToString(self, includeItems:bool=False) -> str:
         """
         Returns a displayable string representation of the class.

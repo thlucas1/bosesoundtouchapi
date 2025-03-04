@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.73 ] - 2025/03/04
+
+  * Added `SoundTouchDevice.ToDictionary` method to return device information as a dictionary.
+
 ###### [ 1.0.72 ] - 2025/03/02
 
   * Updated underlying `smartinspectpython` package requirement to version 3.0.35.
