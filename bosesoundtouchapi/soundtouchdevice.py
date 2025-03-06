@@ -283,7 +283,7 @@ class SoundTouchDevice:
     @property
     def Port(self) -> str:
         """ 
-        Ipv4 address of the SoundTouch device. 
+        Ipv4 port number of the SoundTouch device. 
         This property is read-only, and supplied by the class constructor.
         """
         return self._Port

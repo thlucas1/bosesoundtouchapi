@@ -4284,10 +4284,23 @@ class SoundTouchClient:
         if not uriPath in self.Device.SupportedUris:
             raise SoundTouchError(BSTAppMessages.BST_DEVICE_NOT_CAPABLE_FUNCTION % (self.Device.DeviceName, uriPath), logsi=_logsi)
 
+        # get current audio dsp controls.
+        cfgBefore:AudioDspControls = self.GetAudioDspControls(True)
+
         # device is capable - process the request.
         _logsi.LogVerbose(MSG_TRACE_SET_PROPERTY_VALUE_SIMPLE % ("audio dsp controls", controls.ToString(), self.Device.DeviceName))
         request:AudioDspControls = controls
-        return self.Put(SoundTouchNodes.audiodspcontrols, request)
+        result:SoundTouchMessage = self.Put(SoundTouchNodes.audiodspcontrols, request)
+
+        # if dialog mode was changed, then we need to make another call to change
+        # the video sync audio delay value, as the dialog mode change resets it to
+        # zero regardless of the video sync audio delay value in the first request!
+        if (cfgBefore.AudioMode != request.AudioMode):
+            _logsi.LogVerbose("AudioMode was changed; calling again to set VideoSyncAudioDelay=%s" % request.VideoSyncAudioDelay)
+            result = self.Put(SoundTouchNodes.audiodspcontrols, request)
+
+        # return result to caller.
+        return result
 
 
     def SetAudioProductLevelControls(self, controls:AudioProductLevelControls) -> SoundTouchMessage:

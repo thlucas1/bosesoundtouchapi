@@ -6,6 +6,10 @@ Change are listed in reverse chronological order (newest to oldest).
 
 <span class="changelog">
 
+###### [ 1.0.74 ] - 2025/03/06
+
+  * Corrected an `AudioDspControls` bug that was not setting the `VideoSyncAudioDelay` value correctly when the `AudioMode` value was switched.
+
 ###### [ 1.0.73 ] - 2025/03/04
 
   * Added `SoundTouchDevice.ToDictionary` method to return device information as a dictionary.

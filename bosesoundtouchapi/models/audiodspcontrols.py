@@ -101,7 +101,10 @@ class AudioDspControls(SoundTouchModelRequest):
 
     @property
     def VideoSyncAudioDelay(self) -> int:
-        """ Video syncronization audio delay value. """
+        """ 
+        Video syncronization audio delay value (in milliseconds).
+        Suggested range is 0 - 250ms, in increments of 10.
+        """
         return self._VideoSyncAudioDelay
 
     @VideoSyncAudioDelay.setter
