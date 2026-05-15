@@ -1,5 +1,6 @@
 # external package imports.
 import sys
+from datetime import datetime, timedelta, timezone
 from xml.etree.ElementTree import Element
 
 """
@@ -256,3 +257,27 @@ def _xmlGetAttrInt(root:Element, name:str, default:int=None) -> int:
     if elmAttr is None:
         return default
     return int(elmAttr)
+
+
+def GetUtcNowOffset(
+    days:int=0,
+    hours:int=0,
+    minutes:int=0,
+    seconds:int=0,
+    ) -> float:
+    """
+    Returns a Unix millisecond timestamp value from the current utc datetime for the
+    difference specified by input arguments.
+    
+    """
+    # get current utc datetime (in a timezone aware datetime instance).
+    dtUtc:datetime = datetime.now(timezone.utc)
+    
+    # get offset timedelta.
+    dtUtcOffset = (dtUtc + timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds))
+    
+    # convert to unix timestamp (# of seconds since epoch date of 1970/01/01).
+    dtUtcUnixTS:float = dtUtcOffset.timestamp()
+   
+    # return unix milliseconds timestamp value.
+    return dtUtcUnixTS

@@ -7,7 +7,8 @@ from xml.etree import ElementTree as xmltree
 
 # our package imports.
 from bosesoundtouchapi.bstappmessages import BSTAppMessages
-from bosesoundtouchapi.bstutils import export
+from bosesoundtouchapi.bstconst import EVENT_DATEUTC, EVENT_DEVICE_ID
+from bosesoundtouchapi.bstutils import export, GetUtcNowOffset
 from bosesoundtouchapi.soundtouchclient import SoundTouchClient
 from bosesoundtouchapi.soundtouchnotifycategorys import SoundTouchNotifyCategorys
 from bosesoundtouchapi.models.nowplayingstatus import NowPlayingStatus
@@ -276,6 +277,10 @@ class SoundTouchWebSocket:
         # need to be processed differently.
         # Examples: "userActivityUpdate", "updates", etc.
 
+        # get current utc date (epoch format).
+        # convert it to a string value, so that it serializes correctly.
+        eventDateUtc:str = str(int(GetUtcNowOffset()))
+
         # is this an "updates" message?
         if root.tag == 'updates':
             
@@ -284,9 +289,21 @@ class SoundTouchWebSocket:
             #   <connectionStateUpdated state="NETWORK_WIFI_CONNECTED" up="true" signal="GOOD_SIGNAL" />
             # </updates>
 
+            # get deviceID attribute from the root.
+            deviceId:str = root.get("deviceID", None)
+
             # process all update child nodes (there could be multiple).
             for update in root:
                 if (update.tag):
+
+                    # add event utc date (epoch format) to the child attributes.
+                    update.set(EVENT_DATEUTC, eventDateUtc)
+
+                    # add deviceID attribute from the root to the child attributes.
+                    if (deviceId is not None):
+                        update.set(EVENT_DEVICE_ID, deviceId)
+
+                    # notify the listener.
                     self.NotifyListeners(update.tag, update)
 
         else:
@@ -294,6 +311,10 @@ class SoundTouchWebSocket:
             # for all other messages, we will just process the root node; like so:
             # <SoundTouchSdkInfo serverVersion="4" serverBuild="trunk r46330 v4 epdbuild hepdswbld04" />
             # <userActivityUpdate deviceID="9070658C9D4A" />
+
+            # add event utc date (epoch format) to the child attributes.
+            if (root.get(EVENT_DATEUTC, None) is None):
+                root.set(EVENT_DATEUTC, eventDateUtc)
 
             # process the root node (there is only one).
             self.NotifyListeners(root.tag, root)

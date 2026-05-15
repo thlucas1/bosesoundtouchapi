@@ -96,6 +96,16 @@ class EventHandlerClass:
             print(str(config))
             
 
+    def OnSoundTouchUpdateEvent_NowSelectionUpdated(self, client:SoundTouchClient, args:Element) -> None:
+        if (args != None):
+            ElementTree.indent(args)  # for pretty printing
+            argsEncoded = ElementTree.tostring(args, encoding="unicode")
+            _logsi.LogXml(SILevel.Message, "SoundTouch device status update: '%s'" % (args.tag), argsEncoded, SIColors.LightGreen, prettyPrint=True)
+            print("\n'%s' status update:\n%s" % (client.Device.DeviceName, argsEncoded))
+            
+            config:NowSelectionUpdated = NowSelectionUpdated(root=args)
+            print(str(config))
+            
 
 try:
 
@@ -126,8 +136,11 @@ try:
         # create event handler class instance.
         ehc:EventHandlerClass = EventHandlerClass()
                 
+        # add a ALL listener that will handle SoundTouch device status updates.
+        # ** IMPORTANT ** No other listeners are fired if the ALL listener is present!
+        # socket.AddListener(SoundTouchNotifyCategorys.ALL, ehc.OnSoundTouchUpdateEvent)
+
         # add our listener(s) that will handle SoundTouch device status updates.
-        socket.AddListener(SoundTouchNotifyCategorys.ALL, ehc.OnSoundTouchUpdateEvent)
         # socket.AddListener(SoundTouchNotifyCategorys.connectionStateUpdated, ehc.OnSoundTouchUpdateEvent)
         # socket.AddListener(SoundTouchNotifyCategorys.criticalErrorUpdate, ehc.OnSoundTouchUpdateEvent)
         # socket.AddListener(SoundTouchNotifyCategorys.errorNotification, ehc.OnSoundTouchUpdateEvent)
@@ -148,7 +161,8 @@ try:
                 
         # you can also add methods for individual models, to make handling them easier.
         # add our listener(s) that will handle SoundTouch device status specific updates.
-        # socket.AddListener(SoundTouchNotifyCategorys.nowPlayingUpdated, ehc.OnSoundTouchUpdateEvent_NowPlaying)
+        socket.AddListener(SoundTouchNotifyCategorys.nowPlayingUpdated, ehc.OnSoundTouchUpdateEvent_NowPlaying)
+        socket.AddListener(SoundTouchNotifyCategorys.nowSelectionUpdated, ehc.OnSoundTouchUpdateEvent_NowSelectionUpdated)
         socket.AddListener(SoundTouchNotifyCategorys.volumeUpdated, ehc.OnSoundTouchUpdateEvent_Volume)
 
         # add our listener(s) that will handle SoundTouch device informational events.

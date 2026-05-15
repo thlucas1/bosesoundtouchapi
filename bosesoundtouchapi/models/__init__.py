@@ -29,6 +29,7 @@ from .navigateresponse import NavigateResponse, NavigateItem
 from .networkinfo import NetworkInfo, NetworkInfoInterface
 from .networkstatus import NetworkStatus, NetworkStatusInterface
 from .nowplayingstatus import NowPlayingStatus
+from .nowselectionupdated import NowSelectionUpdated
 from .performwirelesssitesurveyresponse import PerformWirelessSiteSurveyResponse, SurveyResultItem
 from .playinfo import PlayInfo
 from .playstatustypes import PlayStatusTypes
@@ -100,6 +101,7 @@ __all__ = [
     'NetworkInfo', 'NetworkInfoInterface',
     'NetworkStatus', 'NetworkStatusInterface',
     'NowPlayingStatus',
+    'NowSelectionUpdated',
     'PerformWirelessSiteSurveyResponse','SurveyResultItem',
     'PlayInfo',
     'PlayStatusTypes',

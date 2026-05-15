@@ -4,7 +4,7 @@
 # constants are placed in this file if they are used across multiple files.
 # the only exception to this is for the VERSION constant, which is placed here for convenience.
 
-VERSION:str = "1.0.86"
+VERSION:str = "1.0.87"
 """ 
 Current version of the Bose SoundTouch API Python3 Library. 
 """
@@ -41,6 +41,16 @@ Indicates if an event argument value is unknown for event argument objects that 
 BOSE_DEVELOPER_APPKEY:str = "Ml7YGAI9JWjFhU7D348e86JPXtisddBa"
 """
 Bose Developer application key used for notifications.
+"""
+
+EVENT_DEVICE_ID:str = "eventDeviceID"
+"""
+Event device id key used for various model attribute references.
+"""
+
+EVENT_DATEUTC:str = "eventDateUtc"
+"""
+Event date key used for various model attribute references.
 """
 
 # application trace messages.
